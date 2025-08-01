@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
  
-            return Auth::user();
+            return response()->json(User::with('roles')->find(Auth::user()->id));
         }
  
         return response([
@@ -26,10 +27,15 @@ class AuthController extends Controller
     }
 
     public function user(){
-        return Auth::user();
+        return User::with('roles')->find(Auth::user()->id);
     }
 
     public function isAuth() {
         return response()->json(Auth::check());
+    }
+
+    public function logout() {
+        Auth::logout();
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }
