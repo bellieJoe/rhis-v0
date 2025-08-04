@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangayController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -26,6 +28,14 @@ Route::prefix("roles")->group(function (){
 
 Route::prefix("users")->group(function () {
     Route::get("", [UserController::class, "index"]);
+});
+
+Route::prefix("offices")->group(function () {
+    Route::post("", [OfficeController::class, "store"]);
+});
+
+Route::prefix("barangays")->group(function () {
+    Route::get("addresses", [BarangayController::class, "barangays"]);
 });
 
 
