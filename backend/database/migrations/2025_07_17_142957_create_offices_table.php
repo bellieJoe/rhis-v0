@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('parent_id', 50)->nullable();
             $table->enum('office_type', ['pho', 'rhu', 'barangay']);
-            $table->foreignId('address_barangay_id');
+            $table->foreignId('address_barangay_id')->nullable();
             $table->foreignId('municipality_id')->nullable();
             $table->foreignId('province_id')->nullable();
             $table->foreignId('barangay_id')->nullable();

@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
+use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -32,10 +34,21 @@ Route::prefix("users")->group(function () {
 
 Route::prefix("offices")->group(function () {
     Route::post("", [OfficeController::class, "store"]);
+    Route::get("", [OfficeController::class, "index"]);
+    Route::get("search", [OfficeController::class, "search"]);
 });
 
 Route::prefix("barangays")->group(function () {
     Route::get("addresses", [BarangayController::class, "barangays"]);
+    Route::get("search", [BarangayController::class, "search"]);
+});
+
+Route::prefix("provinces")->group(function () {
+    Route::get("search", [ProvinceController::class, "search"]);
+});
+
+Route::prefix("municipalities")->group(function () {
+    Route::get("search", [MunicipalityController::class, "search"]);
 });
 
 
