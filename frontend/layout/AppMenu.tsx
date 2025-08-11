@@ -18,6 +18,11 @@ const AppMenu = () => {
                     label: 'Dashboard', 
                     icon: 'pi pi-fw pi-home', 
                     to: '/' 
+                },
+                { 
+                    label: 'Users', 
+                    icon: 'pi pi-fw pi-users', 
+                    to: '/admin/users' 
                 }
             ]
         },

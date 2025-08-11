@@ -13,8 +13,7 @@ export const toastSlice = createSlice({
             state.severity = action.payload.severity;
             state.summary = action.payload.summary;
             state.detail = action.payload.detail;
-            state.life = action.payload.life
-            console.log("state test");
+            state.life = action.payload.life;
         }
     }
 });

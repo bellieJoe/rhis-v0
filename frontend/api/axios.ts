@@ -5,6 +5,8 @@ const axios = axiosLib.create({
         Accept: "application/json",
     },
     withCredentials: true,
+    withXSRFToken : true,
+    baseURL : "http://localhost:8000",
     
 });
 

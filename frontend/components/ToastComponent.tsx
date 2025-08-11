@@ -11,22 +11,10 @@ const ToastComponent = () => {
     const { severity, summary, detail, life } = toastState;
 
     useEffect(() => {
-        console.log({ severity, summary, detail, life });
         if (!severity || !summary || !detail || !life) return;
         toast.current?.show({ severity, summary, detail, life });
     }, [severity, summary, detail, life]);
 
-    useEffect(() => {
-        setTimeout(() => {
-            dispatch(setToast({
-                severity: "success",
-                summary: "ad",
-                detail: "asdasdasd",
-                life: 3000
-            }));
-            console.log("Test");
-        }, 3000);
-    }, []);
 
     return <Toast ref={toast} />;
 };
