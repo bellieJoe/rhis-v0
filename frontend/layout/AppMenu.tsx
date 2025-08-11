@@ -10,7 +10,20 @@ import { AppMenuItem } from '@/types';
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
 
-    const model: AppMenuItem[] = [
+    const model : AppMenuItem[] = [
+        {
+            label: 'Admin Interface',
+            items: [
+                { 
+                    label: 'Dashboard', 
+                    icon: 'pi pi-fw pi-home', 
+                    to: '/' 
+                }
+            ]
+        },
+    ];
+
+    const modelOld: AppMenuItem[] = [
         {
             label: 'Home',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
