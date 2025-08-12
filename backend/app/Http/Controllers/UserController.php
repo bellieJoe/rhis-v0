@@ -11,7 +11,8 @@ class UserController extends Controller
 {
     //
     public function index() {
-        $query = User::query();
+        $query = User::query()
+        ->with('roles', 'roles.roleType');
 
         return response(
             $query->paginate(20)

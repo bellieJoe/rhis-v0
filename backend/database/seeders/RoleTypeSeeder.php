@@ -39,6 +39,12 @@ class RoleTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => 5,
+                'name' => "admin",
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

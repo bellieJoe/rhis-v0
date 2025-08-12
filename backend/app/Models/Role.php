@@ -8,4 +8,9 @@ class Role extends Model
 {
     //
     protected $guarded = [];
+
+    public function roleType()
+    {
+        return $this->belongsTo(RoleType::class);
+    }
 }

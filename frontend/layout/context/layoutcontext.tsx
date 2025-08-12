@@ -1,6 +1,8 @@
 'use client';
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import { LayoutState, ChildContainerProps, LayoutConfig, LayoutContextProps } from '@/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAuth } from '@/api/authApi';
 export const LayoutContext = createContext({} as LayoutContextProps);
 
 export const LayoutProvider = ({ children }: ChildContainerProps) => {
@@ -21,6 +23,15 @@ export const LayoutProvider = ({ children }: ChildContainerProps) => {
         staticMenuMobileActive: false,
         menuHoverActive: false
     });
+
+    const user = useSelector((state : any) => state.auth.user);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(!user){
+            getAuth(dispatch);
+        }
+    }, [user]);
 
     const onMenuToggle = () => {
         if (isOverlay()) {

@@ -2,11 +2,13 @@ import { setToast } from "@/features/toastSlice";
 import { dispatchError, dispatchSuccess } from "@/utils/toast";
 import { Dispatch } from "@reduxjs/toolkit";
 import axios from "./axios";
+import { setUser } from "@/features/authSlice";
 
 export const login = async (dispatch  : Dispatch, params : any = {}) : Promise<boolean> => {
     try {
         const session = await axios.get('/sanctum/csrf-cookie');
         const response = await axios.post('/auth/login', params);
+        dispatch(setUser(response.data));
         dispatchSuccess(dispatch, "Logged in successfully.");
         return true;
     } catch (error : any) {
@@ -24,5 +26,14 @@ export const logout = async (dispatch  : Dispatch) : Promise<boolean> => {
     } catch (error : any) {
         dispatchError(dispatch, error.response.data.message);
         return false;
+    }
+}
+
+export const getAuth = async (dispatch : Dispatch) => {
+    try {
+        const response = await axios.get('/api/auth/user');
+        dispatch(setUser(response.data));
+    } catch (error : any) {
+        dispatchError(dispatch, error.response.data.message);
     }
 }

@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     {
         //
         Role::create([
-            "role_type_id" => 4,
+            "role_type_id" => 5,
             "user_id" => 1,
             "created_at" => now(),
             "updated_at" => now()
