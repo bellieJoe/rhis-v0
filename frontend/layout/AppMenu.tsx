@@ -12,7 +12,23 @@ const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const authUser = useSelector((state : any) => state.auth.user);
 
-    const [model, setModel] = useState<AppMenuItem[]>([]);
+    const [model, setModel] = useState<AppMenuItem[]>([
+        {
+            label: 'BHW Interface',
+            items: [
+                { 
+                    label: 'Household Profiles', 
+                    icon: 'pi pi-fw pi-home', 
+                    to: '/bhw/household-profiles' 
+                },
+                { 
+                    label: 'Users', 
+                    icon: 'pi pi-fw pi-users', 
+                    to: '/admin/users' 
+                }
+            ]
+        }
+    ]);
 
     const setAdminMenu = () => {
         

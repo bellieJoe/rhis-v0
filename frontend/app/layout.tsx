@@ -21,7 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <html lang="en" suppressHydrationWarning>
             <head>
                 <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
-                <title>RHIS</title>
+                <title>RHIMS</title>
             </head>
             <body>
                 <Provider store={store}>
