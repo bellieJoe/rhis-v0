@@ -8,8 +8,9 @@ class Office extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ['address'];
+    protected $appends = ['address', 'parent_office_name'];
 
+    // Relationships
     public function addressLocation () {
         return $this->belongsTo(Barangay::class, 'address_barangay_id', 'id');
     }
@@ -22,11 +23,20 @@ class Office extends Model
         return $this->belongsTo(Province::class);
     }
 
+    public function parent () {
+        return $this->belongsTo(Office::class, 'parent_id', 'id');
+    }
+
+    // Accessors
     public function getAddressAttribute()
     {
         $location = $this->addressLocation;
         $municipality = $location->municipality;
         $province = $municipality->province;
         return $location->barangay_name . ', ' . $municipality->municipality_name . ', ' . $province->province_name;
+    }
+    public function getParentOfficeNameAttribute()
+    {
+        return $this->parent ? $this->parent->name : null;
     }
 }

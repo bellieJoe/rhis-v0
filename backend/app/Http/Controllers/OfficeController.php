@@ -12,7 +12,7 @@ class OfficeController extends Controller
     //
     public function index(Request $request) {
         $query = Office::query();
-        $query->with('municipality.province', 'province');
+        $query->with('municipality.province', 'province', 'parent');
 
         return $query->paginate(20);
     }
