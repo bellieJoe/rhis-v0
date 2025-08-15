@@ -12,51 +12,34 @@ const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const authUser = useSelector((state : any) => state.auth.user);
 
-    const [model, setModel] = useState<AppMenuItem[]>([
-        {
-            label: 'BHW Interface',
-            items: [
-                { 
-                    label: 'Household Profiles', 
-                    icon: 'pi pi-fw pi-home', 
-                    to: '/bhw/household-profiles' 
-                },
-                { 
-                    label: 'Users', 
-                    icon: 'pi pi-fw pi-users', 
-                    to: '/admin/users' 
-                }
-            ]
-        }
-    ]);
+    const [model, setModel] = useState<AppMenuItem[]>([]);
 
     const setAdminMenu = () => {
-        
-        if(authUser && authUser.roles.filter((role:any) => role.role_type_id === 5).length > 0) {
-            setModel([
-                ...model,
-                {
-                    label: 'Admin Interface',
-                    items: [
-                        { 
-                            label: 'Dashboard', 
-                            icon: 'pi pi-fw pi-home', 
-                            to: '/' 
-                        },
-                        { 
-                            label: 'Users', 
-                            icon: 'pi pi-fw pi-users', 
-                            to: '/admin/users' 
-                        }
-                    ]
-                },
-            ]);
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 5)) {
+            return [{
+                label: 'Admin Interface',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                    { label: 'Users', icon: 'pi pi-fw pi-users', to: '/admin/users' },
+                    { label: 'Offices', icon: 'pi pi-fw pi-building', to: '/admin/offices' }
+                ]
+            }];
         }
+
+        return [];
+    }
+
+    const setBhwMenu = () => {
+        return [{
+            label: 'BHW Interface',
+            items: [
+                { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' }
+            ]
+        }];
     }
 
     useEffect(() => {
-        setModel([]);
-        setAdminMenu();
+        setModel([...setAdminMenu(), ...setBhwMenu()]);
     }, [authUser]);
 
 

@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/features/authSlice';
 import toastReducer from '@/features/toastSlice';
 import userReducer from '@/features/userSlice';
+import officeReducer from '@/features/officeSlice';
 
 
 export default configureStore({
   reducer: {
         auth : authReducer,
         toast : toastReducer,
-        user : userReducer
+        user : userReducer,
+        office : officeReducer,
   }
 });
