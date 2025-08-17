@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class GenericType extends Model
+{
+    protected $guarded = [];
+    
+    //
+    const TYPE_MEMBERS_OF_HOUSEHOLD = 'MEMBERS_OF_HOUSEHOLD';
+    const TYPE_GENDER = 'GENDER';
+    const TYPE_EDUCATIONAL_ATTAINMENT = 'EDUCATIONAL_ATTAINMENT';
+    const TYPE_RELIGION = 'RELIGION';
+    const TYPE_CLASSIFICATION_BY_AHRG = 'CLASSIFICATION_BY_AHRG';
+    const TYPE_FAMILY_PLANNING_METHOD = 'FAMILY_PLANNING_METHOD';
+    const TYPE_FAMILY_PLANNING_STATUS = 'FAMILY_PLANNING_STATUS';
+    const TYPE_WATER_SOURCE_TYPE = 'WATER_SOURCE_TYPE';
+    const TYPE_TOILET_FACILITY_TYPE = 'TOILET_FACILITY_TYPE';
+
+    const ALL_TYPES = [
+        self::TYPE_MEMBERS_OF_HOUSEHOLD,
+        self::TYPE_GENDER,
+        self::TYPE_EDUCATIONAL_ATTAINMENT,
+        self::TYPE_RELIGION,
+        self::TYPE_CLASSIFICATION_BY_AHRG,
+        self::TYPE_FAMILY_PLANNING_METHOD,
+        self::TYPE_FAMILY_PLANNING_STATUS,
+        self::TYPE_WATER_SOURCE_TYPE,
+        self::TYPE_TOILET_FACILITY_TYPE
+    ];
+}
