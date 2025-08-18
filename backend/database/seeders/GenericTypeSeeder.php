@@ -607,6 +607,123 @@ class GenericTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // CIVIL STATUS
+            [
+                'id' => 74,
+                'type' => GenericType::TYPE_CIVIL_STATUS,
+                'code' => 'M',
+                'name' => 'Married',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 75,
+                'type' => GenericType::TYPE_CIVIL_STATUS,
+                'code' => 'S',
+                'name' => 'Single',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 76,
+                'type' => GenericType::TYPE_CIVIL_STATUS,
+                'code' => 'W',
+                'name' => 'Widow/er',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 77,
+                'type' => GenericType::TYPE_CIVIL_STATUS,
+                'code' => 'SP',
+                'name' => 'Separated',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 78,
+                'type' => GenericType::TYPE_CIVIL_STATUS,
+                'code' => 'C',
+                'name' => 'Cohabitation',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // GENDER
+            [
+                'id' => 79,
+                'type' => GenericType::TYPE_GENDER,
+                'code' => 'M',
+                'name' => 'Male',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 80,
+                'type' => GenericType::TYPE_GENDER,
+                'code' => 'F',
+                'name' => 'Female',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // PHILHEALT MEMBERSHIP TYPE
+            [
+                'id' => 81,
+                'type' => GenericType::TYPE_PHILHEALTH_MEMBERSHIP,
+                'code' => 'M',
+                'name' => 'Member',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 82,
+                'type' => GenericType::TYPE_PHILHEALTH_MEMBERSHIP,
+                'code' => 'D',
+                'name' => 'Dependent',
+                'created_at' => now(),  
+                'updated_at' => now()
+            ],
+            // PHILHEALTH CATEGORY
+            [
+                'id' => 83,
+                'type' => GenericType::TYPE_PHILHEALTH_CATEGORY,
+                'code' => 'DC',
+                'name' => 'Direct Contributors',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 84,
+                'type' => GenericType::TYPE_PHILHEALTH_CATEGORY,
+                'code' => 'IC',
+                'name' => 'Indirect Contributors',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 85,
+                'type' => GenericType::TYPE_PHILHEALTH_CATEGORY,
+                'code' => 'U',
+                'name' => 'Unknown',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // MEDICAL HISTORY
+            [
+                'id' => 86,
+                'type' => GenericType::TYPE_MEDICAL_HISTORY,
+                'code' => 'HPN',
+                'name' => 'Hypertension',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 87,
+                'type' => GenericType::TYPE_MEDICAL_HISTORY,
+                'code' => 'DM',
+                'name' => 'Diabetes',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

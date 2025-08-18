@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class GenericTypeController extends Controller
 {
+
     //
     public function index(Request $request) {
         $types = GenericType::query();

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
+use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProvinceController;
@@ -49,6 +50,12 @@ Route::prefix("provinces")->group(function () {
 
 Route::prefix("municipalities")->group(function () {
     Route::get("search", [MunicipalityController::class, "search"]);
+});
+
+Route::prefix("generic-types")->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("", [GenericTypeController::class, "index"]);
+    });
 });
 
 
