@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreignId('religion_id')->default(0);
             $table->string('other_religion', 50)->nullable();
             $table->foreignId('unit_id');
-            $table->foreignId('sitio_id_id');
+            // $table->foreignId('sitio_id_id');
             $table->enum('enthnicity', ['IP', 'Non-IP']);
             $table->boolean('fourps_member');
             $table->string('fourps_household_no', 50)->nullable();

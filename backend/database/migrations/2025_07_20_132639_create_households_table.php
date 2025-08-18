@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('households', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('sitio_id');
             $table->string('household_no', 50)->unique();
             $table->string('name');
             $table->timestamps();

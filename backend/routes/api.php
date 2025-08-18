@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\GenericTypeController;
+use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProvinceController;
@@ -55,6 +56,13 @@ Route::prefix("municipalities")->group(function () {
 Route::prefix("generic-types")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("", [GenericTypeController::class, "index"]);
+    });
+});
+
+Route::prefix("households")->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [HouseholdController::class, "store"]);
+        Route::get("", [HouseholdController::class, "index"]);
     });
 });
 
