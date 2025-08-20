@@ -51,7 +51,7 @@ class HouseholdProfileDetail extends Model
     }
 
     public function philhealthMembershipType() {
-        return $this->belongsTo(GenericType::class, 'philhealth_membership_type_id', 'id');
+        return $this->belongsTo(GenericType::class, 'philheath_membership_type_id', 'id');
     }
 
     public function philhealthCategory() {

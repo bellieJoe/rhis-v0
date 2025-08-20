@@ -3,6 +3,8 @@ import { deleteHousehold, getHouseholds } from "@/api/householdApi";
 import { getHouseholdProfiles } from "@/api/householdProfileApi";
 import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
+import { FilterModal } from "@/components/FilterModal";
+import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
@@ -63,7 +65,7 @@ const HouseholdsTable = () => {
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="Add Household" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHousehold: true })}  />
             </div>
-            <DataTable value={households.data} loading={loading.householdsTable}>
+            <DataTable value={households.data} loading={loading.householdsTable} rowHover>
                 <Column field="household_no" header="Household No." />
                 <Column field="name" header="Household Name" />
                 <Column 
@@ -92,6 +94,7 @@ const HouseholdProfilesTable = () => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState({
         addHouseholdProfile: false,
+        householdProfileFilter : false,
     });
     const { householdProfiles, reload } = useSelector((state : any) => state.householdProfile);
     const [loading, setLoading] = useState({
@@ -120,15 +123,50 @@ const HouseholdProfilesTable = () => {
         <div className="card">
             <h5>Household Profiles</h5>
             <div className="flex justify-content-end gap-2 mb-3">
+                <Button label="" size="small" icon="pi pi-filter" outlined onClick={() => setVisible({ ...visible, householdProfileFilter: true })}  />
                 <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHouseholdProfile: true })}  />
             </div>
-            <DataTable value={householdProfiles.data} loading={loading.householdProfilesTable}>
+            <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
+                <Column  header="Actions" frozen body={(data : any) => (
+                    <>
+                        <div className="flex gap-2">
+                            <Button label="Update" size="small" outlined icon="pi pi-pencil" />
+                        </div>
+                    </>
+                )} />
                 <Column field="household.household_no" header="Household No." />
                 <Column field="updated_details.firstname" header="Firstname" />
                 <Column field="updated_details.middlename" header="Middlename" />
                 <Column field="updated_details.lastname" header="Lastname" />
                 <Column field="updated_details.member_relationship.name" header="Relationship to the head" />
                 <Column field="birthdate" header="Date of Birth" body={(data : any) => moment(data.birthdate).format('MMM DD, YYYY')} />
+                <Column header="Age" body={(data : any) => calculateAge(data.birthdate)} />
+                <Column field="updated_details.gender.name" header="Sex"  />
+                <Column field="updated_details.civil_status.name" header="Civil Status"  />
+                <Column field="updated_details.educational_attainment.name" header="Educational Attainment"  />
+                <Column field="updated_details.religion.name" header="Religion"  />
+                <Column field="updated_details.enthnicity" header="Ethnicity"  />
+                <Column field="updated_details.fourps_household_no" header="4Ps Household ID No."  />
+                <Column field="updated_details.philhealth_id" header="PHILHEALTH ID"  />
+                <Column field="updated_details.philhealth_membership_type.name" header="Membership Type"  />
+                <Column field="updated_details.philhealth_category.name" header="PHILHEALTH Category"  />
+                <Column field="updated_details.medical_history.name" header="Medical History"  />
+                <Column field="updated_details.classification_by_age_hrg.name" header="Classification by Age/Health Risk Group"  />
+                <Column field="updated_details.last_menstrual_period" header="Last Menstrual Period" body={(data : any) => data.updated_details.last_menstrual_period ? moment(data.updated_details.last_menstrual_period).format('MMM DD, YYYY') : "N/A"}  />
+                <Column field="updated_details.using_fp_method" header="Is Using Family Planning Method" body={(data : any) => data.updated_details.using_fp_method ? "Yes" : "No"}  />
+                <Column field="updated_details.family_planning_method.name" header="Family Planning Method Use" />
+                <Column field="updated_details.family_planning_status.name" header="Family Planning Status" />
+                <Column field="updated_details.water_source.name" header="Type of Water Source" />
+                <Column field="updated_details.toilet_facility.name" header="Type of Toilet Facility" />
+                <Column header="Asthma (Hika)" body={(data : any) => (data.updated_details.hc_asthma && data.updated_details.hc_asthma == 1) ? "Yes" : "No"} />
+                <Column header="Cancer" body={(data : any) => (data.updated_details.hc_cancer && data.updated_details.hc_cancer == 1) ? "Yes" : "No"} />
+                <Column header="PWD (May kapansanan)" body={(data : any) => (data.updated_details.hc_pwd && data.updated_details.hc_pwd == 1) ? "Yes" : "No"} />
+                <Column header="Stroke" body={(data : any) => (data.updated_details.hc_stroke && data.updated_details.hc_stroke == 1) ? "Yes" : "No"} />
+                <Column header="Mass (Bukol)" body={(data : any) => (data.updated_details.hc_mass && data.updated_details.hc_mass == 1) ? "Yes" : "No"} />
+                <Column header="MHGAP" body={(data : any) => (data.updated_details.hc_mhgap && data.updated_details.hc_mhgap == 1) ? "Yes" : "No"} />
+                <Column header="Smoker" body={(data : any) => (data.updated_details.hc_smoker && data.updated_details.hc_smoker == 1) ? "Yes" : "No"} />
+                <Column header="Alchohol Drinker" body={(data : any) => (data.updated_details.hc_alchohol_drinker && data.updated_details.hc_alchohol_drinker == 1) ? "Yes" : "No"} />
+
             </DataTable>
             <Paginator 
                     ref={paginator.householdProfiles}
@@ -138,6 +176,7 @@ const HouseholdProfilesTable = () => {
                     onPageChange={onPageChange}
                 />
             <AddHouseholdProfile visible={visible.addHouseholdProfile} onHide={() => setVisible({ ...visible, addHouseholdProfile: false })} />
+            <FilterModal visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} />
         </div>
     )
 }

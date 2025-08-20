@@ -27,7 +27,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
     const {genericTypes} = useSelector((state: any) => state.genericType);
     const { households } = useSelector((state: any) => state.household);
     const [householdItems , setHouseholdItems] = useState([]);
-    const [form, setForm] = useState({
+    const initialForm = {
         household_no : "",
         household_id : "",
         lastname : "",
@@ -65,8 +65,8 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         hc_mass : false,
         hc_smoker: false,
         hc_alchohol_drinker : false,
-
-    });
+    }
+    const [form, setForm] = useState(initialForm);
     const items : MenuItem[] = [
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
@@ -115,9 +115,14 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         params.birthdate = formatDate(params.birthdate);
         params.last_menstrual_period = params.gender_id == "80" ? formatDate(params.last_menstrual_period) : "";
         setLoading({ ...loading, createHouseholdProfile : true });
-        await storeHouseholdProfile(dispatch, { ...params });
-        const success = setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
+        const success = await storeHouseholdProfile(dispatch, { ...params });
+        setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, createHouseholdProfile : false });
+        if(success) {
+            onHide();
+            setForm(initialForm);
+            setActiveIndex(0);
+        }
     }
 
     return (
