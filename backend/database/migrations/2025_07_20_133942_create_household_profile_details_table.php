@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('educational_attainment_id');
             $table->foreignId('religion_id')->default(0);
             $table->string('other_religion', 50)->nullable();
-            $table->foreignId('unit_id');
+            $table->foreignId('unit_id')->nullable();
             // $table->foreignId('sitio_id_id');
             $table->enum('enthnicity', ['IP', 'Non-IP']);
             $table->boolean('fourps_member');
@@ -46,6 +46,7 @@ return new class extends Migration
             $table->boolean('hc_pwd')->nullable();
             $table->boolean('hc_stroke')->nullable();
             $table->boolean('hc_mass')->nullable();
+            $table->boolean('hc_mhgap')->nullable();
             $table->boolean('hc_smoker')->nullable();
             $table->boolean('hc_alchohol_drinker')->nullable();
             $table->boolean('is_active')->default(true);

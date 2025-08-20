@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HouseholdController;
+use App\Http\Controllers\HouseholdProfileController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProvinceController;
@@ -64,6 +65,13 @@ Route::prefix("households")->group(function () {
         Route::post("", [HouseholdController::class, "store"]);
         Route::get("", [HouseholdController::class, "index"]);
         Route::delete("{id}", [HouseholdController::class, "destroy"]);
+    });
+});
+
+Route::prefix("household-profiles")->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("", [HouseholdProfileController::class, "index"]);
+        Route::post("", [HouseholdProfileController::class, "store"]);
     });
 });
 
