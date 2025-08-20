@@ -91,12 +91,30 @@ const HouseholdProfilesTable = () => {
     const [visible, setVisible] = useState({
         addHouseholdProfile: false,
     });
+    const { householdProfiles, reload } = useSelector((state : any) => state.householdProfile);
+    const [loading, setLoading] = useState({
+        householdProfilesTable: false
+    })
+
+    useEffect(() => {
+        (async () => {
+            setLoading({ ...loading, householdProfilesTable: true });
+            await getHouseholds(dispatch);
+            setLoading({ ...loading, householdProfilesTable: false });
+        })();
+    }, [reload]);
+    
     return (
         <div className="card">
             <h5>Household Profiles</h5>
-            <div className="flex justify-content-end gap-2">
+            <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHouseholdProfile: true })}  />
             </div>
+            <DataTable value={householdProfiles.data} loading={loading.householdProfilesTable}>
+                <Column header="Lastname" />
+                <Column header="Firstname" />
+                <Column header="Middlename" />
+            </DataTable>
             <AddHouseholdProfile visible={visible.addHouseholdProfile} onHide={() => setVisible({ ...visible, addHouseholdProfile: false })} />
         </div>
     )

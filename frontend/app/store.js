@@ -6,6 +6,7 @@ import officeReducer from '@/features/officeSlice';
 import genericTypeReducer from '@/features/genericTypeSlice';
 import errorReducer from '@/features/errorSlice';
 import householdReducer from '@/features/householdSlice';
+import householdProfileReducer from '@/features/householdProfileSlice';
 
 
 export default configureStore({
@@ -16,6 +17,7 @@ export default configureStore({
         office : officeReducer,
         genericType : genericTypeReducer,
         error : errorReducer,
-        household : householdReducer
+        household : householdReducer,
+        householdProfile : householdProfileReducer
   }
 });

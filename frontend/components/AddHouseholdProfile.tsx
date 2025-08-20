@@ -12,7 +12,8 @@ import { Steps } from "primereact/steps";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./ValidationError";
-import { calculateAge } from "@/utils/helpers";
+import { calculateAge, formatDate } from "@/utils/helpers";
+import { storeHouseholdProfile } from "@/api/householdProfileApi";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -66,7 +67,6 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         hc_alchohol_drinker : false,
 
     });
-
     const items : MenuItem[] = [
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
@@ -76,6 +76,9 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         { label: "Living and Health Condition", className: "mr-2" },
         { label: "Review", className: "mr-2"  },
     ];
+    const [loading, setLoading] = useState({
+        createHouseholdProfile : false
+    });
 
     useEffect(() => {
         (async()=>{
@@ -103,8 +106,18 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
     }
 
     const handleHouseholdSelect = (e: any) => {
-        setForm({...form, household_id : e.value.value});
-        setForm({...form, household_no : e.value.label});
+        console.log(e.value.value);
+        setForm({...form, household_no : e.value.label, household_id : e.value.value});
+    }
+
+    const handleHouseholdCreate = async () => {
+        const params = { ...form };
+        params.birthdate = formatDate(params.birthdate);
+        params.last_menstrual_period = params.gender_id == "80" ? formatDate(params.last_menstrual_period) : "";
+        setLoading({ ...loading, createHouseholdProfile : true });
+        await storeHouseholdProfile(dispatch, { ...params });
+        const success = setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
+        setLoading({ ...loading, createHouseholdProfile : false });
     }
 
     return (
@@ -136,11 +149,12 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                         value={form.household_no}
                                         onSelect={handleHouseholdSelect}
                                         className="w-full" />
-                                    <ValidationError name="household_no" />
+                                    <ValidationError name="household_id" />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
                                     <Dropdown 
+                                        showClear
                                         options={genericTypes.filter((x: any) => x.type === "MEMBERS_OF_HOUSEHOLD")} 
                                         optionLabel="label"
                                         optionValue="id"
@@ -213,6 +227,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Sex</label>
                                     <Dropdown 
+                                        showClear
                                         options={genericTypes.filter((x: any) => x.type === "GENDER")} 
                                         optionLabel="label"
                                         optionValue="id"
@@ -230,6 +245,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status</label>
                                     <Dropdown 
+                                        showClear
                                         options={genericTypes.filter((x: any) => x.type === "CIVIL_STATUS")} 
                                         optionLabel="label"
                                         optionValue="id"
@@ -242,6 +258,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Educational Attainment</label>
                                     <Dropdown 
+                                        showClear
                                         options={genericTypes.filter((x: any) => x.type === "EDUCATIONAL_ATTAINMENT")} 
                                         optionLabel="label"
                                         optionValue="id"
@@ -254,6 +271,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Religion</label>
                                     <Dropdown 
+                                        showClear
                                         options={genericTypes.filter((x: any) => x.type === "RELIGION")} 
                                         optionLabel="label"
                                         optionValue="id"
@@ -266,6 +284,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Ethnicity</label>
                                     <Dropdown 
+                                        showClear
                                         options={[
                                             {
                                                 id: "IP",
@@ -295,6 +314,20 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                             <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member?</p>
                                         </div>
                                     </div>
+                                    {
+                                        form.fourps_member && (
+                                            <div className="mb-3">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4Ps Household ID No.</label>
+                                                <InputText 
+                                                    type="text" 
+                                                    style={{ width: '100%' }} 
+                                                    value={form.fourps_household_no}
+                                                    onChange={(e) => setForm({...form, fourps_household_no : e.target.value})}
+                                                    placeholder="4ps Household ID" />
+                                                <ValidationError name="fourps_household_no" />
+                                            </div>
+                                        )
+                                    }
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No.</label>
                                         <InputText 
@@ -308,6 +341,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Membership Type</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_MEMBERSHIP")} 
                                             optionLabel="label"
                                             optionValue="id"
@@ -320,6 +354,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Category</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_CATEGORY")} 
                                             optionLabel="label"
                                             optionValue="id"
@@ -332,15 +367,20 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Medical History</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "MEDICAL_HISTORY")} 
                                             optionLabel="label"
                                             optionValue="id"
-                                            value={null} placeholder="Select Medical History" 
+                                            onChange={(e) => setForm({...form, medical_history_id : e.value})}
+                                            value={form.medical_history_id} 
+                                            placeholder="Select Medical History" 
                                             style={{ width: '100%' }} />
+                                        <ValidationError name="medical_history_id" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Classification by Age/Health Risk Group</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "CLASSIFICATION_BY_AHRG")} 
                                             optionLabel="label"
                                             optionValue="id"
@@ -386,6 +426,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                             <div className="mb-3">
                                                 <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Method Used</label>
                                                 <Dropdown 
+                                                    showClear
                                                     options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_METHOD")} 
                                                     optionLabel="label"
                                                     optionValue="id"
@@ -398,6 +439,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                             <div className="mb-3">
                                                 <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Status</label>
                                                 <Dropdown 
+                                                    showClear
                                                     options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_STATUS")} 
                                                     optionLabel="label"
                                                     optionValue="id"
@@ -425,6 +467,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "WATER_SOURCE_TYPE")} 
                                             optionLabel="label"
                                             optionValue="id"
@@ -437,6 +480,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type</label>
                                         <Dropdown 
+                                            showClear
                                             options={genericTypes.filter((x: any) => x.type === "TOILET_FACILITY_TYPE")} 
                                             optionLabel="label"
                                             optionValue="id"
@@ -516,7 +560,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                         {activeIndex === 6 && (
                             <>
                                 <div className="flex justify-content-end">
-                                    <Button label="Submit Profile" icon="pi pi-check" className="p-button-success"  />
+                                    <Button label="Submit Profile" icon="pi pi-check" className="p-button-success" loading={loading.createHouseholdProfile} onClick={handleHouseholdCreate}  />
                                 </div>
                                 <h5 className="text-center font-bold  mb-2">Household Profiling Form Data</h5>
                                 <p className="text-center"><i>Please review the information below before submitting the Household Profiling Form</i></p>
@@ -526,7 +570,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     <div className="flex gap-2">
                                         <p className="font-bold">Household No:</p>
                                         <p>{form.household_no}</p>
-                                        <ValidationError name="household_no" />
+                                        <ValidationError name="household_id" />
                                     </div>
                                     <div className="flex gap-2">
                                         <p className="font-bold">Relationship to the head:</p>
@@ -594,6 +638,15 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                         <p>{form.fourps_member ? 'Yes' : 'No'}</p>
                                         <ValidationError name="fourps_member" />
                                     </div>
+                                    {
+                                        form.fourps_member && (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">4Ps Household ID No.:</p>
+                                                <p>{form.fourps_household_no ? 'Yes' : 'No'}</p>
+                                                <ValidationError name="fourps_household_no" />
+                                            </div>
+                                        )
+                                    }
                                     <div className="flex gap-2">
                                         <p className="font-bold">Philhealth ID no.:</p>
                                         <p>{ form.philhealth_id }</p>
