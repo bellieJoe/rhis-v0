@@ -15,10 +15,7 @@ class HouseholdProfileController extends Controller
         $query = HouseholdProfile::query()
             ->with(
                 [
-                    'household',
-                    'householdProfileDetails' => function ($q) {
-                        $q->with([...HouseholdProfileDetail::GENERICS_RELATIONS]);
-                    }
+                    'household'
                 ]
             );
 

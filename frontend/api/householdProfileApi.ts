@@ -2,7 +2,7 @@ import { setErrors } from "@/features/errorSlice";
 import { setToast } from "@/features/toastSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import axios from "./axios";
-import { setHouseholdProfiles } from "@/features/householdProfileSlice";
+import { reloadHouseholdProfiles, setHouseholdProfiles } from "@/features/householdProfileSlice";
 
 
 export const storeHouseholdProfile = async (dispatch : Dispatch, params : {}) : Promise<boolean> => {
@@ -15,6 +15,7 @@ export const storeHouseholdProfile = async (dispatch : Dispatch, params : {}) : 
             detail : "Household profile created successfully",
             life : 3000
         }));
+        dispatch(reloadHouseholdProfiles());
         return true;
     } catch (error : any) {
         if(error.response.status === 422) {

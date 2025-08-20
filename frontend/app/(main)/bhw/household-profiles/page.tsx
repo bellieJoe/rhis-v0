@@ -1,7 +1,9 @@
 "use client";
 import { deleteHousehold, getHouseholds } from "@/api/householdApi";
+import { getHouseholdProfiles } from "@/api/householdProfileApi";
 import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
+import moment from "moment";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { confirmPopup } from "primereact/confirmpopup";
@@ -94,12 +96,22 @@ const HouseholdProfilesTable = () => {
     const { householdProfiles, reload } = useSelector((state : any) => state.householdProfile);
     const [loading, setLoading] = useState({
         householdProfilesTable: false
-    })
+    });
+    const [paginator, setPaginator] = useState({
+        householdProfiles: useRef<any>(null)
+    });
+
+    const onPageChange = async (e: any) => {
+        setLoading({ ...loading, householdProfilesTable: true });
+        await getHouseholdProfiles(dispatch, { page: e.page + 1 });
+        setLoading({ ...loading, householdProfilesTable: false });
+    }
 
     useEffect(() => {
         (async () => {
             setLoading({ ...loading, householdProfilesTable: true });
-            await getHouseholds(dispatch);
+            await getHouseholdProfiles(dispatch);
+            console.log("profiles",householdProfiles);
             setLoading({ ...loading, householdProfilesTable: false });
         })();
     }, [reload]);
@@ -111,10 +123,20 @@ const HouseholdProfilesTable = () => {
                 <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHouseholdProfile: true })}  />
             </div>
             <DataTable value={householdProfiles.data} loading={loading.householdProfilesTable}>
-                <Column header="Lastname" />
-                <Column header="Firstname" />
-                <Column header="Middlename" />
+                <Column field="household.household_no" header="Household No." />
+                <Column field="updated_details.firstname" header="Firstname" />
+                <Column field="updated_details.middlename" header="Middlename" />
+                <Column field="updated_details.lastname" header="Lastname" />
+                <Column field="updated_details.member_relationship.name" header="Relationship to the head" />
+                <Column field="birthdate" header="Date of Birth" body={(data : any) => moment(data.birthdate).format('MMM DD, YYYY')} />
             </DataTable>
+            <Paginator 
+                    ref={paginator.householdProfiles}
+                    first={(householdProfiles.current_page - 1) * householdProfiles.per_page}
+                    rows={householdProfiles.per_page}
+                    totalRecords={householdProfiles.total}
+                    onPageChange={onPageChange}
+                />
             <AddHouseholdProfile visible={visible.addHouseholdProfile} onHide={() => setVisible({ ...visible, addHouseholdProfile: false })} />
         </div>
     )
