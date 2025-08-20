@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const householdSlice = createSlice({
     name : "household",
     initialState : {
-        households : [],
+        households : {},
         reload : false
     },
     reducers : {

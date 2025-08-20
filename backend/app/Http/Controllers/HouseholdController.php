@@ -10,7 +10,16 @@ class HouseholdController extends Controller
 {
     //
     public function index (Request $request) {
+        $search = $request->search;
+
         $query = Household::query();
+
+        if($request->has('search') && $search) {
+            $query->where(function($q) use ($search) {
+                $q->where('household_no', 'like', "$search%")
+                ->orWhere('name', 'like', "$search%");
+            });
+        }
 
         return $query->paginate(20);
     }
