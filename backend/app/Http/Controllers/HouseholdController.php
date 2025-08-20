@@ -38,4 +38,22 @@ class HouseholdController extends Controller
             'message' => 'Household created successfully'
         ]);
     }
+
+    public function destroy(string $id) {
+        $household = Household::find($id);
+        if(!$household) {
+            return response()->json([
+                'message' => 'Household not found'
+            ], 404);
+        }
+        if($household->householdProfiles()->count() > 0) {
+            return response()->json([
+                'message' => 'Household already has profiles'
+            ], 400);
+        }
+        $household->delete();
+        return response()->json([
+            'message' => 'Household deleted successfully'
+        ]);
+    }
 }

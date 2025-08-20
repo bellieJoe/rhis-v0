@@ -11,6 +11,7 @@ import store from './store';
 import ToastComponent from '@/components/ToastComponent';
 import { useEffect } from 'react';
 import { getAuth } from '@/api/authApi';
+import { ConfirmPopup } from 'primereact/confirmpopup';
 
 interface RootLayoutProps {
     children: React.ReactNode;
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <PrimeReactProvider >
                         <LayoutProvider >{children}</LayoutProvider>
                         <ToastComponent />
+                        <ConfirmPopup />
                     </PrimeReactProvider>
                 </Provider>
             </body>

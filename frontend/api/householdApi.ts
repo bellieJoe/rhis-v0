@@ -41,3 +41,24 @@ export const storeHousehold = async (dispatch : Dispatch, params : any = {}) : P
         return false
     }
 }
+
+export const deleteHousehold = async (dispatch : Dispatch, id : any) => {
+    try {
+        await axios.delete(`/api/households/${id}`);
+        dispatch(setToast({
+            severity : "success",
+            summary : "Success",
+            detail : "Household deleted successfully",
+            life : 3000
+        }));
+        return true;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+    return false;
+}

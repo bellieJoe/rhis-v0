@@ -8,4 +8,9 @@ class Household extends Model
 {
     //
     protected $guarded = [];
+
+    public function householdProfiles()
+    {
+        return $this->hasMany(HouseholdProfile::class);
+    }
 }
