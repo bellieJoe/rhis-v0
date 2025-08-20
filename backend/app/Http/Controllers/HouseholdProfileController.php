@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Household;
 use App\Models\HouseholdProfile;
 use App\Models\HouseholdProfileDetail;
 use Illuminate\Http\Request;
@@ -10,6 +11,22 @@ use Illuminate\Support\Facades\DB;
 class HouseholdProfileController extends Controller
 {
     //
+    public function index(Request $request) {
+        $query = HouseholdProfile::query()
+            ->with(
+                [
+                    'household',
+                    'householdProfileDetails' => function ($q) {
+                        $q->with([...HouseholdProfileDetail::GENERICS_RELATIONS]);
+                    }
+                ]
+            );
+
+            // GENERICS_RELATIONS
+
+        return $query->paginate(20);
+    }
+    
     public function store(Request $request) {
         $request->validate([
             "household_id" => "required|exists:households,id",

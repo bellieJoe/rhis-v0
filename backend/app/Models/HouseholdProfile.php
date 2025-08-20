@@ -12,5 +12,11 @@ class HouseholdProfile extends Model
     public function household()
     {
         return $this->belongsTo(Household::class);
-    }   
+
+    }
+
+    public function householdProfileDetails() {
+        return $this->hasMany(HouseholdProfileDetail::class);
+    }
+
 }
