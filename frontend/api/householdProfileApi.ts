@@ -46,3 +46,17 @@ export const getHouseholdProfiles = async (dispatch : Dispatch, params : any = {
     }
 }
 
+export const getHouseholdProfileById = async (dispatch : Dispatch, id : any) => {
+    try {
+        const response : any = await axios.get(`/api/household-profiles/${id}`).then(res => console.log(res.data));
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+
