@@ -71,6 +71,7 @@ Route::prefix("households")->group(function () {
 Route::prefix("household-profiles")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("", [HouseholdProfileController::class, "index"]);
+        Route::get("{id}", [HouseholdProfileController::class, "show"]);
         Route::post("", [HouseholdProfileController::class, "store"]);
     });
 });

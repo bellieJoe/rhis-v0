@@ -147,7 +147,7 @@ const HouseholdProfilesTable = () => {
                 <Column field="updated_details.educational_attainment.name" header="Educational Attainment"  />
                 <Column field="updated_details.religion.name" header="Religion"  />
                 <Column field="updated_details.enthnicity" header="Ethnicity"  />
-                <Column field="updated_details.fourps_household_no" header="4Ps Household ID No."  />
+                <Column field="updated_details.fourps_household_no" header="4Ps Household ID No." />
                 <Column field="updated_details.philhealth_id" header="PHILHEALTH ID"  />
                 <Column field="updated_details.philhealth_membership_type.name" header="Membership Type"  />
                 <Column field="updated_details.philhealth_category.name" header="PHILHEALTH Category"  />
@@ -176,8 +176,13 @@ const HouseholdProfilesTable = () => {
                     totalRecords={householdProfiles.total}
                     onPageChange={onPageChange}
                 />
+<<<<<<< HEAD
             <AddHouseholdProfile  />
             {/* <FilterModal visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} /> */}
+=======
+            <AddHouseholdProfile visible={visible.addHouseholdProfile} onHide={() => setVisible({ ...visible, addHouseholdProfile: false })} />
+            <FilterModal fields={[]} visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} />
+>>>>>>> 2dfde995164c284158efdd5d3ad45f77d9a7a5da
         </div>
     )
 }

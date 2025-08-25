@@ -116,5 +116,9 @@ class HouseholdProfileController extends Controller
             ]);
         });
     }
+
+    public function show($id) {
+        return HouseholdProfile::find($id);
+    }
     
 }
