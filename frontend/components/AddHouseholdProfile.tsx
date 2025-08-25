@@ -14,19 +14,22 @@ import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile } from "@/api/householdProfileApi";
+import { hide } from "@/features/addHouseholdProfileSlice";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
     onHide: () => void
 }
 
-const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
+const AddHouseholdProfile = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { errors } = useSelector((state: any) => state.error);
+    const { visible } = useSelector((state: any) => state.addHouseholdProfile);
     const dispatch = useDispatch();
     const {genericTypes} = useSelector((state: any) => state.genericType);
     const { households } = useSelector((state: any) => state.household);
     const [householdItems , setHouseholdItems] = useState([]);
+    const addHouseholdProfileStore = useSelector((state: any) => state.addHouseholdProfile);
     const initialForm = {
         household_no : "",
         household_id : "",
@@ -71,10 +74,10 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
         { label: "Other Info", className: "mr-2"  },
-        { label: "Medical Details", className: "mr-2" },
-        { label: "For Women of Reproductive Age", className: "mr-2" },
-        { label: "Living and Health Condition", className: "mr-2" },
-        { label: "Review", className: "mr-2"  },
+        // { label: "Medical Details", className: "mr-2" },
+        // { label: "For Women of Reproductive Age", className: "mr-2" },
+        // { label: "Living and Health Condition", className: "mr-2" },
+        // { label: "Review", className: "mr-2"  },
     ];
     const [loading, setLoading] = useState({
         createHouseholdProfile : false
@@ -119,14 +122,14 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
         setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, createHouseholdProfile : false });
         if(success) {
-            onHide();
+            dispatch(hide());
             setForm(initialForm);
             setActiveIndex(0);
         }
     }
 
     return (
-        <Sidebar onHide={onHide} visible={visible} position="right" style={{ width: '100vw' }}>
+        <Sidebar onHide={() => dispatch(hide())} visible={visible} position="right" style={{ width: '100vw' }}>
             <h4 className="text-center mb-4">Add Household Profile</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
@@ -310,7 +313,9 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                 </div>
                             </div>
                         )}
-                        {activeIndex === 3 && (
+
+
+                        {/* {activeIndex === 3 && (
                             <div>
                                 <div className="mb-3">
                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
@@ -750,7 +755,7 @@ const AddHouseholdProfile = ({ visible, onHide }: AddHouseholdProfileProps) => {
                                     </div>
                                 </div>
                             </>
-                        )}
+                        )} */}
                     </div>
                     
                 </div>

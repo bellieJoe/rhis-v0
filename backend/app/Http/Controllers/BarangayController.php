@@ -16,11 +16,11 @@ class BarangayController extends Controller
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-                $q->where('barangay_name', 'like', "%$search%")
+                $q->where('barangay_name', 'like', "$search%")
                 ->orWhereHas('municipality', function ($q) use ($search) {
-                    $q->where('municipality_name', 'like', "%$search%")
+                    $q->where('municipality_name', 'like', "$search%")
                         ->orWhereHas('province', function ($q) use ($search) {
-                            $q->where('province_name', 'like', "%$search%");
+                            $q->where('province_name', 'like', "$search%");
                         });
                 });
             });

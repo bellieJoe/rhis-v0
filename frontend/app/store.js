@@ -7,6 +7,7 @@ import genericTypeReducer from '@/features/genericTypeSlice';
 import errorReducer from '@/features/errorSlice';
 import householdReducer from '@/features/householdSlice';
 import householdProfileReducer from '@/features/householdProfileSlice';
+import addHouseholdProfileReducer from '@/features/addHouseholdProfileSlice';
 
 
 export default configureStore({
@@ -18,6 +19,7 @@ export default configureStore({
         genericType : genericTypeReducer,
         error : errorReducer,
         household : householdReducer,
-        householdProfile : householdProfileReducer
+        householdProfile : householdProfileReducer,
+        addHouseholdProfile : addHouseholdProfileReducer
   }
 });

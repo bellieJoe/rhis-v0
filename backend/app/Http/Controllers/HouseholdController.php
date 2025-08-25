@@ -27,24 +27,23 @@ class HouseholdController extends Controller
 
     public function store (Request $request) {
         $request->validate([
-            // 'sitio' => 'required|exists:sitios,id',
+            'barangay' => 'required|exists:barangays,id',
             'household_no' => 'required|unique:households,household_no|max:12',
-            'household_name' => 'required|max:255'
+            "date_of_visit" => "required|date",
         ], [
             
         ], [
-            'sitio' => 'Address'
+            'barangay' => 'Address'
         ]);
 
-        Household::create([
-            // 'sitio_id' => $request->sitio,
-            'sitio_id' => 1,
-            'household_no' => $request->household_no,
-            'name' => $request->household_name
+        $household = Household::create([
+            'barangay_id' => 1,
+            'household_no' => $request->household_no
         ]);
 
         return response()->json([
-            'message' => 'Household created successfully'
+            'message' => 'Household created successfully',
+            'household' => $household
         ]);
     }
 

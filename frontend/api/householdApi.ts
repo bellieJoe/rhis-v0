@@ -17,16 +17,16 @@ export const getHouseholds = async (dispatch : Dispatch, params : any = {}) => {
         }));
     }
 }
-export const storeHousehold = async (dispatch : Dispatch, params : any = {}) : Promise<boolean> => {
+export const storeHousehold = async (dispatch : Dispatch, params : any = {}) : Promise<any> => {
     try {
-        await axios.post('/api/households', params);
+        const response = await axios.post('/api/households', params);
         dispatch(setToast({
             severity : "success",
             summary : "Success",
             detail : "Household created successfully",
             life : 3000
         }));
-        return true;
+        return response.data;
     } catch (error : any) {
         if(error.response.status === 422) {
             console.log(error.response.data.errors)
@@ -38,7 +38,7 @@ export const storeHousehold = async (dispatch : Dispatch, params : any = {}) : P
             detail : error.response.data.message, 
             life : 3000
         }));
-        return false
+        return false;
     }
 }
 

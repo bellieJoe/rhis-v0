@@ -29,7 +29,7 @@ export const FilterModal = ({
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }}
                 >
                     {
-                        
+                        fields.map((field : Field) => { return <div key={field.label}>{field.label}</div> })
                     }
             </Dialog>
         </>
