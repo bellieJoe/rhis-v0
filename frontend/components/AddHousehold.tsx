@@ -40,11 +40,11 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             ...loading,
             addHousehold : false
         });
-        if(household) {
+        if(household.household) {
             onHide();
             dispatch(addHead({ 
-                householdNo : household.household_no, 
-                householdId : household.id,
+                householdNo : household.household.household_no, 
+                householdId : household.household.id,
                 date_of_visit : form.date_of_visit  
             }));
             dispatch(reloadHouseholds());
@@ -52,7 +52,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                 "barangay" : "",
                 "barangay_name" : "",
                 'date_of_visit' : "",
-                "household_no" : ""
+                "household_no" : "",
             });
         }
     }
@@ -134,7 +134,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     onChange={handleBarangayChanged} 
                     onSelect={handleBarangaySelect}
                     className="w-full" />
-                <ValidationError name="sitio" />
+                <ValidationError name="barangay" />
             </div>
             <div className="flex justify-content-end">
                 <Button size="small" icon="pi pi-save" label="Save" loading={loading.addHousehold} onClick={onSave} />

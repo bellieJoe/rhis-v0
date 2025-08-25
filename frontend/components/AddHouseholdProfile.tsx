@@ -33,6 +33,7 @@ const AddHouseholdProfile = () => {
     const initialForm = {
         household_no : "",
         household_id : "",
+        date_of_visit : "",
         lastname : "",
         firstname : "",
         middlename : "",
@@ -69,7 +70,7 @@ const AddHouseholdProfile = () => {
         hc_smoker: false,
         hc_alchohol_drinker : false,
     }
-    const [form, setForm] = useState(initialForm);
+    const [form, setForm] = useState<any>(initialForm);
     const items : MenuItem[] = [
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
@@ -77,7 +78,7 @@ const AddHouseholdProfile = () => {
         // { label: "Medical Details", className: "mr-2" },
         // { label: "For Women of Reproductive Age", className: "mr-2" },
         // { label: "Living and Health Condition", className: "mr-2" },
-        // { label: "Review", className: "mr-2"  },
+        { label: "Review", className: "mr-2"  },
     ];
     const [loading, setLoading] = useState({
         createHouseholdProfile : false
@@ -88,6 +89,18 @@ const AddHouseholdProfile = () => {
             await getGenericTypes(dispatch);
         })();
     }, []);
+
+    useEffect(() => {
+        console.log(addHouseholdProfileStore);
+        setForm({
+            ...form,
+            household_id : addHouseholdProfileStore.householdId,
+            household_no : addHouseholdProfileStore.householdNo,
+            date_of_visit : addHouseholdProfileStore.date_of_visit,
+            member_relationship_id : 1
+        });
+        console.log(form)
+    }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
 
 
     const next = () => {
@@ -104,7 +117,7 @@ const AddHouseholdProfile = () => {
 
     const handleHouseholdComplete = async (e: any) => {
         await getHouseholds(dispatch, { search : e.query });
-        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })) : []);
+        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.household_no}`, value: household.id })) : []);
         console.log(householdItems)
     }
 
@@ -146,6 +159,19 @@ const AddHouseholdProfile = () => {
                         {activeIndex === 0 && (
                             <div>
                                 <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date of Visit</label>
+                                    <Calendar 
+                                        value={new Date(form.date_of_visit)}  
+                                        dateFormat="mm-dd-yy" 
+                                        placeholder="mm-dd-yyyy" 
+                                        mask="99/99/9999" 
+                                        disabled={addHouseholdProfileStore.addHead}
+                                        onChange={(e) => setForm({...form, date_of_visit : (e.value ? e.value.toLocaleString() : form.date_of_visit) })}
+                                        className="w-full" />
+                                    <ValidationError name="date_of_visit" />
+                                </div>
+
+                                <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No.</label>
                                     <AutoComplete 
                                         dropdown 
@@ -155,6 +181,7 @@ const AddHouseholdProfile = () => {
                                         field="label"
                                         completeMethod={handleHouseholdComplete}
                                         value={form.household_no}
+                                        disabled={addHouseholdProfileStore.addHead}
                                         onSelect={handleHouseholdSelect}
                                         className="w-full" />
                                     <ValidationError name="household_id" />
@@ -167,6 +194,7 @@ const AddHouseholdProfile = () => {
                                         optionLabel="label"
                                         optionValue="id"
                                         value={form.member_relationship_id} 
+                                        disabled={addHouseholdProfileStore.addHead}
                                         placeholder="Select Relationship" 
                                         onChange={(e) => setForm({...form, member_relationship_id : e.value})}
                                         style={{ width: '100%' }} />
@@ -565,9 +593,9 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
-                        {activeIndex === 6 && (
+                        {activeIndex === 3 && (
                             <>
                                 <div className="flex justify-content-end">
                                     <Button label="Submit Profile" icon="pi pi-check" className="p-button-success" loading={loading.createHouseholdProfile} onClick={handleHouseholdCreate}  />
@@ -755,7 +783,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 </div>
                             </>
-                        )} */}
+                        )}
                     </div>
                     
                 </div>
