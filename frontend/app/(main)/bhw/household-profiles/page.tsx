@@ -176,13 +176,8 @@ const HouseholdProfilesTable = () => {
                     totalRecords={householdProfiles.total}
                     onPageChange={onPageChange}
                 />
-<<<<<<< HEAD
             <AddHouseholdProfile  />
             {/* <FilterModal visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} /> */}
-=======
-            <AddHouseholdProfile visible={visible.addHouseholdProfile} onHide={() => setVisible({ ...visible, addHouseholdProfile: false })} />
-            <FilterModal fields={[]} visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} />
->>>>>>> 2dfde995164c284158efdd5d3ad45f77d9a7a5da
         </div>
     )
 }
