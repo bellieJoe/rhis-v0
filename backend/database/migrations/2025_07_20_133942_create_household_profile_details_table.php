@@ -35,6 +35,7 @@ return new class extends Migration
             $table->foreignId('medical_history_id')->nullable();
             $table->string('other_medical_history', 50)->nullable();
             $table->foreignId('classification_by_age_hrg_id')->nullable();
+            $table->boolean('is_pregnant')->nullable()->default(false);
             $table->datetime('last_menstrual_period')->nullable();
             $table->boolean('is_using_fp_method')->nullable();
             $table->foreignId('family_planning_method_id')->nullable();

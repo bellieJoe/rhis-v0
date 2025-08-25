@@ -8,6 +8,7 @@ class HouseholdProfileDetail extends Model
 {
     //
     protected $guarded = [];
+    protected $appends = ['full_name'];
 
     const GENERICS_RELATIONS = [
         'memberRelationship',
@@ -80,6 +81,11 @@ class HouseholdProfileDetail extends Model
 
     public function toiletFacility() {
         return $this->belongsTo(GenericType::class, 'toilet_facility_type_id', 'id');
+    }
+
+    // attributes
+    public function getFullNameAttribute() {
+        return $this->firstname . " " . $this->lastname;
     }
 
 

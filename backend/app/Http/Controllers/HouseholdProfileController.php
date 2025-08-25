@@ -13,6 +13,14 @@ class HouseholdProfileController extends Controller
     //
     public function index(Request $request) {
         $query = HouseholdProfile::query()
+            ->whereHas(
+                'householdProfileDetails',
+                function ($query) {
+                    $query->where([
+                        'is_active' => true,
+                        ['member_relationship_id', "<>", 1]
+                    ]);
+                })
             ->with(
                 [
                     'household'
@@ -39,7 +47,7 @@ class HouseholdProfileController extends Controller
             "religion_id" => "required|exists:generic_types,id",
             "other_religion" =>  "nullable|required_if:religion_id,37|max:50",
             // "unit_id" => "",
-            "enthnicity" => "required|in:IP,Non-IP",
+            // "enthnicity" => "required|in:IP,Non-IP",
             // "fourps_member" => "required|boolean",
             // "fourps_household_no" =>  "nullable|required_if:fourps_member,true|max:50",
             // "philhealth_id" => "required|max:50",
@@ -86,7 +94,7 @@ class HouseholdProfileController extends Controller
                 "educational_attainment_id" => $request->input("educational_attainment_id"),
                 "religion_id" => $request->input("religion_id"),
                 "other_religion" => $request->input("religion_id") == 37 ? $request->input("other_religion") : null,
-                "enthnicity" => $request->input("enthnicity"),
+                // "enthnicity" => $request->input("enthnicity"),
                 // "fourps_member" => $request->input("fourps_member"),
                 // "fourps_household_no" => $request->input("fourps_member") ? $request->input("fourps_household_no") : null,
                 // "philhealth_id" => $request->input("philhealth_id"),

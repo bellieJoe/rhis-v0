@@ -4,7 +4,7 @@ import { getHouseholdProfiles } from "@/api/householdProfileApi";
 import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
 import { FilterModal } from "@/components/FilterModal";
-import { show } from "@/features/addHouseholdProfileSlice";
+import { addMember, show } from "@/features/addHouseholdProfileSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
@@ -34,6 +34,7 @@ const HouseholdsTable = () => {
         (async () => {
             setLoading({ ...loading, householdsTable: true });
             await getHouseholds(dispatch);
+            console.log("households ", households);
             setLoading({ ...loading, householdsTable: false });
         })();
     }, [householdReload]);
@@ -65,16 +66,34 @@ const HouseholdsTable = () => {
             <h5>Households</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="Add Household" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHousehold: true })}  />
+                <Button label="Add Household Member" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  />
             </div>
             <DataTable value={households.data} loading={loading.householdsTable} rowHover>
                 <Column field="household_no" header="Household No." />
-                {/* <Column field="name" header="Household Name" /> */}
+                <Column field="head.updated_details.full_name" header="Household Head" />
                 <Column 
                     header="Actions" 
                     body={
                         (data : any) => (
                             <div className="flex gap-2">
-                                <Button label="Delete" size="small" severity="danger" outlined icon="pi pi-trash" onClick={(event) => handleDeleteHousehold(event, data.id)} loading={loading.householdDelete}   />
+                                <Button label="Delete Household" size="small" severity="danger" outlined icon="pi pi-trash" onClick={(event) => handleDeleteHousehold(event, data.id)} loading={loading.householdDelete}   />
+                                <Button 
+                                    label="Add Member"
+                                    size="small"  
+                                    outlined icon="pi pi-plus" 
+                                    onClick={(event) => {
+                                        console.log({
+                                            householdId : data.id,
+                                            householdNo : data.household_no,
+                                            date_of_visit : ""
+                                        })
+                                        dispatch(addMember({
+                                            householdId : data.id,
+                                            householdNo : data.household_no,
+                                            date_of_visit : ""
+                                        })
+                                    )}} 
+                                    loading={loading.householdDelete}   />
                             </div>
                         )
                     } />
@@ -125,7 +144,7 @@ const HouseholdProfilesTable = () => {
             <h5>Household Profiles</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="" size="small" icon="pi pi-filter" outlined   />
-                <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  />
+                {/* <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  /> */}
             </div>
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
                 <Column  header="Actions" frozen body={(data : any) => (
@@ -136,7 +155,8 @@ const HouseholdProfilesTable = () => {
                     </>
                 )} />
                 <Column field="household.household_no" header="Household No." />
-                <Column field="updated_details.firstname" header="Firstname" />
+                <Column field="updated_details.full_name" header="Household Member" />
+                {/* <Column field="updated_details.firstname" header="Firstname" />
                 <Column field="updated_details.middlename" header="Middlename" />
                 <Column field="updated_details.lastname" header="Lastname" />
                 <Column field="updated_details.member_relationship.name" header="Relationship to the head" />
@@ -166,7 +186,7 @@ const HouseholdProfilesTable = () => {
                 <Column header="Mass (Bukol)" body={(data : any) => (data && data.updated_details?.hc_mass && data.updated_details?.hc_mass == 1) ? "Yes" : "No"} />
                 <Column header="MHGAP" body={(data : any) => (data && data.updated_details?.hc_mhgap && data.updated_details?.hc_mhgap == 1) ? "Yes" : "No"} />
                 <Column header="Smoker" body={(data : any) => (data && data.updated_details?.hc_smoker && data.updated_details?.hc_smoker == 1) ? "Yes" : "No"} />
-                <Column header="Alchohol Drinker" body={(data : any) => (data && data.updated_details?.hc_alchohol_drinker && data.updated_details?.hc_alchohol_drinker == 1) ? "Yes" : "No"} />
+                <Column header="Alchohol Drinker" body={(data : any) => (data && data.updated_details?.hc_alchohol_drinker && data.updated_details?.hc_alchohol_drinker == 1) ? "Yes" : "No"} /> */}
 
             </DataTable>
             <Paginator 

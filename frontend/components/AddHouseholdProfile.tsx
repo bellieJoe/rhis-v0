@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile } from "@/api/householdProfileApi";
-import { hide } from "@/features/addHouseholdProfileSlice";
+import { addMember, hide } from "@/features/addHouseholdProfileSlice";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -91,13 +91,12 @@ const AddHouseholdProfile = () => {
     }, []);
 
     useEffect(() => {
-        console.log(addHouseholdProfileStore);
         setForm({
             ...form,
             household_id : addHouseholdProfileStore.householdId,
             household_no : addHouseholdProfileStore.householdNo,
             date_of_visit : addHouseholdProfileStore.date_of_visit,
-            member_relationship_id : 1
+            member_relationship_id : addHouseholdProfileStore.addHead ? "1" : ""
         });
         console.log(form)
     }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
@@ -135,14 +134,37 @@ const AddHouseholdProfile = () => {
         setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, createHouseholdProfile : false });
         if(success) {
-            dispatch(hide());
-            setForm(initialForm);
+            if(addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember) {
+                // reset the form to add members
+                dispatch(hide());
+                const _form = { ...form };
+                setForm({
+                    ...initialForm,
+                    household_no : _form.household_no,
+                    household_id : _form.household_id,
+                    date_of_visit : _form.date_of_visit,
+                    member_relationship_id : ""
+                });
+                dispatch(addMember({
+                    householdNo : _form.household_no,
+                    householdId : _form.household_id,
+                    date_of_visit : _form.date_of_visit
+                }));
+            }
+            
             setActiveIndex(0);
         }
     }
 
     return (
-        <Sidebar onHide={() => dispatch(hide())} visible={visible} position="right" style={{ width: '100vw' }}>
+        <Sidebar onHide={() => {
+            dispatch(hide());
+            setForm(initialForm);
+            setActiveIndex(0);
+        }} 
+        visible={visible} 
+        position="right" 
+        style={{ width: '100vw' }}>
             <h4 className="text-center mb-4">Add Household Profile</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
@@ -165,7 +187,7 @@ const AddHouseholdProfile = () => {
                                         dateFormat="mm-dd-yy" 
                                         placeholder="mm-dd-yyyy" 
                                         mask="99/99/9999" 
-                                        disabled={addHouseholdProfileStore.addHead}
+                                        // disabled={addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember}
                                         onChange={(e) => setForm({...form, date_of_visit : (e.value ? e.value.toLocaleString() : form.date_of_visit) })}
                                         className="w-full" />
                                     <ValidationError name="date_of_visit" />
@@ -181,7 +203,7 @@ const AddHouseholdProfile = () => {
                                         field="label"
                                         completeMethod={handleHouseholdComplete}
                                         value={form.household_no}
-                                        disabled={addHouseholdProfileStore.addHead}
+                                        disabled={addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember}
                                         onSelect={handleHouseholdSelect}
                                         className="w-full" />
                                     <ValidationError name="household_id" />
@@ -190,7 +212,9 @@ const AddHouseholdProfile = () => {
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
                                     <Dropdown 
                                         showClear
-                                        options={genericTypes.filter((x: any) => x.type === "MEMBERS_OF_HOUSEHOLD")} 
+                                        options={genericTypes.filter((x: any) => {
+                                            return x.type === "MEMBERS_OF_HOUSEHOLD" && (addHouseholdProfileStore.addHead ? x.id == "1" : (x.id != "1" || x.id != 1));
+                                        })} 
                                         optionLabel="label"
                                         optionValue="id"
                                         value={form.member_relationship_id} 
@@ -317,7 +341,7 @@ const AddHouseholdProfile = () => {
                                         style={{ width: '100%' }} />
                                     <ValidationError name="religion_id" />
                                 </div>
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Ethnicity</label>
                                     <Dropdown 
                                         showClear
@@ -338,7 +362,7 @@ const AddHouseholdProfile = () => {
                                         placeholder="Select Ethnicity" 
                                         style={{ width: '100%' }} />
                                     <ValidationError name="enthnicity" />
-                                </div>
+                                </div> */}
                             </div>
                         )}
 
@@ -666,7 +690,7 @@ const AddHouseholdProfile = () => {
                                         <p>{ genericTypes.find((g : any) => g.id === form.religion_id)?.name }</p>
                                         <ValidationError name="religion_id" />
                                     </div>
-                                    <div className="flex gap-2">
+                                    {/* <div className="flex gap-2">
                                         <p className="font-bold">Ethnicity:</p>
                                         <p>{ form.enthnicity }</p>
                                         <ValidationError name="enthnicity" />
@@ -780,7 +804,7 @@ const AddHouseholdProfile = () => {
                                         <p className="font-bold">Alchohol Drinker:</p>
                                         <p>{form.hc_alchohol_drinker ? 'Yes' : 'No'}</p>
                                         <ValidationError name="hc_alchohol_drinker" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </>
                         )}
