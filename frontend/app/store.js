@@ -8,6 +8,8 @@ import errorReducer from '@/features/errorSlice';
 import householdReducer from '@/features/householdSlice';
 import householdProfileReducer from '@/features/householdProfileSlice';
 import addHouseholdProfileReducer from '@/features/addHouseholdProfileSlice';
+import updateHouseholdProfileReducer from '@/features/updateHouseholdProfileSlice';
+import updateHouseholdProfileAddtnlInfoReducer from '@/features/updateHouseholdProfileAddtnlInfoSlice';
 
 
 export default configureStore({
@@ -20,6 +22,8 @@ export default configureStore({
         error : errorReducer,
         household : householdReducer,
         householdProfile : householdProfileReducer,
-        addHouseholdProfile : addHouseholdProfileReducer
+        addHouseholdProfile : addHouseholdProfileReducer,
+        updateHouseholdProfile : updateHouseholdProfileReducer,
+        updateHouseholdProfileAddtnlInfo : updateHouseholdProfileAddtnlInfoReducer
   }
 });

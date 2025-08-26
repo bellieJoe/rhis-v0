@@ -48,9 +48,43 @@ export const getHouseholdProfiles = async (dispatch : Dispatch, params : any = {
 
 export const getHouseholdProfileById = async (dispatch : Dispatch, id : any) => {
     try {
-        const response : any = await axios.get(`/api/household-profiles/${id}`).then(res => console.log(res.data));
+        const response : any = await axios.get(`/api/household-profiles/${id}`);
         return response.data;
     } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+
+export const updateHouseholdProfile = async (dispatch : Dispatch, params : any = {}) => {
+    try {
+        const response : any = await axios.put(`/api/household-profiles/update-main-info`, params);
+        return true;
+    } catch (error : any) {
+        if(error.response.status === 422) {
+            dispatch(setErrors(error.response.data.errors));
+        }
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+
+export const updateHouseholdProfileAddtnlInfo = async (dispatch : Dispatch, params : any = {}) => {
+    try {
+        const response : any = await axios.put(`/api/household-profiles/update-addtnl-info`, params);
+        return true;
+    } catch (error : any) {
+        if(error.response.status === 422) {
+            dispatch(setErrors(error.response.data.errors));
+        }
         dispatch(setToast({
             severity :"error", 
             summary : "Error", 

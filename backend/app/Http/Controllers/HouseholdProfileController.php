@@ -18,7 +18,7 @@ class HouseholdProfileController extends Controller
                 function ($query) {
                     $query->where([
                         'is_active' => true,
-                        ['member_relationship_id', "<>", 1]
+                        // ['member_relationship_id', "<>", 1]
                     ]);
                 })
             ->with(

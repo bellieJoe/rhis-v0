@@ -3,7 +3,6 @@ import { getHouseholds } from "@/api/householdApi";
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
-import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { MenuItem } from "primereact/menuitem";
@@ -13,25 +12,29 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
-import { getHouseholdProfileById, storeHouseholdProfile } from "@/api/householdProfileApi";
+import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
+import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
+import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 
-interface AddHouseholdProfileProps {
+interface UpdateHouseholdProfileProps {
     visible: boolean,
-    onHide: () => void,
-    householdProfileId : any
+    onHide: () => void
 }
 
-const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHouseholdProfileProps) => {
+const UpdateHouseholdProfile = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { errors } = useSelector((state: any) => state.error);
+    const { visible } = useSelector((state: any) => state.updateHouseholdProfile);
     const dispatch = useDispatch();
     const {genericTypes} = useSelector((state: any) => state.genericType);
     const { households } = useSelector((state: any) => state.household);
     const [householdItems , setHouseholdItems] = useState([]);
-    const initialForm = {
+    const updateHouseholdProfileStore = useSelector((state: any) => state.updateHouseholdProfile);
+    const initialForm : any = {
         household_profile_id : "",
         household_no : "",
         household_id : "",
+        date_of_visit : "",
         lastname : "",
         firstname : "",
         middlename : "",
@@ -68,26 +71,46 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
         hc_smoker: false,
         hc_alchohol_drinker : false,
     }
-    const [form, setForm] = useState(initialForm);
+    const [form, setForm] = useState<any>(initialForm);
     const items : MenuItem[] = [
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
         { label: "Other Info", className: "mr-2"  },
-        { label: "Medical Details", className: "mr-2" },
-        { label: "For Women of Reproductive Age", className: "mr-2" },
-        { label: "Living and Health Condition", className: "mr-2" },
+        // { label: "Medical Details", className: "mr-2" },
+        // { label: "For Women of Reproductive Age", className: "mr-2" },
+        // { label: "Living and Health Condition", className: "mr-2" },
         { label: "Review", className: "mr-2"  },
     ];
     const [loading, setLoading] = useState({
-        createHouseholdProfile : false
+        updateHouseholdProfile : false
     });
 
     useEffect(() => {
         (async()=>{
             await getGenericTypes(dispatch);
-            await getHouseholdProfileById(dispatch, householdProfileId);
         })();
     }, []);
+
+    useEffect(() => {
+        setForm({
+            ...initialForm,
+            household_profile_id : updateHouseholdProfileStore.householdProfile.id,
+            household_no : updateHouseholdProfileStore.householdProfile.household?.household_no,
+            household_id : updateHouseholdProfileStore.householdProfile.household?.id,
+            date_of_visit : updateHouseholdProfileStore.householdProfile.household?.date_of_visit,
+            lastname : updateHouseholdProfileStore.householdProfile.updated_details?.lastname,
+            firstname : updateHouseholdProfileStore.householdProfile.updated_details?.firstname,
+            middlename : updateHouseholdProfileStore.householdProfile.updated_details?.middlename,
+            birthdate : updateHouseholdProfileStore.householdProfile.birthdate,
+            member_relationship_id: updateHouseholdProfileStore.householdProfile.updated_details?.member_relationship_id,
+            other_relation : updateHouseholdProfileStore.householdProfile.updated_details?.other_relation,
+            gender_id : updateHouseholdProfileStore.householdProfile.updated_details?.gender_id,
+            civil_status_id : updateHouseholdProfileStore.householdProfile.updated_details?.civil_status_id,
+            educational_attainment_id : updateHouseholdProfileStore.householdProfile.updated_details?.educational_attainment_id,
+            religion_id : updateHouseholdProfileStore.householdProfile.updated_details?.religion_id,
+            other_religion : updateHouseholdProfileStore.householdProfile.updated_details?.other_religion,
+        });
+    }, [updateHouseholdProfileStore.householdProfile]);
 
 
     const next = () => {
@@ -104,7 +127,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
 
     const handleHouseholdComplete = async (e: any) => {
         await getHouseholds(dispatch, { search : e.query });
-        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })) : []);
+        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.household_no}`, value: household.id })) : []);
         console.log(householdItems)
     }
 
@@ -113,23 +136,30 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
         setForm({...form, household_no : e.value.label, household_id : e.value.value});
     }
 
-    const handleHouseholdCreate = async () => {
+    const handleHouseholdUpdate = async () => {
         const params = { ...form };
         params.birthdate = formatDate(params.birthdate);
-        params.last_menstrual_period = params.gender_id == "80" ? formatDate(params.last_menstrual_period) : "";
-        setLoading({ ...loading, createHouseholdProfile : true });
-        const success = await storeHouseholdProfile(dispatch, { ...params });
+        setLoading({ ...loading, updateHouseholdProfile : true });
+        const success = await updateHouseholdProfile(dispatch, { ...params });
         setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
-        setLoading({ ...loading, createHouseholdProfile : false });
+        setLoading({ ...loading, updateHouseholdProfile : false });
         if(success) {
-            onHide();
             setForm(initialForm);
+            dispatch(hideUpdateProfile());
+            dispatch(reloadHouseholdProfiles());
             setActiveIndex(0);
         }
     }
 
     return (
-        <Sidebar onHide={onHide} visible={visible} position="right" style={{ width: '100vw' }}>
+        <Sidebar onHide={() => {
+            dispatch(hideUpdateProfile());
+            setForm(initialForm);
+            setActiveIndex(0);
+        }} 
+        visible={visible} 
+        position="right" 
+        style={{ width: '100vw' }}>
             <h4 className="text-center mb-4">Update Household Profile</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
@@ -145,6 +175,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                     <div className="card mb-4">
                         {activeIndex === 0 && (
                             <div>
+
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No.</label>
                                     <AutoComplete 
@@ -155,6 +186,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                         field="label"
                                         completeMethod={handleHouseholdComplete}
                                         value={form.household_no}
+                                        disabled={true}
                                         onSelect={handleHouseholdSelect}
                                         className="w-full" />
                                     <ValidationError name="household_id" />
@@ -163,10 +195,13 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
                                     <Dropdown 
                                         showClear
-                                        options={genericTypes.filter((x: any) => x.type === "MEMBERS_OF_HOUSEHOLD")} 
+                                        options={genericTypes.filter((x: any) => {
+                                            return x.type === "MEMBERS_OF_HOUSEHOLD";
+                                        })} 
                                         optionLabel="label"
                                         optionValue="id"
                                         value={form.member_relationship_id} 
+                                        disabled={true}
                                         placeholder="Select Relationship" 
                                         onChange={(e) => setForm({...form, member_relationship_id : e.value})}
                                         style={{ width: '100%' }} />
@@ -289,7 +324,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                         style={{ width: '100%' }} />
                                     <ValidationError name="religion_id" />
                                 </div>
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Ethnicity</label>
                                     <Dropdown 
                                         showClear
@@ -310,10 +345,12 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                         placeholder="Select Ethnicity" 
                                         style={{ width: '100%' }} />
                                     <ValidationError name="enthnicity" />
-                                </div>
+                                </div> */}
                             </div>
                         )}
-                        {activeIndex === 3 && (
+
+
+                        {/* {activeIndex === 3 && (
                             <div>
                                 <div className="mb-3">
                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
@@ -563,12 +600,12 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
-                        {activeIndex === 6 && (
+                        {activeIndex === 3 && (
                             <>
                                 <div className="flex justify-content-end">
-                                    <Button label="Submit Profile" icon="pi pi-check" className="p-button-success" loading={loading.createHouseholdProfile} onClick={handleHouseholdCreate}  />
+                                    <Button label="Submit Profile" icon="pi pi-check" className="p-button-success" loading={loading.updateHouseholdProfile} onClick={handleHouseholdUpdate}  />
                                 </div>
                                 <h5 className="text-center font-bold  mb-2">Household Profiling Form Data</h5>
                                 <p className="text-center"><i>Please review the information below before submitting the Household Profiling Form</i></p>
@@ -636,7 +673,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                         <p>{ genericTypes.find((g : any) => g.id === form.religion_id)?.name }</p>
                                         <ValidationError name="religion_id" />
                                     </div>
-                                    <div className="flex gap-2">
+                                    {/* <div className="flex gap-2">
                                         <p className="font-bold">Ethnicity:</p>
                                         <p>{ form.enthnicity }</p>
                                         <ValidationError name="enthnicity" />
@@ -750,7 +787,7 @@ const UpdateHouseholdProfile = ({ visible, onHide, householdProfileId }: AddHous
                                         <p className="font-bold">Alchohol Drinker:</p>
                                         <p>{form.hc_alchohol_drinker ? 'Yes' : 'No'}</p>
                                         <ValidationError name="hc_alchohol_drinker" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </>
                         )}

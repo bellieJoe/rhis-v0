@@ -5,7 +5,11 @@ import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
 import { FilterModal } from "@/components/FilterModal";
 import { AuthMiddleware } from "@/components/middlewares";
+import UpdateHouseholdProfile from "@/components/UpdateHouseholdProfile";
+import UpdateHouseholdProfileAddtnlInfo from "@/components/UpdateHouseholdProfileAddtnlInfo";
 import { addMember, show } from "@/features/addHouseholdProfileSlice";
+import { updateProfileAdditnlInfo } from "@/features/updateHouseholdProfileAddtnlInfoSlice";
+import { updateProfile } from "@/features/updateHouseholdProfileSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
@@ -135,7 +139,6 @@ const HouseholdProfilesTable = () => {
         (async () => {
             setLoading({ ...loading, householdProfilesTable: true });
             await getHouseholdProfiles(dispatch);
-            console.log("profiles",householdProfiles);
             setLoading({ ...loading, householdProfilesTable: false });
         })();
     }, [reload]);
@@ -148,15 +151,16 @@ const HouseholdProfilesTable = () => {
                 {/* <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  /> */}
             </div>
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
+                <Column field="household.household_no" header="Household No." />
+                <Column field="updated_details.full_name" header="Household Member" />
                 <Column  header="Actions" frozen body={(data : any) => (
                     <>
                         <div className="flex gap-2">
-                            <Button label="Update" size="small" outlined icon="pi pi-pencil" />
+                            <Button label="Update" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfile({householdProfile : data}))} />
+                            <Button label="Update Additional Info" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfileAdditnlInfo({householdProfile : data}))} />
                         </div>
                     </>
                 )} />
-                <Column field="household.household_no" header="Household No." />
-                <Column field="updated_details.full_name" header="Household Member" />
                 {/* <Column field="updated_details.firstname" header="Firstname" />
                 <Column field="updated_details.middlename" header="Middlename" />
                 <Column field="updated_details.lastname" header="Lastname" />
@@ -200,7 +204,7 @@ const HouseholdProfilesTable = () => {
             <AddHouseholdProfile  />
             {/* <FilterModal visible={visible.householdProfileFilter} onHide={() => setVisible({ ...visible, householdProfileFilter: false })} /> */}
         </div>
-    )
+    );
 }
         
 const HouseholdProfiles = () => {
@@ -210,6 +214,8 @@ const HouseholdProfiles = () => {
             <AuthMiddleware>
                 <HouseholdsTable />
                 <HouseholdProfilesTable />
+                <UpdateHouseholdProfile />
+                <UpdateHouseholdProfileAddtnlInfo />
             </AuthMiddleware>
         </>
     )
