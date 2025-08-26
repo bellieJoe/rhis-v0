@@ -73,6 +73,8 @@ Route::prefix("household-profiles")->group(function () {
         Route::get("", [HouseholdProfileController::class, "index"]);
         Route::get("{id}", [HouseholdProfileController::class, "show"]);
         Route::post("", [HouseholdProfileController::class, "store"]);
+        Route::put("update-addtnl-info", [HouseholdProfileController::class, "updateAdditionalInfo"]);
+        Route::put("update-main-info", [HouseholdProfileController::class, "updateMainInfo"]);
     });
 });
 
