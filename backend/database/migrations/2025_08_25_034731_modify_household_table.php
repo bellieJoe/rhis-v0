@@ -13,6 +13,7 @@ return new class extends Migration
     {
         //
         Schema::table('households', function (Blueprint $table) {
+            $table->date('date_of_visit');
             $table->dropColumn('sitio_id');
             $table->dropColumn('name');
             $table->foreignId('barangay_id');

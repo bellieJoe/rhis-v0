@@ -1,5 +1,6 @@
 "use client";
 import { getUsers } from "@/api/userApi";
+import { AuthMiddleware } from "@/components/middlewares";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
@@ -30,8 +31,7 @@ const Users = (props : UsersProps) => {
     const { users } = useSelector((state : any) => state.user);
     const [loading, setLoading] = useState({
         users : false
-    })
-
+    });
     useEffect(() => {
         (async() => {
             setLoading({ ...loading,users : true });
@@ -42,15 +42,16 @@ const Users = (props : UsersProps) => {
 
     return (
         <>
-        <div className="card">
-            <h5>Users</h5>
-            <DataTable value={users.data} loading={loading.users}>
-                <Column field="email" header="Email"></Column>
-                <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
-                <Column header="Actions" />
-            </DataTable>
-            
-        </div>
+        <AuthMiddleware>
+            <div className="card">
+                <h5>Users</h5>
+                <DataTable value={users.data} loading={loading.users}>
+                    <Column field="email" header="Email"></Column>
+                    <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
+                    <Column header="Actions" />
+                </DataTable>
+            </div>
+        </AuthMiddleware>
         </>
     )
 }

@@ -17,6 +17,7 @@ import { emit } from "process";
 import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { addHead } from "@/features/addHouseholdProfileSlice";
+import { formatDate } from "@/utils/helpers";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -35,7 +36,10 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             ...loading,
             addHousehold : true
         });
-        const household = await storeHousehold(dispatch, form);
+        const household = await storeHousehold(dispatch, {
+            ...form,
+            date_of_visit : formatDate(form.date_of_visit)
+        });
         setLoading({
             ...loading,
             addHousehold : false
@@ -45,7 +49,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             dispatch(addHead({ 
                 householdNo : household.household.household_no, 
                 householdId : household.household.id,
-                date_of_visit : form.date_of_visit  
+                date_of_visit : formatDate(form.date_of_visit )
             }));
             dispatch(reloadHouseholds());
             setForm({
@@ -97,14 +101,24 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             
             <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="householdNo">Household No.</label>
-                <InputText id="householdNo" placeholder="YYYYMM-00000" value={form.household_no} onChange={(e) => setForm({...form, household_no : e.target.value})} className="w-full" />
+                <InputText 
+                    id="householdNo" 
+                    placeholder="YYYYMM-00000" 
+                    value={form.household_no} 
+                    onChange={(e) => setForm({...form, household_no : e.target.value})} 
+                    onBeforeInput={(e) => {
+                        if (!/^[0-9-]+$/.test(e.data)) {
+                        e.preventDefault();
+                        }
+                    }}
+                    className="w-full" />
                 <ValidationError name="household_no" />
             </div>
 
             <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="householdNo">Date of Visit</label>
                 <Calendar 
-                    value={new Date(form.date_of_visit)}  
+                    value={form.date_of_visit ? new Date(form.date_of_visit) : new Date()}  
                     dateFormat="mm-dd-yy" 
                     placeholder="mm-dd-yyyy" 
                     mask="99/99/9999" 

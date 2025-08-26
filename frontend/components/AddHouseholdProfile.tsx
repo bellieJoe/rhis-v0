@@ -96,7 +96,7 @@ const AddHouseholdProfile = () => {
             household_id : addHouseholdProfileStore.householdId,
             household_no : addHouseholdProfileStore.householdNo,
             date_of_visit : addHouseholdProfileStore.date_of_visit,
-            member_relationship_id : addHouseholdProfileStore.addHead ? "1" : ""
+            member_relationship_id : addHouseholdProfileStore.addHead ? 1 : ""
         });
         console.log(form)
     }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
@@ -138,20 +138,18 @@ const AddHouseholdProfile = () => {
                 // reset the form to add members
                 dispatch(hide());
                 const _form = { ...form };
-                setForm({
-                    ...initialForm,
-                    household_no : _form.household_no,
-                    household_id : _form.household_id,
-                    date_of_visit : _form.date_of_visit,
-                    member_relationship_id : ""
-                });
+                const newForm = initialForm;
+                newForm.household_no = _form.household_no;
+                newForm.household_id = _form.household_id;
+                newForm.date_of_visit = _form.date_of_visit;
+                newForm.member_relationship_id = "";
+                setForm(newForm);
                 dispatch(addMember({
                     householdNo : _form.household_no,
                     householdId : _form.household_id,
                     date_of_visit : _form.date_of_visit
                 }));
             }
-            
             setActiveIndex(0);
         }
     }
@@ -180,7 +178,7 @@ const AddHouseholdProfile = () => {
                     <div className="card mb-4">
                         {activeIndex === 0 && (
                             <div>
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date of Visit</label>
                                     <Calendar 
                                         value={new Date(form.date_of_visit)}  
@@ -191,7 +189,7 @@ const AddHouseholdProfile = () => {
                                         onChange={(e) => setForm({...form, date_of_visit : (e.value ? e.value.toLocaleString() : form.date_of_visit) })}
                                         className="w-full" />
                                     <ValidationError name="date_of_visit" />
-                                </div>
+                                </div> */}
 
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No.</label>

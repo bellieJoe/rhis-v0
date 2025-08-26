@@ -37,3 +37,13 @@ export const getAuth = async (dispatch : Dispatch) => {
         dispatchError(dispatch, error.response.data.message);
     }
 }
+
+export const isAuth = async (dispatch : Dispatch) : Promise<boolean> => {
+    try {
+        const response = await axios.get('/api/auth/is-auth');
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+        return false;
+    }
+}

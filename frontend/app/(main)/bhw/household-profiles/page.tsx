@@ -4,6 +4,7 @@ import { getHouseholdProfiles } from "@/api/householdProfileApi";
 import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
 import { FilterModal } from "@/components/FilterModal";
+import { AuthMiddleware } from "@/components/middlewares";
 import { addMember, show } from "@/features/addHouseholdProfileSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
@@ -138,10 +139,10 @@ const HouseholdProfilesTable = () => {
             setLoading({ ...loading, householdProfilesTable: false });
         })();
     }, [reload]);
-    
+
     return (
         <div className="card">
-            <h5>Household Profiles</h5>
+            <h5>Household Member Additional Information</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="" size="small" icon="pi pi-filter" outlined   />
                 {/* <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  /> */}
@@ -206,8 +207,10 @@ const HouseholdProfiles = () => {
     
     return (
         <>
-            <HouseholdsTable />
-            <HouseholdProfilesTable />
+            <AuthMiddleware>
+                <HouseholdsTable />
+                <HouseholdProfilesTable />
+            </AuthMiddleware>
         </>
     )
 }
