@@ -33,7 +33,8 @@ const AppMenu = () => {
         return [{
             label: 'BHW Interface',
             items: [
-                { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' }
+                { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' },
+                { label: 'Patient Registration', icon: 'pi pi-fw pi-users', to: '/bhw/patient' }
             ]
         }];
     }

@@ -13,6 +13,7 @@ class HouseholdProfileController extends Controller
     //
     public function index(Request $request) {
         $query = HouseholdProfile::query()
+            ->with(['household'])
             ->whereHas(
                 'householdProfileDetails',
                 function ($query) {
@@ -20,14 +21,7 @@ class HouseholdProfileController extends Controller
                         'is_active' => true,
                         // ['member_relationship_id', "<>", 1]
                     ]);
-                })
-            ->with(
-                [
-                    'household'
-                ]
-            );
-
-            // GENERICS_RELATIONS
+            });
 
         return $query->paginate(20);
     }
