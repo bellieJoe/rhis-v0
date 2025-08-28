@@ -15,6 +15,7 @@ import ValidationError from "./ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile } from "@/api/householdProfileApi";
 import { addMember, hide } from "@/features/addHouseholdProfileSlice";
+import { reloadHouseholds } from "@/features/householdSlice";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -135,6 +136,7 @@ const AddHouseholdProfile = () => {
         setLoading({ ...loading, createHouseholdProfile : false });
         if(success) {
             if(addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember) {
+                dispatch(reloadHouseholds());
                 // reset the form to add members
                 dispatch(hide());
                 const _form = { ...form };

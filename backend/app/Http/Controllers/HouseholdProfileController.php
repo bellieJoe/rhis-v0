@@ -12,16 +12,37 @@ class HouseholdProfileController extends Controller
 {
     //
     public function index(Request $request) {
+        
         $query = HouseholdProfile::query()
-            ->with(['household'])
-            ->whereHas(
-                'householdProfileDetails',
-                function ($query) {
+            ->with(['household']);
+            
+
+        if($request->has('only_head') && $request->only_head) {
+            $query->whereHas(
+                'householdProfileDetails', function ($query) {
                     $query->where([
                         'is_active' => true,
-                        // ['member_relationship_id', "<>", 1]
-                    ]);
+                        ['member_relationship_id', 1]
+                ]);
             });
+        }
+
+        if($request->has('only_members') && $request->only_members) {
+            $query->whereHas(
+                'householdProfileDetails', function ($query) {
+                    $query->where([
+                        'is_active' => true,
+                        ['member_relationship_id', "<>", 1]
+                ]);
+            });
+        }
+
+        if($request->filled('barangay') && $request->barangay) {
+            $query->whereHas(
+                'household', function ($q) use ($request) {
+                    $q->where('barangay_id', $request->barangay);
+            });
+        }
 
         return $query->paginate(20);
     }

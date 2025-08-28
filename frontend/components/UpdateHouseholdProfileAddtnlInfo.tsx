@@ -293,13 +293,17 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                             style={{ width: '100%' }} />
                                         <ValidationError name="classification_by_age_hrg_id" />
                                     </div>
-                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                        <Checkbox  checked={form.is_pregnant} onChange={(e) => setForm({...form, is_pregnant : (e.checked || false)})} ></Checkbox>
-                                        <div className="">
-                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is Pregnant?</p>
-                                        </div>
-                                        <ValidationError name="is_pregnant" />
-                                    </div>
+                                    {
+                                        form.gender_id == "80" && (
+                                            <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                <Checkbox  checked={form.is_pregnant} onChange={(e) => setForm({...form, is_pregnant : (e.checked || false)})} ></Checkbox>
+                                                <div className="">
+                                                    <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is Pregnant?</p>
+                                                </div>
+                                                <ValidationError name="is_pregnant" />
+                                            </div>
+                                        )
+                                    }
                                     {
                                         (form.gender_id == "80" && form.is_pregnant) ? (
                                             <div className="mb-3">

@@ -42,6 +42,7 @@ Route::prefix("offices")->group(function () {
 });
 
 Route::prefix("barangays")->group(function () {
+    Route::get("", [BarangayController::class, "index"]);
     Route::get("addresses", [BarangayController::class, "barangays"]);
     Route::get("search", [BarangayController::class, "search"]);
 });
@@ -51,6 +52,7 @@ Route::prefix("provinces")->group(function () {
 });
 
 Route::prefix("municipalities")->group(function () {
+    Route::get("", [MunicipalityController::class, "index"]);
     Route::get("search", [MunicipalityController::class, "search"]);
 });
 

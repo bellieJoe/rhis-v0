@@ -37,7 +37,7 @@ class HouseholdController extends Controller
         ]);
 
         $household = Household::create([
-            'barangay_id' => 1,
+            'barangay_id' => $request->barangay,
             'household_no' => $request->household_no,
             'date_of_visit' => $request->date_of_visit
         ]);

@@ -10,6 +10,14 @@ use Illuminate\Http\Request;
 class MunicipalityController extends Controller
 {
     //
+    public function index(Request $request) {
+        $query = Municipality::query();
+        if($request->has('province')) {
+            $query->where('province_id', $request->province);
+        }
+        return $query->get();    
+    }
+    
     public function search(Request $request) {
         $query = Municipality::query()
             ->with('province');

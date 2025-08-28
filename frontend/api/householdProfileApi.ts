@@ -34,8 +34,10 @@ export const storeHouseholdProfile = async (dispatch : Dispatch, params : {}) : 
 
 export const getHouseholdProfiles = async (dispatch : Dispatch, params : any = {}) => {
     try {
+        dispatch(setHouseholdProfiles({}));
         const response = await axios.get('/api/household-profiles', { params });
         dispatch(setHouseholdProfiles(response.data));
+        return response.data;
     } catch (error : any) {
         dispatch(setToast({
             severity :"error", 

@@ -10,20 +10,22 @@ import householdProfileReducer from '@/features/householdProfileSlice';
 import addHouseholdProfileReducer from '@/features/addHouseholdProfileSlice';
 import updateHouseholdProfileReducer from '@/features/updateHouseholdProfileSlice';
 import updateHouseholdProfileAddtnlInfoReducer from '@/features/updateHouseholdProfileAddtnlInfoSlice';
+import updateHealthServiceReducer from '@/features/updateHealthServiceSlice';
 
 
 export default configureStore({
   reducer: {
-        auth : authReducer,
-        toast : toastReducer,
-        user : userReducer,
-        office : officeReducer,
-        genericType : genericTypeReducer,
-        error : errorReducer,
-        household : householdReducer,
-        householdProfile : householdProfileReducer,
-        addHouseholdProfile : addHouseholdProfileReducer,
-        updateHouseholdProfile : updateHouseholdProfileReducer,
-        updateHouseholdProfileAddtnlInfo : updateHouseholdProfileAddtnlInfoReducer
+    auth : authReducer,
+    toast : toastReducer,
+    user : userReducer,
+    office : officeReducer,
+    genericType : genericTypeReducer,
+    error : errorReducer,
+    household : householdReducer,
+    householdProfile : householdProfileReducer,
+    addHouseholdProfile : addHouseholdProfileReducer,
+    updateHouseholdProfile : updateHouseholdProfileReducer,
+    updateHouseholdProfileAddtnlInfo : updateHouseholdProfileAddtnlInfoReducer,
+    updateHealthService : updateHealthServiceReducer
   }
 });

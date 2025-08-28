@@ -8,6 +8,18 @@ use Illuminate\Http\Request;
 class BarangayController extends Controller
 {
     //
+
+    
+    public function index(Request $request) {
+        $query = Barangay::query();
+
+        if($request->has('municipality')) {
+            $query->where('municipality_id', $request->municipality);    
+        }
+
+        return $query->get();
+    }
+
     public function barangays(Request $request) {
         $query = Barangay::query()
             ->with('municipality.province', 'municipality');
