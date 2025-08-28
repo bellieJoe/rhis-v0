@@ -165,7 +165,7 @@ const AddHouseholdProfile = () => {
         visible={visible} 
         position="right" 
         style={{ width: '100vw' }}>
-            <h4 className="text-center mb-4">Add Household Profile</h4>
+            <h4 className="text-center mb-4">{addHouseholdProfileStore.title}</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
                     <div className="w-full overflow-x-scroll scrollbar-none " style={{ 'scrollbarWidth': 'none' }} >
