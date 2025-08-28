@@ -278,7 +278,7 @@ export const storeHasCancer = async (dispatch : Dispatch, params : any = {}) : P
     }
 }
 
-export const hasEpilepsy = async (dispatch : Dispatch, params : any = {}) : Promise<boolean> => {
+export const storeHasEpilepsy = async (dispatch : Dispatch, params : any = {}) : Promise<boolean> => {
     setErrors({});
     try {
         const response = await axios.post('/api/healthcare-services/has-epilepsies', params);

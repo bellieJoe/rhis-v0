@@ -1,3 +1,6 @@
+import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
+import handler from "@/app/api/upload";
+import store from "@/app/store";
 import { hideUpdateHealthService } from "@/features/updateHealthServiceSlice";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
@@ -23,7 +26,7 @@ const PregnantForm = () => {
         <div className="card">
             <h5 className="text-center ">1. Pregnant(Buntis)</h5>
             <div className="mb-2">
-                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan</label>
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
                 <InputText type="text" className="w-full" />
             </div>
             <div className="mb-2">
@@ -41,6 +44,9 @@ const PregnantForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Number of Pregnancies(Bilang ng Pagbubuntis)</label>
                 <InputText type="number" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -69,6 +75,9 @@ const GaveBirthForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Midwife(Nagpaanak)</label>
                 <InputText type="text" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -102,6 +111,9 @@ const NewBornChildForm = () => {
                 <label htmlFor="" className="form-label mb-2 block">Remarks(Puna)</label>
                 <InputText type="text" className="w-full" />
             </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+            </div>
         </div>
     );
 }
@@ -121,6 +133,9 @@ const VaccinatedForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Vaccine (Bakunang Ibinigay)</label>
                 <InputText type="text" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -145,6 +160,9 @@ const FamilyPlanningForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Remarks(Puna)</label>
                 <InputText type="text" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -171,6 +189,9 @@ const DeathForm = () => {
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Cause of Death(Sanhi ng Pagkamatay)</label>
                 <InputText type="text" className="w-full" />
             </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+            </div>
         </div>
     );
 }
@@ -195,6 +216,9 @@ const SickForm = () => {
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Type of Sickness(Uri ng Karamdaman)</label>
                 <InputText type="text" className="w-full" />
             </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+            </div>
         </div>
     );
 }
@@ -218,6 +242,9 @@ const HasHighbloodForm = () => {
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
                 <InputText type="text" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -247,6 +274,9 @@ const HasDiabetesForm = () => {
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
                 <InputText type="text" className="w-full" />
             </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+            </div>
         </div>
     );
 }
@@ -266,6 +296,9 @@ const UrinalysisResultForm = () => {
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Nakitang Resulta</label>
                 <InputText type="text" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -291,6 +324,9 @@ const HasCancerForm = () => {
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
                 <InputText type="text" className="w-full" />
             </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+            </div>
         </div>
     );
 }
@@ -306,6 +342,9 @@ const HasEpilepsyForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
                 <InputText type="number" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -326,6 +365,9 @@ const AnimalBitesForm = () => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
                 <InputText type="number" className="w-full" />
+            </div>
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" />
             </div>
         </div>
     );
@@ -354,67 +396,80 @@ export const UpdateHealthServiceForm = () => {
         {
             label : "1. Pregnant(Buntis)",
             value : "PREGNANT",
-            form : <PregnantForm />
+            form : <PregnantForm />,
+            handler : storePregnant
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
-            form : <GaveBirthForm />
+            form : <GaveBirthForm />,
+            handler : storeGaveBirth
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
             value: "NEW_BORN_CHILD",
-            form : <NewBornChildForm />
+            form : <NewBornChildForm />,
+            handler : storeNewBorn
         },
         {
             label: "4. Vaccinated(Binakunahan)",
             value: "VACCINATED",
-            form : <VaccinatedForm />
+            form : <VaccinatedForm />,
+            handler : storeVaccinated
         }, 
         {
             label: "5. Family Plannning(Nagpalano ng Pamilya)",
             value: "FAMILY_PLANNING",
-            form : <FamilyPlanningForm />
+            form : <FamilyPlanningForm />,
+            handler : storeFamilyPlanning
         },
         {
             label: "6. Death(Namatay)",
             value: "DEATH",
-            form : <DeathForm />
+            form : <DeathForm />,
+            handler : storeDeath
         },
         {
             label: "7. Sick(Mga nagkasakit/may sakit)",
             value: "SICK",
-            form : <SickForm />
+            form : <SickForm />,
+            handler : storeSick
         },
         {
             label: "8. Has Highblood(May sakit na Highblood)",
             value: "HAS_HIGHBLOOD",
-            form : <HasHighbloodForm />
+            form : <HasHighbloodForm />,
+            handler : storeHasHighblood
         },
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
-            form : <HasDiabetesForm />
+            form : <HasDiabetesForm />,
+            handler : storeHasDiabetes
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
-            form : <UrinalysisResultForm />
+            form : <UrinalysisResultForm />,
+            handler : storeUnirinalysis
         },
         {
             label: "11. Has Cancer(May sakit na Cancer)",
             value: "HAS_CANCER",
-            form : <HasCancerForm />
+            form : <HasCancerForm />,
+            handler : storeHasCancer
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
             value: "HAS_EPILEPSY",
-            form : <HasEpilepsyForm />
+            form : <HasEpilepsyForm />,
+            handler : storeHasEpilepsy
         },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",
-            form : <AnimalBitesForm />
+            form : <AnimalBitesForm />,
+            handler : storeAnimalBites
         }
     ]
 
@@ -429,6 +484,10 @@ export const UpdateHealthServiceForm = () => {
     const onHide = () => {
         dispatch(hideUpdateHealthService());
         setActiveIndex(0);
+    }
+
+    const submitForm = async (service : any) => {
+        const success = await service.handler(dispatch, { ...form });
     }
 
     return (
