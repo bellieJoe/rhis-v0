@@ -202,7 +202,7 @@ const SickForm = () => {
 const HasHighbloodForm = () => {
     return (
         <div className="card">
-            <h5 className="text-center ">7. Has Highblood(May sakit na Highblood)</h5>
+            <h5 className="text-center ">8. Has Highblood(May sakit na Highblood)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
                 <InputText type="text" className="w-full" />
@@ -223,6 +223,114 @@ const HasHighbloodForm = () => {
     );
 }
 
+const HasDiabetesForm = () => {
+    return (
+        <div className="card">
+            <h5 className="text-center ">9. Has Diabetes(May sakit na Diabetes)</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+                <InputText type="number" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Glucose Level</label>
+                <InputText type="number" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Obserbasyon</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
+                <InputText type="text" className="w-full" />
+            </div>
+        </div>
+    );
+}
+
+const UrinalysisResultForm = () => {
+    return (
+        <div className="card">
+            <h5 className="text-center ">10. Urinalysis Result(Resulta ng pag-eksamin sa ihi)</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+                <InputText type="number" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Nakitang Resulta</label>
+                <InputText type="text" className="w-full" />
+            </div>
+        </div>
+    );
+}
+
+const HasCancerForm = () => {
+    return (
+        <div className="card">
+            <h5 className="text-center ">11. Has Cancer(May sakit na Cancer)</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+                <InputText type="number" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Apektadong Bahagi ng Katawan</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
+                <InputText type="text" className="w-full" />
+            </div>
+        </div>
+    );
+}
+
+const HasEpilepsyForm = () => {
+    return (
+        <div className="card">
+            <h5 className="text-center ">12. Has Epilepsy(May problema sa pagiisip/Epilepsy)</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+                <InputText type="number" className="w-full" />
+            </div>
+        </div>
+    );
+}
+
+const AnimalBitesForm = () => {
+    return (
+        <div className="card">
+            <h5 className="text-center ">11. Animal Bites(Kinagat ng Hayop/Aso)</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+                <InputText type="number" className="w-full" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
+                <InputText type="number" className="w-full" />
+            </div>
+        </div>
+    );
+}
+
 
 export const UpdateHealthServiceForm = () => {
     const dispatch = useDispatch();
@@ -230,8 +338,7 @@ export const UpdateHealthServiceForm = () => {
     const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
     const items : MenuItem[] = [
         { label: "Select Service", className: "mr-2" },
-        { label: "Fill-up Form", className: "mr-2"  },
-        { label: "Review", className: "mr-2"  },
+        { label: "Fill-up Form", className: "mr-2"  }
     ];
     const [form, setForm] = useState<{
         service : string,
@@ -287,27 +394,27 @@ export const UpdateHealthServiceForm = () => {
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
-            form : <UnderDevelopment />
+            form : <HasDiabetesForm />
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
-            form : <UnderDevelopment />
+            form : <UrinalysisResultForm />
         },
         {
             label: "11. Has Cancer(May sakit na Cancer)",
             value: "HAS_CANCER",
-            form : <UnderDevelopment />
+            form : <HasCancerForm />
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
             value: "HAS_EPILEPSY",
-            form : <UnderDevelopment />
+            form : <HasEpilepsyForm />
         },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",
-            form : <UnderDevelopment />
+            form : <AnimalBitesForm />
         }
     ]
 
@@ -348,7 +455,7 @@ export const UpdateHealthServiceForm = () => {
                             <h5 className="text-center mb-4">Select Health Service</h5>
                             <div className="grid gap-2 justify-content-center flex-wrap">
                                 {services.map((service, index) => (
-                                    <div className={`card col-3 mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => setForm({...form, service: service.value, form: service.form})} key={index}>
+                                    <div className={`card col-3 mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => {setForm({...form, service: service.value, form: service.form}); next();}} key={index}>
                                         <div className="flex align-items-center h-full">
                                             <h6 style={{ wordBreak: 'break-all' }} className="mb-0 ">{service.label}</h6>
                                         </div>
