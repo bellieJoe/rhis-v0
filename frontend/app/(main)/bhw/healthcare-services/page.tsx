@@ -1,6 +1,7 @@
 "use client";
 import { getBarangayList, getMunicipalityList } from "@/api/addressApi";
 import { getHouseholdProfiles } from "@/api/householdProfileApi";
+import { AuthMiddleware } from "@/components/middlewares";
 import { UpdateHealthServiceForm } from "@/components/UpdateHealthServiceForm";
 import { setHouseholdProfiles } from "@/features/householdProfileSlice";
 import { showUpdateHealthService } from "@/features/updateHealthServiceSlice";
@@ -67,7 +68,7 @@ const HealthcareServices = () => {
     },[filter.barangay]);
 
     return (
-        <div>
+        <AuthMiddleware>
             <div className="card">
                 <h5>Patients</h5>
                 <div className="flex gap-2 mb-2">
@@ -81,14 +82,14 @@ const HealthcareServices = () => {
                     <Column header="Age" body={(data : any) => calculateAge(data.birthdate)}></Column>
                     <Column header="Actions" body={(data : any) => (
                         <>
-                            <Button size="small" label="Update Record" icon="pi pi-pencil" outlined onClick={() => dispatch(showUpdateHealthService())}></Button>
+                            <Button size="small" label="Update Record" icon="pi pi-pencil" outlined onClick={() => dispatch(showUpdateHealthService({householdProfile: data}))}></Button>
                         </>
                     )}></Column>
                 </DataTable>
             </div>
 
             <UpdateHealthServiceForm />
-        </div>
+        </AuthMiddleware>
     )
 }
 

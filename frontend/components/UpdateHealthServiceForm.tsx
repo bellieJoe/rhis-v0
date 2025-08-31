@@ -1,7 +1,10 @@
 import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
 import handler from "@/app/api/upload";
 import store from "@/app/store";
-import { hideUpdateHealthService } from "@/features/updateHealthServiceSlice";
+import { hide } from "@/features/addHouseholdProfileSlice";
+import { hideUpdateHealthService, onHealthServiceFinish, onHealthServiceSubmit, resetHealthServiceForm } from "@/features/updateHealthServiceSlice";
+import { calculateAge, formatDate } from "@/utils/helpers";
+import moment from "moment";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
@@ -9,7 +12,7 @@ import { InputText } from "primereact/inputtext";
 import { MenuItem } from "primereact/menuitem";
 import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const UnderDevelopment = () => {
@@ -21,32 +24,82 @@ const UnderDevelopment = () => {
     )
 }
 
-const PregnantForm = () => {
+const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const initialForm = {
+        household_profile_id : "",
+        name : "",
+        age : "",
+        last_menstrual_period : "",
+        date_of_giving_birth : "",
+        number_of_pregnancies : 1
+    };
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        last_menstrual_period : "",
+        date_of_giving_birth : "",
+        number_of_pregnancies : 1
+    });
+    const estimateDob = () => {
+        if(!form.last_menstrual_period) return;
+        const start = moment(formatDate(form.last_menstrual_period), 'YYYY-MM-DD');
+        const end = start;
+        end.add(9, 'months');
+        setForm({ ...form, date_of_giving_birth : end.toLocaleString() }); 
+    }
+    useEffect(() => {
+        estimateDob();
+    }, [form.last_menstrual_period]);
+
     return (
         <div className="card">
             <h5 className="text-center ">1. Pregnant(Buntis)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" disabled value={form.age} />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Last Menstrual Period(Petsa ng huling regla)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <Calendar 
+                    id="lastMenstrualPeriod" 
+                    className="w-full"
+                    value={form.last_menstrual_period ? new Date(form.last_menstrual_period) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    maxDate={new Date()}
+                    onChange={(e) => {
+                        if(!e.value) return;
+                        console.log(e.value ? e.value.toLocaleString() : "")
+                        setForm({...form, last_menstrual_period : (e.value ? e.value.toLocaleString() : form.last_menstrual_period) })
+                    }}
+                    />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Date of Giving Birth(Petsa ng panganganak)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <Calendar 
+                    id="dateOfGivingBirth" 
+                    className="w-full"
+                    value={form.date_of_giving_birth ? new Date(form.date_of_giving_birth) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    // maxDate={new Date()}
+                    // disabled
+                    />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Number of Pregnancies(Bilang ng Pagbubuntis)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.number_of_pregnancies.toString()} onChange={(e) => setForm({...form, number_of_pregnancies : parseInt(e.target.value)})} min={1} />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={onSubmit} />
             </div>
         </div>
     );
@@ -396,80 +449,93 @@ export const UpdateHealthServiceForm = () => {
         {
             label : "1. Pregnant(Buntis)",
             value : "PREGNANT",
-            form : <PregnantForm />,
-            handler : storePregnant
+            form : <PregnantForm onSubmit={() => submitForm(services.find(s => s.value == "PREGNANT"))} />,
+            handler : storePregnant,
+            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
             form : <GaveBirthForm />,
-            handler : storeGaveBirth
+            handler : storeGaveBirth,
+            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
             value: "NEW_BORN_CHILD",
             form : <NewBornChildForm />,
-            handler : storeNewBorn
+            handler : storeNewBorn,
+            visible : true
         },
         {
             label: "4. Vaccinated(Binakunahan)",
             value: "VACCINATED",
             form : <VaccinatedForm />,
-            handler : storeVaccinated
+            handler : storeVaccinated,
+            visible : true
         }, 
         {
             label: "5. Family Plannning(Nagpalano ng Pamilya)",
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm />,
-            handler : storeFamilyPlanning
+            handler : storeFamilyPlanning,
+            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
         },
         {
             label: "6. Death(Namatay)",
             value: "DEATH",
             form : <DeathForm />,
-            handler : storeDeath
+            handler : storeDeath,
+            visible : true
         },
         {
             label: "7. Sick(Mga nagkasakit/may sakit)",
             value: "SICK",
             form : <SickForm />,
-            handler : storeSick
+            handler : storeSick,
+            visible : true
         },
         {
             label: "8. Has Highblood(May sakit na Highblood)",
             value: "HAS_HIGHBLOOD",
             form : <HasHighbloodForm />,
-            handler : storeHasHighblood
+            handler : storeHasHighblood,
+            visible : true
         },
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
             form : <HasDiabetesForm />,
-            handler : storeHasDiabetes
+            handler : storeHasDiabetes,
+            visible : true
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
             form : <UrinalysisResultForm />,
-            handler : storeUnirinalysis
+            handler : storeUnirinalysis,
+            visible : true
         },
         {
             label: "11. Has Cancer(May sakit na Cancer)",
             value: "HAS_CANCER",
             form : <HasCancerForm />,
-            handler : storeHasCancer
+            handler : storeHasCancer,
+            visible : true
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
             value: "HAS_EPILEPSY",
             form : <HasEpilepsyForm />,
-            handler : storeHasEpilepsy
+            handler : storeHasEpilepsy,
+            visible : true
         },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",
             form : <AnimalBitesForm />,
-            handler : storeAnimalBites
+            handler : storeAnimalBites,
+            visible : true
         }
     ]
 
@@ -487,7 +553,14 @@ export const UpdateHealthServiceForm = () => {
     }
 
     const submitForm = async (service : any) => {
+        console.log("asdasd");
+        dispatch(onHealthServiceSubmit());
         const success = await service.handler(dispatch, { ...form });
+        if(success) {
+            dispatch(resetHealthServiceForm());
+            dispatch(hideUpdateHealthService());
+        }
+        dispatch(onHealthServiceFinish());
     }
 
     return (
@@ -513,13 +586,16 @@ export const UpdateHealthServiceForm = () => {
                         <>
                             <h5 className="text-center mb-4">Select Health Service</h5>
                             <div className="grid gap-2 justify-content-center flex-wrap">
-                                {services.map((service, index) => (
-                                    <div className={`card col-3 mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => {setForm({...form, service: service.value, form: service.form}); next();}} key={index}>
-                                        <div className="flex align-items-center h-full">
-                                            <h6 style={{ wordBreak: 'break-all' }} className="mb-0 ">{service.label}</h6>
+                                {services.map((service, index) =>
+                                    
+                                        service.visible && 
+                                        <div className={`card col-3 mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => {setForm({...form, service: service.value, form: service.form}); next();}} key={index}>
+                                            <div className="flex align-items-center h-full">
+                                                <h6 style={{ wordBreak: 'break-all' }} className="mb-0 ">{service.label}</h6>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    
+                                )}
                             </div>
                         </>
                     )}

@@ -15,13 +15,13 @@ export const storePregnant = async (dispatch : Dispatch, params : any = {}) : Pr
         }));
         return true;
     } catch (error : any) {
-        if(error.response.status === 422) {
+        if(error.response?.status === 422) {
             dispatch(setErrors(error.response.data.errors));
         }
         dispatch(setToast({
             severity :"error", 
             summary : "Error", 
-            detail : error.response.data.message, 
+            detail : error.response?.data?.message, 
             life : 3000
         }));
         return false;

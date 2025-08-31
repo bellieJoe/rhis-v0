@@ -10,6 +10,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Pregnancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -79,5 +80,13 @@ Route::prefix("household-profiles")->group(function () {
         Route::put("update-main-info", [HouseholdProfileController::class, "updateMainInfo"]);
     });
 });
+
+Route::prefix("healthcare-services")->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("pregnants", [Pregnancy::class, "store"]);
+    });
+});
+
+
 
 
