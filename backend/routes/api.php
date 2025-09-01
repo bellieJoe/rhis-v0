@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
+use App\Http\Controllers\BirthController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\HouseholdProfileController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -83,7 +85,8 @@ Route::prefix("household-profiles")->group(function () {
 
 Route::prefix("healthcare-services")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
-        Route::post("pregnants", [Pregnancy::class, "store"]);
+        Route::post("pregnants", [PregnancyController::class, "store"]);
+        Route::post("gave-births", [BirthController::class, "store"]);
     });
 });
 

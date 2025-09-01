@@ -15,7 +15,9 @@ export const storePregnant = async (dispatch : Dispatch, params : any = {}) : Pr
         }));
         return true;
     } catch (error : any) {
+        console.log(error)
         if(error.response?.status === 422) {
+            console.log(error.response.data.errors)
             dispatch(setErrors(error.response.data.errors));
         }
         dispatch(setToast({
@@ -24,6 +26,7 @@ export const storePregnant = async (dispatch : Dispatch, params : any = {}) : Pr
             detail : error.response?.data?.message, 
             life : 3000
         }));
+        
         return false;
     }
 }

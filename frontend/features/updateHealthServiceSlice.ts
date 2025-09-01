@@ -17,8 +17,14 @@ export const updateHealthServiceSlice = createSlice({
         },
         hideUpdateHealthService : (state : any) => { state.visible = false; },
         resetHealthServiceForm : (state : any) => { state.reset = !state.reset; },
-        onHealthServiceSubmit : (state : any) => { state.loading = true; },
-        onHealthServiceFinish : (state : any) => { state.loading = false; },
+        onHealthServiceSubmit : (state : any) => { 
+            console.log("test")
+            state.loading = true; 
+        },
+        onHealthServiceFinish : (state : any) => { 
+            console.log("finish")
+            state.loading = false; 
+        },
     },
 });
 

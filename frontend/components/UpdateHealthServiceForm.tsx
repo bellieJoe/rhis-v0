@@ -14,6 +14,10 @@ import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
 import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ValidationError from "./ValidationError";
+import { AutoComplete } from "primereact/autocomplete";
+import { getBarangays } from "@/api/addressApi";
+import { Dropdown } from "primereact/dropdown";
 
 const UnderDevelopment = () => {
     return (
@@ -24,7 +28,7 @@ const UnderDevelopment = () => {
     )
 }
 
-const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
+const PregnantForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
     const initialForm = {
         household_profile_id : "",
@@ -40,8 +44,9 @@ const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
         last_menstrual_period : "",
         date_of_giving_birth : "",
-        number_of_pregnancies : 1
+        number_of_pregnancy : 1
     });
+    const [loading, setLoading] = useState(updateHealthServiceStore.loading);
     const estimateDob = () => {
         if(!form.last_menstrual_period) return;
         const start = moment(formatDate(form.last_menstrual_period), 'YYYY-MM-DD');
@@ -52,6 +57,9 @@ const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
     useEffect(() => {
         estimateDob();
     }, [form.last_menstrual_period]);
+    useEffect(() => {
+        setLoading(updateHealthServiceStore.loading);
+    }, [updateHealthServiceStore.loading])
 
     return (
         <div className="card">
@@ -59,10 +67,12 @@ const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
                 <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
                 <InputText type="number" className="w-full" disabled value={form.age} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Last Menstrual Period(Petsa ng huling regla)</label>
@@ -80,6 +90,7 @@ const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
                         setForm({...form, last_menstrual_period : (e.value ? e.value.toLocaleString() : form.last_menstrual_period) })
                     }}
                     />
+                <ValidationError name="last_menstrual_period" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Date of Giving Birth(Petsa ng panganganak)</label>
@@ -93,44 +104,112 @@ const PregnantForm = ({ onSubmit } : { onSubmit : () => void }) => {
                     // maxDate={new Date()}
                     // disabled
                     />
+                <ValidationError name="date_of_giving_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Number of Pregnancies(Bilang ng Pagbubuntis)</label>
-                <InputText type="number" className="w-full" value={form.number_of_pregnancies.toString()} onChange={(e) => setForm({...form, number_of_pregnancies : parseInt(e.target.value)})} min={1} />
+                <InputText type="number" className="w-full" value={form.number_of_pregnancy.toString()} onChange={(e) => setForm({...form, number_of_pregnancy : parseInt(e.target.value)})} min={1} />
+                <ValidationError name="number_of_pregnancy" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={onSubmit} />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={loading} onClick={() => {
+                    onSubmit(form)
+                }} />
             </div>
         </div>
     );
 }
 
-const GaveBirthForm = () => {
+const GaveBirthForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const dispatch = useDispatch();
+    const initialForm = {
+        household_profile_id : "",
+        name : "",
+        date_gave_birth : "",
+        place_of_birth : "",
+        barangay_name: "",
+        type_of_birth : "",
+        midwife : ""
+    };
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        date_gave_birth : "",
+        place_of_birth : "",
+        barangay_name: "",
+        type_of_birth : "",
+        midwife : ""
+    });
+    const [barangays, setBarangays] = useState([]);
+    const handleBarangayChanged = async (e: any) => {
+        setForm({...form, barangay_name : e.value});
+    }
+    const handleBarangaySelect = (e: any) => {
+        console.log(e.value.value);
+        setForm({...form, barangay_name : e.value.label, place_of_birth : e.value.value});
+    }
+    const handleBarangayComplete = async (e: any) => {
+        const barangaysResult = await getBarangays(dispatch, { search : e.query });
+        console.log(barangaysResult)
+        setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
+    }
     return (
         <div className="card">
             <h5 className="text-center ">2. Gave Birth(Nanganak)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.name} disabled />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Date of Giving Birth(Petsa ng panganganak)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <Calendar 
+                    id="dateOfGivingBirth" 
+                    className="w-full"
+                    value={form.date_gave_birth ? new Date(form.date_gave_birth) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    onChange={(e) => setForm({...form, date_gave_birth : (e.value ? e.value.toLocaleString() : form.date_gave_birth) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_gave_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Saan Nanganak(Birth Place)</label>
-                <InputText type="text" className="w-full" />
+                <AutoComplete   
+                    dropdown
+                    id="address" 
+                    placeholder="Barangay, Municipality, Province" 
+                    suggestions={barangays} 
+                    value={form.barangay_name} 
+                    field="label"
+                    completeMethod={handleBarangayComplete}
+                    onChange={handleBarangayChanged} 
+                    onSelect={handleBarangaySelect}
+                    className="w-full" />
+                <ValidationError name="place_of_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Type of Birth(Uri ng Panganganak)</label>
-                <InputText type="text" className="w-full" />
+                <Dropdown 
+                    type="text" 
+                    options={["Vaginal Delivery", "Cesarean Section"]}
+                    value={form.type_of_birth}
+                    onChange={(e) => setForm({...form, type_of_birth : e.value})}
+                    className="w-full" />
+                <ValidationError name="type_of_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Midwife(Nagpaanak)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.midwife} onChange={(e) => setForm({...form, midwife : e.target.value})} />
+                <ValidationError name="midwife" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => {
+                    onSubmit(form);
+                }} />
             </div>
         </div>
     );
@@ -220,7 +299,6 @@ const FamilyPlanningForm = () => {
         </div>
     );
 }
-
 
 const DeathForm = () => {
     return (
@@ -430,7 +508,7 @@ const AnimalBitesForm = () => {
 export const UpdateHealthServiceForm = () => {
     const dispatch = useDispatch();
     const [activeIndex, setActiveIndex] = useState(0);
-    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { visible, loading, error, householdProfile } = useSelector((state: any) => state.updateHealthService);
     const items : MenuItem[] = [
         { label: "Select Service", className: "mr-2" },
         { label: "Fill-up Form", className: "mr-2"  }
@@ -444,21 +522,20 @@ export const UpdateHealthServiceForm = () => {
         form : <UnderDevelopment />,
         data : {}
     });
-
     const services = [
         {
             label : "1. Pregnant(Buntis)",
             value : "PREGNANT",
-            form : <PregnantForm onSubmit={() => submitForm(services.find(s => s.value == "PREGNANT"))} />,
+            form : <PregnantForm onSubmit={(data) => submitForm(services.find(s => s.value == "PREGNANT"), data)} />,
             handler : storePregnant,
-            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
+            visible : householdProfile?.updated_details?.gender_id == 80
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
-            form : <GaveBirthForm />,
+            form : <GaveBirthForm onSubmit={(data) => submitForm(services.find(s => s.value == "GAVE_BIRTH"), data)} />,
             handler : storeGaveBirth,
-            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
+            visible : householdProfile?.updated_details?.gender_id == 80
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
@@ -479,7 +556,7 @@ export const UpdateHealthServiceForm = () => {
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm />,
             handler : storeFamilyPlanning,
-            visible : updateHealthServiceStore.householdProfile?.updated_details?.gender_id == 80
+            visible : householdProfile?.updated_details?.gender_id == 80
         },
         {
             label: "6. Death(Namatay)",
@@ -538,34 +615,29 @@ export const UpdateHealthServiceForm = () => {
             visible : true
         }
     ]
-
     const next = () => {
         setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));
     };
-
     const prev = () => {
         setActiveIndex((prev) => Math.max(prev - 1, 0));
     }
-
     const onHide = () => {
         dispatch(hideUpdateHealthService());
         setActiveIndex(0);
     }
-
-    const submitForm = async (service : any) => {
-        console.log("asdasd");
+    const submitForm = async (service : any, data : any) => {
+        console.log(data);
         dispatch(onHealthServiceSubmit());
-        const success = await service.handler(dispatch, { ...form });
+        const success = await service.handler(dispatch, { ...data });
         if(success) {
             dispatch(resetHealthServiceForm());
             dispatch(hideUpdateHealthService());
         }
         dispatch(onHealthServiceFinish());
     }
-
     return (
         <Sidebar 
-            visible={updateHealthServiceStore.visible} 
+            visible={visible} 
             position="right" 
             style={{ width: '100vw' }} 
             onHide={onHide}>

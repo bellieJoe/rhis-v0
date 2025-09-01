@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\HouseholdProfile;
 use App\Models\Pregnancy;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,15 +26,16 @@ class PregnancyController extends Controller
             $household_profile = HouseholdProfile::find($request->household_profile_id);
             $updated_profile_detail = $household_profile->updated_details;
             $new_details = $updated_profile_detail->replicate();
-            $new_details->last_menustrual_period = $request->last_menstrual_period;
+            $new_details->last_menstrual_period = Carbon::parse($request->last_menstrual_period);
             $new_details->is_pregnant = true;
             $new_details->save();
             $pregnancy = Pregnancy::create([
                 "household_profile_id" => $request->household_profile_id,
-                "last_menstrual_period" => $request->last_menstrual_period,
-                "date_of_giving_birth" => $request->date_of_giving_birth,
+                "last_menstrual_period" => Carbon::parse($request->last_menstrual_period),
+                "date_of_giving_birth" => Carbon::parse($request->date_of_giving_birth),
                 "number_of_pregnancy" => $request->number_of_pregnancy,
-                "age" => $request->age
+                "age" => $request->age,
+                "encoded_by" => auth()->user()->id
             ]);
             return response()->json([
                 "message" => "Pregnancy created successfully",

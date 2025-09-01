@@ -78,10 +78,10 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
     }
 
     const handleBarangayComplete = async (e: any) => {
-            const barangaysResult = await getBarangays(dispatch, { search : e.query });
-            console.log(barangaysResult)
-            setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
-        }
+        const barangaysResult = await getBarangays(dispatch, { search : e.query });
+        console.log(barangaysResult)
+        setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
+    }
 
     // useEffect(() => {
     //     (async () => {

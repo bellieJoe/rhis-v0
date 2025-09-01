@@ -10,6 +10,10 @@ export const toastSlice = createSlice({
     },
     reducers : {
         setToast : (state, action) => {
+            state.severity = null;
+            state.summary = null;
+            state.detail = null;
+            state.life = 3000;
             state.severity = action.payload.severity;
             state.summary = action.payload.summary;
             state.detail = action.payload.detail;
