@@ -586,26 +586,50 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <p>{ genericTypes.find((g : any) => g.id === form.classification_by_age_hrg_id)?.name }</p>
                                         <ValidationError name="classification_by_age_hrg_id" />
                                     </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Last Menstrual Period:</p>
-                                        <p>{ (new Date(form.last_menstrual_period)).toDateString() }</p>
-                                        <ValidationError name="last_menstrual_period" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Is using any Family Planning method?</p>
-                                        <p>{form.is_using_fp_method ? 'Yes' : 'No'}</p>
-                                        <ValidationError name="is_using_fp_method" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Family Planning Method:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.family_planning_method_id)?.name }</p>
-                                        <ValidationError name="family_planning_method_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Family Planning Status:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.family_planning_status_id)?.name }</p>
-                                        <ValidationError name="family_planning_status_id" />
-                                    </div>
+                                    {
+                                        form.gender_id == "80" && (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Is Pregnant:</p>
+                                                <p>{ form.is_pregnant ? 'Yes' : 'No' }</p>
+                                                <ValidationError name="is_pregnant" />
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        (form.gender_id == "80" && form.is_pregnant) ? (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Last Menstrual Period:</p>
+                                                <p>{ (new Date(form.last_menstrual_period)).toDateString() }</p>
+                                                <ValidationError name="last_menstrual_period" />
+                                            </div>
+                                        ) : ''
+                                    }
+                                    {(form.gender_id == 80 && form.classification_by_age_hrg_id == 43) ? (
+                                        <>
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Is using any Family Planning method?</p>
+                                                <p>{form.is_using_fp_method ? 'Yes' : 'No'}</p>
+                                                <ValidationError name="is_using_fp_method" />
+                                            </div>
+                                            {
+                                                form.is_using_fp_method && (
+                                                    <>
+                                                        <div className="flex gap-2">
+                                                            <p className="font-bold">Family Planning Method:</p>
+                                                            <p>{ genericTypes.find((g: any) => g.id === form.family_planning_method_id)?.name }</p>
+                                                            <ValidationError name="family_planning_method_id" />
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <p className="font-bold">Family Planning Status:</p>
+                                                            <p>{ genericTypes.find((g: any) => g.id === form.family_planning_status_id)?.name }</p>
+                                                            <ValidationError name="family_planning_status_id" />
+                                                        </div>
+                                                    </>
+                                                )
+                                            }
+                                        </>
+                                    ) : ''}
+
                                     <div className="flex gap-2">
                                         <p className="font-bold">Type of Water Source:</p>
                                         <p>{ genericTypes.find((g : any) => g.id === form.water_source_type_id)?.name }</p>

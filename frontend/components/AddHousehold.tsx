@@ -118,7 +118,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="householdNo">Date of Visit</label>
                 <Calendar 
-                    value={form.date_of_visit ? new Date(form.date_of_visit) : new Date()}  
+                    value={form.date_of_visit ? new Date(form.date_of_visit) : ''}  
                     dateFormat="mm-dd-yy" 
                     placeholder="mm-dd-yyyy" 
                     mask="99/99/9999" 

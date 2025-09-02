@@ -38,7 +38,7 @@ const AddHouseholdProfile = () => {
         lastname : "",
         firstname : "",
         middlename : "",
-        birthdate : "",
+        "birthdate" : "",
         member_relationship_id: "",
         other_relation : "",
         gender_id : "",
@@ -71,7 +71,7 @@ const AddHouseholdProfile = () => {
         hc_smoker: false,
         hc_alchohol_drinker : false,
     }
-    const [form, setForm] = useState<any>(initialForm);
+    const [form, setForm] = useState(initialForm);
     const items : MenuItem[] = [
         { label: "Household Info", className: "mr-2" },
         { label: "Personal Info", className: "mr-2"  },
@@ -92,13 +92,12 @@ const AddHouseholdProfile = () => {
     }, []);
 
     useEffect(() => {
-        setForm({
-            ...form,
-            household_id : addHouseholdProfileStore.householdId,
-            household_no : addHouseholdProfileStore.householdNo,
-            date_of_visit : addHouseholdProfileStore.date_of_visit,
-            member_relationship_id : addHouseholdProfileStore.addHead ? 1 : ""
-        });
+        const newForm = initialForm;
+        newForm.household_id = addHouseholdProfileStore.householdId;
+        newForm.household_no = addHouseholdProfileStore.householdNo;
+        newForm.date_of_visit = addHouseholdProfileStore.date_of_visit;
+        newForm.member_relationship_id = addHouseholdProfileStore.addHead ? 1 : "";
+        setForm(newForm);
         console.log(form)
     }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
 
@@ -146,6 +145,7 @@ const AddHouseholdProfile = () => {
                 newForm.date_of_visit = _form.date_of_visit;
                 newForm.member_relationship_id = "";
                 setForm(newForm);
+                console.log(form);
                 dispatch(addMember({
                     householdNo : _form.household_no,
                     householdId : _form.household_id,
@@ -208,22 +208,27 @@ const AddHouseholdProfile = () => {
                                         className="w-full" />
                                     <ValidationError name="household_id" />
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => {
-                                            return x.type === "MEMBERS_OF_HOUSEHOLD" && (addHouseholdProfileStore.addHead ? x.id == "1" : (x.id != "1" || x.id != 1));
-                                        })} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        value={form.member_relationship_id} 
-                                        disabled={addHouseholdProfileStore.addHead}
-                                        placeholder="Select Relationship" 
-                                        onChange={(e) => setForm({...form, member_relationship_id : e.value})}
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="member_relationship_id" />
-                                </div>
+                                {
+                                    !addHouseholdProfileStore.addHead && (
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
+                                            <Dropdown 
+                                                showClear
+                                                options={genericTypes.filter((x: any) => {
+                                                    return x.type === "MEMBERS_OF_HOUSEHOLD" && (addHouseholdProfileStore.addHead ? x.id == "1" : (x.id != "1" || x.id != 1));
+                                                })} 
+                                                optionLabel="label"
+                                                optionValue="id"
+                                                value={form.member_relationship_id} 
+                                                disabled={addHouseholdProfileStore.addHead}
+                                                placeholder="Select Relationship" 
+                                                onChange={(e) => setForm({...form, member_relationship_id : e.value})}
+                                                style={{ width: '100%' }} />
+                                            <ValidationError name="member_relationship_id" />
+                                        </div>
+                                    )
+                                }
+                                
                                 {
                                     form.member_relationship_id == "5" && (
                                         <>
@@ -275,7 +280,7 @@ const AddHouseholdProfile = () => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Birthdate</label>
                                     <Calendar 
-                                        value={new Date(form.birthdate)}  
+                                        value={form.birthdate ? new Date(form.birthdate) : ''}  
                                         dateFormat="mm-dd-yy" 
                                         placeholder="mm-dd-yyyy" 
                                         mask="99/99/9999" 
@@ -648,11 +653,6 @@ const AddHouseholdProfile = () => {
                                         <p className="font-bold">Sex:</p>
                                         <p>{ genericTypes.find((g : any) => g.id === form.gender_id)?.name }</p>
                                         <ValidationError name="gender_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Civil Status:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.civil_status_id)?.name }</p>
-                                        <ValidationError name="civil_status_id" />
                                     </div>
                                     <div className="flex gap-2">
                                         <p className="font-bold">Civil Status:</p>
