@@ -1,4 +1,4 @@
-import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
+import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeUrinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
 import handler from "@/app/api/upload";
 import store from "@/app/store";
 import { hide } from "@/features/addHouseholdProfileSlice";
@@ -548,128 +548,195 @@ const HasHighbloodForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
 }
 
 const HasDiabetesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        glucose_level : '',
+        observation : "",
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">9. Has Diabetes(May sakit na Diabetes)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Glucose Level</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.glucose_level} onChange={(e) => setForm({...form, glucose_level : e.target.value})} />
+                <ValidationError name="glucose_level" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Obserbasyon</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.observation} onChange={(e) => setForm({...form, observation : e.target.value})} />
+                <ValidationError name="observation" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
-                <InputText type="text" className="w-full" />
+                <InputTextarea className="w-full" value={form.actions} onChange={(e) => setForm({...form, actions : e.target.value})} />
+                <ValidationError name="actions" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
 const UrinalysisResultForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        results : '',
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">10. Urinalysis Result(Resulta ng pag-eksamin sa ihi)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Nakitang Resulta</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.results} onChange={(e) => setForm({...form, results : e.target.value})} />
+                <ValidationError name="results" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
 const HasCancerForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        affected_areas : '',
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">11. Has Cancer(May sakit na Cancer)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Apektadong Bahagi ng Katawan</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.affected_areas} onChange={(e) => setForm({...form, affected_areas : e.target.value})} />
+                <ValidationError name="affected_areas" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.actions} onChange={(e) => setForm({...form, actions : e.target.value})} />
+                <ValidationError name="actions" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
 const HasEpilepsyForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        affected_areas : '',
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">12. Has Epilepsy(May problema sa pagiisip/Epilepsy)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
 const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        animal_type : '',
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">11. Animal Bites(Kinagat ng Hayop/Aso)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="text" className="w-full" value={form.animal_type} onChange={(e) => setForm({...form, animal_type : e.target.value})} />
+                <ValidationError name="animal_type" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
-
 
 export const UpdateHealthServiceForm = () => {
     const dispatch = useDispatch();
@@ -756,7 +823,7 @@ export const UpdateHealthServiceForm = () => {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
             form : <UrinalysisResultForm onSubmit={(data) => submitForm(services.find(s => s.value == "URINALYSIS_RESULT"), data)}/>,
-            handler : storeUnirinalysis,
+            handler : storeUrinalysis,
             visible : true
         },
         {

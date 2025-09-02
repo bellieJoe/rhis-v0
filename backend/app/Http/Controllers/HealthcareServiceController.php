@@ -225,27 +225,7 @@ class HealthcareServiceController extends Controller
         });
     }
     
-    public function storeUrinalysisResult(Request $request) {
-        $request->validate([
-            "household_profile_id" => "required|exists:household_profiles,id",
-            "age" => "required|numeric",
-            "results" => "required"
-        ]);
-
-        return DB::transaction(function () use ($request) {
-            UrinalysisResult::create([
-                "household_profile_id" => $request->household_profile_id,
-                "age" => $request->age,
-                "results" => $request->actions,
-                "encoded_by" => auth()->user()->id
-            ]);
-            return response()->json([
-                "message" => "Urinalysis Record created successfully",
-            ], 201);
-        });
-    }
-
-    public function storeDiabetesRecord(Request $request) {
+     public function storeDiabetesRecord(Request $request) {
         $request->validate([
             "household_profile_id" => "required|exists:household_profiles,id",
             "age" => "required|numeric",
@@ -265,6 +245,26 @@ class HealthcareServiceController extends Controller
             ]);
             return response()->json([
                 "message" => "Diabetes Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeUrinalysisResult(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "results" => "required"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            UrinalysisResult::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "results" => $request->results,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Urinalysis Record created successfully",
             ], 201);
         });
     }
