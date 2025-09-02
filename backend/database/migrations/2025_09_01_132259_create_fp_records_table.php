@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('fp_records', function (Blueprint $table) {
             $table->id();
             $table->integer("household_profile_id");
-            $table->number("age");
+            $table->integer("age");
             $table->integer("fp_method_id");
             $table->string("remarks", 500)->nullable();
             $table->integer("encoded_by");

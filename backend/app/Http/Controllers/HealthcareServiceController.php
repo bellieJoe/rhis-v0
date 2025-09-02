@@ -16,6 +16,7 @@ use App\Models\NewBorn;
 use App\Models\Pregnancy;
 use App\Models\SickRecord;
 use App\Models\UrinalysisResult;
+use App\Models\Vaccinated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -109,15 +110,15 @@ class HealthcareServiceController extends Controller
             ], 201);
         });
     }
+    
     public function storeVaccinatedRecord(Request $request) {
         $request->validate([
             "household_profile_id" => "required|exists:household_profiles,id",
-            "vaccine" => "nullable|max:100",
+            "vaccine" => "required|max:100",
         ]);
 
         return DB::transaction(function () use ($request) {
-            $household_profile = HouseholdProfile::find($request->household_profile_id);
-            NewBorn::create([
+            Vaccinated::create([
                 "household_profile_id" => $request->household_profile_id,
                 "vaccine" => $request->vaccine,
                 "encoded_by" => auth()->user()->id
@@ -169,7 +170,7 @@ class HealthcareServiceController extends Controller
             Death::create([
                 "household_profile_id" => $request->household_profile_id,
                 "age" => $request->age,
-                "date_of_death" => $request->date_of_death,
+                "date_of_death" => Carbon::parse($request->date_of_death),
                 "cause_of_death" => $request->cause_of_death,
                 "encoded_by" => auth()->user()->id
             ]);
@@ -192,7 +193,7 @@ class HealthcareServiceController extends Controller
             SickRecord::create([
                 "household_profile_id" => $request->household_profile_id,
                 "age" => $request->age,
-                "date_of_sickness" => $request->date_of_sickness,
+                "date_of_sick" => Carbon::parse($request->date_of_sickness),
                 "type_of_sickness" => $request->type_of_sickness,
                 "encoded_by" => auth()->user()->id
             ]);

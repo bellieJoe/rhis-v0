@@ -18,6 +18,8 @@ import ValidationError from "./ValidationError";
 import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { Dropdown } from "primereact/dropdown";
+import { getGenericTypes } from "@/api/genericTypeApi";
+import { InputTextarea } from "primereact/inputtextarea";
 
 const UnderDevelopment = () => {
     return (
@@ -123,15 +125,6 @@ const PregnantForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
 const GaveBirthForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
     const dispatch = useDispatch();
-    const initialForm = {
-        household_profile_id : "",
-        name : "",
-        date_gave_birth : "",
-        place_of_birth : "",
-        barangay_name: "",
-        type_of_birth : "",
-        midwife : ""
-    };
     const [form, setForm] = useState({
         household_profile_id : updateHealthServiceStore.householdProfile?.id,
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
@@ -215,173 +208,346 @@ const GaveBirthForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     );
 }
 
-const NewBornChildForm = () => {
+const NewBornChildForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        barangay_name : "",
+        date_of_birth : updateHealthServiceStore.householdProfile?.birthdate,
+        place_of_birth : "",
+        weight: "",
+        gender : updateHealthServiceStore.householdProfile?.updated_details?.gender_id,
+        remarks : ""
+    });
+    const [barangays, setBarangays] = useState([]);
+    const handleBarangayChanged = async (e: any) => {
+        setForm({...form, barangay_name : e.value});
+    }
+    const handleBarangaySelect = (e: any) => {
+        console.log(e.value.value);
+        setForm({...form, barangay_name : e.value.label, place_of_birth : e.value.value});
+    }
+    const handleBarangayComplete = async (e: any) => {
+        const barangaysResult = await getBarangays(dispatch, { search : e.query });
+        console.log(barangaysResult)
+        setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
+    }
+    useEffect(() => {
+        (async() => {
+            await getGenericTypes(dispatch)
+        })()
+    }, []);
     return (
         <div className="card">
             <h5 className="text-center ">3. New Born Child(Bagong silang na sanggol)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.name} disabled />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
-                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Date of Birth(Petsa ng panganganak)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <label htmlFor="date_of_birth" className="form-label mb-2 block">Date of Birth(Petsa ng panganganak)</label>
+                <Calendar 
+                    id="date_of_birth" 
+                    className="w-full"
+                    value={form.date_of_birth ? new Date(form.date_of_birth) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    disabled
+                    onChange={(e) => setForm({...form, date_of_birth : (e.value ? e.value.toLocaleString() : form.date_of_birth) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_of_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Lugar ng Kapanganakan(Birth Place)</label>
-                <InputText type="text" className="w-full" />
+                <AutoComplete   
+                    dropdown
+                    id="address" 
+                    placeholder="Barangay, Municipality, Province" 
+                    suggestions={barangays} 
+                    value={form.barangay_name} 
+                    field="label"
+                    completeMethod={handleBarangayComplete}
+                    onChange={handleBarangayChanged} 
+                    onSelect={handleBarangaySelect}
+                    className="w-full" />
+                <ValidationError name="place_of_birth" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Weight(Timbang)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.weight} onChange={(e) => setForm({...form, weight : e.target.value})} />
+                <ValidationError name="weight" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Gender(Kasarian)</label>
-                <InputText type="text" className="w-full" />
+                <Dropdown 
+                    className="w-full"
+                    options={genericTypes?.filter((genericType: any) => genericType.type === "GENDER")?.map((gender: any) => gender)} 
+                    value={form.gender} 
+                    optionLabel="name"
+                    optionValue="id"
+                    onChange={(e) => setForm({...form, gender : e.value})}
+                    disabled />
+                <ValidationError name="gender" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Remarks(Puna)</label>
-                <InputText type="text" className="w-full" />
+                <InputTextarea className="w-full" value={form.remarks} onChange={(e) => setForm({...form, remarks : e.target.value})} />
+                <ValidationError name="remarks" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => {
+                    onSubmit(form)
+                }}  />
             </div>
         </div>
     );
 }
 
-const VaccinatedForm = () => {
+const VaccinatedForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        birthdate : updateHealthServiceStore.householdProfile?.birthdate,
+        vaccine : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">4. Vaccinated(Binakunahan)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
-                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Birthdate</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <label htmlFor="birthdate" className="form-label mb-2 block">Birthdate</label>
+                <Calendar 
+                    id="birthdate" 
+                    className="w-full"
+                    value={form.birthdate ? new Date(form.birthdate) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    disabled
+                    onChange={(e) => setForm({...form, birthdate : (e.value ? e.value.toLocaleString() : form.birthdate) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="birthdate" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Vaccine (Bakunang Ibinigay)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.vaccine} onChange={(e) => setForm({...form, vaccine : e.target.value})} />
+                <ValidationError name="vaccine" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
-const FamilyPlanningForm = () => {
+const FamilyPlanningForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        family_planning_method : '',
+        remarks : ""
+    });
+    useEffect(() => {
+        (async() => {
+            await getGenericTypes(dispatch)
+        })()
+    }, []);
     return (
         <div className="card">
             <h5 className="text-center ">5. Family Planning(Nagpaplano ng Pamilya)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} disabled />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
-                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">F.P. Method</label>
-                <InputText type="text" className="w-full" />
+                <label className="form-label mb-2 block">F.P. Method</label>
+                <Dropdown 
+                    options={genericTypes?.filter((genericType: any) => genericType.type === "FAMILY_PLANNING_METHOD")?.map((method: any) => method)}
+                    optionLabel="name"
+                    optionValue="id"
+                    value={form.family_planning_method}
+                    onChange={(e) => setForm({...form, family_planning_method : e.value})}
+                    className="w-full" />
+                <ValidationError name="family_planning_method" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Remarks(Puna)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.remarks} onChange={(e) => setForm({...form, remarks : e.target.value})} />
+                <ValidationError name="remarks" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
-const DeathForm = () => {
+const DeathForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        date_of_death : '',
+        cause_of_death : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">6. Death(Namatay)</h5>
             <div className="mb-2">
-                <label htmlFor="" className="form-label mb-2 block">Date of Death(Petsa ng Kamatayan)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <label htmlFor="date_of_death" className="form-label mb-2 block">Date of Death(Petsa ng Kamatayan)</label>
+                <Calendar 
+                    id="date_of_death" 
+                    className="w-full"
+                    value={form.date_of_death ? new Date(form.date_of_death) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    onChange={(e) => setForm({...form, date_of_death : (e.value ? e.value.toLocaleString() : form.date_of_death) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_of_death" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} min={0} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
-                <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Cause of Death(Sanhi ng Pagkamatay)</label>
-                <InputText type="text" className="w-full" />
+                <label  className="form-label mb-2 block">Cause of Death(Sanhi ng Pagkamatay)</label>
+                <InputText type="text" className="w-full" value={form.cause_of_death} onChange={(e) => setForm({...form, cause_of_death : e.target.value})} maxLength={100} />
+                <ValidationError name="cause_of_death" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
-const SickForm = () => {
+const SickForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        date_of_sickness : '',
+        type_of_sickness : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">7. Sick(Mga may sakit)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Date of Sickness(Petsa na nakasakit)</label>
-                <Calendar id="lastMenstrualPeriod" className="w-full" />
+                <Calendar 
+                    id="date_of_sickness" 
+                    className="w-full"
+                    value={form.date_of_sickness ? new Date(form.date_of_sickness) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    onChange={(e) => setForm({...form, date_of_sickness : (e.value ? e.value.toLocaleString() : form.date_of_sickness) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_of_sickness" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Type of Sickness(Uri ng Karamdaman)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" value={form.type_of_sickness} onChange={(e) => setForm({...form, type_of_sickness : e.target.value})} maxLength={100} />
+                <ValidationError name="type_of_sickness" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
-const HasHighbloodForm = () => {
+const HasHighbloodForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
+        blood_pressure : '',
+        actions : ""
+    });
     return (
         <div className="card">
             <h5 className="text-center ">8. Has Highblood(May sakit na Highblood)</h5>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-                <InputText type="text" className="w-full" />
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-                <InputText type="number" className="w-full" />
+                <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+                <ValidationError name="age" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">BP</label>
-                <InputText type="number" className="w-full" />
+                <InputText className="w-full" value={form.blood_pressure} onChange={(e) => setForm({...form, blood_pressure : e.target.value})}  />
+                <ValidationError name="blood_pressure" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
-                <InputText type="text" className="w-full" />
+                <InputTextarea value={form.actions} onChange={(e) => setForm({...form, actions : e.target.value})} className="w-full"  />
+                <ValidationError name="actions" />
             </div>
             <div className="flex justify-content-end">
-                <Button label="Save" className="p-button-success" icon="pi pi-check" />
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
         </div>
     );
 }
 
-const HasDiabetesForm = () => {
+const HasDiabetesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     return (
         <div className="card">
             <h5 className="text-center ">9. Has Diabetes(May sakit na Diabetes)</h5>
@@ -412,7 +578,7 @@ const HasDiabetesForm = () => {
     );
 }
 
-const UrinalysisResultForm = () => {
+const UrinalysisResultForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     return (
         <div className="card">
             <h5 className="text-center ">10. Urinalysis Result(Resulta ng pag-eksamin sa ihi)</h5>
@@ -435,7 +601,7 @@ const UrinalysisResultForm = () => {
     );
 }
 
-const HasCancerForm = () => {
+const HasCancerForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     return (
         <div className="card">
             <h5 className="text-center ">11. Has Cancer(May sakit na Cancer)</h5>
@@ -462,7 +628,7 @@ const HasCancerForm = () => {
     );
 }
 
-const HasEpilepsyForm = () => {
+const HasEpilepsyForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     return (
         <div className="card">
             <h5 className="text-center ">12. Has Epilepsy(May problema sa pagiisip/Epilepsy)</h5>
@@ -481,7 +647,7 @@ const HasEpilepsyForm = () => {
     );
 }
 
-const AnimalBitesForm = () => {
+const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     return (
         <div className="card">
             <h5 className="text-center ">11. Animal Bites(Kinagat ng Hayop/Aso)</h5>
@@ -540,77 +706,77 @@ export const UpdateHealthServiceForm = () => {
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
             value: "NEW_BORN_CHILD",
-            form : <NewBornChildForm />,
+            form : <NewBornChildForm onSubmit={(data) => submitForm(services.find(s => s.value == "NEW_BORN_CHILD"), data)} />,
             handler : storeNewBorn,
             visible : true
         },
         {
             label: "4. Vaccinated(Binakunahan)",
             value: "VACCINATED",
-            form : <VaccinatedForm />,
+            form : <VaccinatedForm onSubmit={(data) => submitForm(services.find(s => s.value == "VACCINATED"), data)} />,
             handler : storeVaccinated,
             visible : true
         }, 
         {
             label: "5. Family Plannning(Nagpalano ng Pamilya)",
             value: "FAMILY_PLANNING",
-            form : <FamilyPlanningForm />,
+            form : <FamilyPlanningForm onSubmit={(data) => submitForm(services.find(s => s.value == "FAMILY_PLANNING"), data)} />,
             handler : storeFamilyPlanning,
             visible : householdProfile?.updated_details?.gender_id == 80
         },
         {
             label: "6. Death(Namatay)",
             value: "DEATH",
-            form : <DeathForm />,
+            form : <DeathForm onSubmit={(data) => submitForm(services.find(s => s.value == "DEATH"), data)}/>,
             handler : storeDeath,
             visible : true
         },
         {
             label: "7. Sick(Mga nagkasakit/may sakit)",
             value: "SICK",
-            form : <SickForm />,
+            form : <SickForm onSubmit={(data) => submitForm(services.find(s => s.value == "SICK"), data)}/>,
             handler : storeSick,
             visible : true
         },
         {
             label: "8. Has Highblood(May sakit na Highblood)",
             value: "HAS_HIGHBLOOD",
-            form : <HasHighbloodForm />,
+            form : <HasHighbloodForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_HIGHBLOOD"), data)}/>,
             handler : storeHasHighblood,
             visible : true
         },
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
-            form : <HasDiabetesForm />,
+            form : <HasDiabetesForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_DIABETES"), data)}/>,
             handler : storeHasDiabetes,
             visible : true
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
-            form : <UrinalysisResultForm />,
+            form : <UrinalysisResultForm onSubmit={(data) => submitForm(services.find(s => s.value == "URINALYSIS_RESULT"), data)}/>,
             handler : storeUnirinalysis,
             visible : true
         },
         {
             label: "11. Has Cancer(May sakit na Cancer)",
             value: "HAS_CANCER",
-            form : <HasCancerForm />,
+            form : <HasCancerForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_CANCER"), data)}/>,
             handler : storeHasCancer,
             visible : true
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
             value: "HAS_EPILEPSY",
-            form : <HasEpilepsyForm />,
+            form : <HasEpilepsyForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_EPILEPSY"), data)}/>,
             handler : storeHasEpilepsy,
             visible : true
         },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",
-            form : <AnimalBitesForm />,
+            form : <AnimalBitesForm onSubmit={(data) => submitForm(services.find(s => s.value == "ANIMAL_BITE"), data)}/>,
             handler : storeAnimalBites,
             visible : true
         }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer("household_profile_id");
             $table->integer("age");
-            $table->string("blood_presure", 10);
+            $table->string("blood_pressure", 10);
             $table->string("actions", 500)->nullable();
             $table->integer("encoded_by");
             $table->timestamps();
