@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AnimalBiteRecord;
 use App\Models\Birth;
+use App\Models\CancerRecord;
 use App\Models\Death;
+use App\Models\DiabetesRecord;
+use App\Models\EpilepsyRecord;
 use App\Models\FpRecord;
+use App\Models\HighbloodRecord;
 use App\Models\HouseholdProfile;
 use App\Models\NewBorn;
 use App\Models\Pregnancy;
 use App\Models\SickRecord;
+use App\Models\UrinalysisResult;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -192,6 +198,137 @@ class HealthcareServiceController extends Controller
             ]);
             return response()->json([
                 "message" => "Sickness Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeHighbloodRecord(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "blood_pressure" => "required",
+            "actions" => "required|max:500",
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            HighbloodRecord::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "blood_pressure" => $request->blood_pressure,
+                "actions" => $request->actions,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Highblood Record created successfully",
+            ], 201);
+        });
+    }
+    
+    public function storeUrinalysisResult(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "results" => "required"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            UrinalysisResult::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "results" => $request->actions,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Urinalysis Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeDiabetesRecord(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "glucose_level" => "required",
+            "observation" => "required|max:500",
+            "actions" => "required|max:500",
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            DiabetesRecord::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "glucose_level" => $request->glucose_level,
+                "observation" => $request->observation,
+                "actions" => $request->actions,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Diabetes Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeCancerRecord(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "affected_areas" => "required|max:500",
+            "actions" => "required|max:500",
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            $household_profile = HouseholdProfile::find($request->household_profile_id);
+            $updated_profile_detail = $household_profile->updated_details;
+            $new_details = $updated_profile_detail->replicate();
+            $new_details->hc_cancer = true;
+            $new_details->save();
+            CancerRecord::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "affected_areas" => $request->affected_areas,
+                "actions" => $request->actions,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Cancer Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeEpilepsyRecord(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            EpilepsyRecord::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Epilepsy Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeAnimalBiteRecord(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "age" => "required|numeric",
+            "animal_type" => "required"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            AnimalBiteRecord::create([
+                "household_profile_id" => $request->household_profile_id,
+                "age" => $request->age,
+                "animal_type" => $request->animal_type,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Animal Bite Record created successfully",
             ], 201);
         });
     }

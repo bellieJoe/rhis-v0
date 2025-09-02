@@ -93,6 +93,12 @@ Route::prefix("healthcare-services")->group(function () {
         Route::post("family-plannings", [HealthcareServiceController::class, "storeFpRecord"]);
         Route::post("deaths", [HealthcareServiceController::class, "storeDeathRecord"]);
         Route::post("sicks", [HealthcareServiceController::class, "storeSickRecord"]);
+        Route::post("has-high-bloods", [HealthcareServiceController::class, "storeHighbloodRecord"]);
+        Route::post("has-diabetes", [HealthcareServiceController::class, "storeDiabetesRecord"]);
+        Route::post("unirinalysis", [HealthcareServiceController::class, "storeUrinalysisResult"]);
+        Route::post("has-cancers", [HealthcareServiceController::class, "storeCancerRecord"]);
+        Route::post("has-epilepsies", [HealthcareServiceController::class, "storeEpilepsyRecord"]);
+        Route::post("animal-bites", [HealthcareServiceController::class, "storeAnimalBiteRecord"]);
     });
 });
 
