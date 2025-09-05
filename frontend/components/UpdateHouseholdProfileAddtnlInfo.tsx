@@ -17,6 +17,7 @@ import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { updateHouseholdProfileAddtnlInfo } from "@/api/householdProfileApi";
 import { hideUpdateProfileAdditnlInfo } from "@/features/updateHouseholdProfileAddtnlInfoSlice";
 import { Checkbox } from "primereact/checkbox";
+import { setErrors } from "@/features/errorSlice";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -86,6 +87,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
     });
 
     useEffect(() => {
+        dispatch(setErrors({}));
         (async()=>{
             await getGenericTypes(dispatch);
         })();

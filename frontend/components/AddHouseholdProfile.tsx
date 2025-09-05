@@ -16,6 +16,7 @@ import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile } from "@/api/householdProfileApi";
 import { addMember, hide } from "@/features/addHouseholdProfileSlice";
 import { reloadHouseholds } from "@/features/householdSlice";
+import { setErrors } from "@/features/errorSlice";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -86,6 +87,7 @@ const AddHouseholdProfile = () => {
     });
 
     useEffect(() => {
+        dispatch(setErrors({}));
         (async()=>{
             await getGenericTypes(dispatch);
         })();
@@ -618,11 +620,15 @@ const AddHouseholdProfile = () => {
                                         <p>{form.household_no}</p>
                                         <ValidationError name="household_id" />
                                     </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Relationship to the head:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.member_relationship_id)?.name }</p>
-                                        <ValidationError name="member_relationship_id" />
-                                    </div>
+                                    {
+                                        !addHouseholdProfileStore.addHead && (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Relationship to the head:</p>
+                                                <p>{ genericTypes.find((g : any) => g.id === form.member_relationship_id)?.name }</p>
+                                                <ValidationError name="member_relationship_id" />
+                                            </div>
+                                        )
+                                    }
                                     {
                                         form.member_relationship_id == "5" && (
                                             <div className="flex gap-2">

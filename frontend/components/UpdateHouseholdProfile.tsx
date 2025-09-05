@@ -15,6 +15,7 @@ import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
 import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
+import { setErrors } from "@/features/errorSlice";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -86,6 +87,7 @@ const UpdateHouseholdProfile = () => {
     });
 
     useEffect(() => {
+        dispatch(setErrors({}));
         (async()=>{
             await getGenericTypes(dispatch);
         })();
@@ -191,22 +193,26 @@ const UpdateHouseholdProfile = () => {
                                         className="w-full" />
                                     <ValidationError name="household_id" />
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => {
-                                            return x.type === "MEMBERS_OF_HOUSEHOLD";
-                                        })} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        value={form.member_relationship_id} 
-                                        disabled={true}
-                                        placeholder="Select Relationship" 
-                                        onChange={(e) => setForm({...form, member_relationship_id : e.value})}
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="member_relationship_id" />
-                                </div>
+                                {
+                                    updateHouseholdProfileStore.householdProfile.member_relationship_id == 1 && (
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
+                                            <Dropdown 
+                                                showClear
+                                                options={genericTypes.filter((x: any) => {
+                                                    return x.type === "MEMBERS_OF_HOUSEHOLD";
+                                                })} 
+                                                optionLabel="label"
+                                                optionValue="id"
+                                                value={form.member_relationship_id} 
+                                                disabled={true}
+                                                placeholder="Select Relationship" 
+                                                onChange={(e) => setForm({...form, member_relationship_id : e.value})}
+                                                style={{ width: '100%' }} />
+                                            <ValidationError name="member_relationship_id" />
+                                        </div>
+                                    )
+                                }
                                 {
                                     form.member_relationship_id == "5" && (
                                         <>
@@ -617,11 +623,15 @@ const UpdateHouseholdProfile = () => {
                                         <p>{form.household_no}</p>
                                         <ValidationError name="household_id" />
                                     </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Relationship to the head:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.member_relationship_id)?.name }</p>
-                                        <ValidationError name="member_relationship_id" />
-                                    </div>
+                                    {
+                                        updateHouseholdProfileStore.householdProfile.member_relationship_id == 1 && (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Relationship to the head:</p>
+                                                <p>{ genericTypes.find((g : any) => g.id === form.member_relationship_id)?.name }</p>
+                                                <ValidationError name="member_relationship_id" />
+                                            </div>
+                                        )
+                                    }
                                     {
                                         form.member_relationship_id == "5" && (
                                             <div className="flex gap-2">
@@ -652,11 +662,6 @@ const UpdateHouseholdProfile = () => {
                                         <p className="font-bold">Sex:</p>
                                         <p>{ genericTypes.find((g : any) => g.id === form.gender_id)?.name }</p>
                                         <ValidationError name="gender_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Civil Status:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.civil_status_id)?.name }</p>
-                                        <ValidationError name="civil_status_id" />
                                     </div>
                                     <div className="flex gap-2">
                                         <p className="font-bold">Civil Status:</p>
