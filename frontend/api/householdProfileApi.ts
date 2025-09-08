@@ -96,3 +96,24 @@ export const updateHouseholdProfileAddtnlInfo = async (dispatch : Dispatch, para
     }
 }
 
+export const deleteHouseholdProfile = async (dispatch : Dispatch, id : any) => {
+    try {
+        const response : any = await axios.delete(`/api/household-profiles/${id}`);
+        dispatch(setToast({
+            severity : "success",
+            summary : "Success",
+            detail : "Household profile deleted successfully",
+            life : 3000
+        }));
+        dispatch(reloadHouseholdProfiles());
+        return true;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+

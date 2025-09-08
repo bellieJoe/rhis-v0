@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('animal_bite_records', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->integer("age");
             $table->string("animal_type");
             $table->integer("encoded_by");

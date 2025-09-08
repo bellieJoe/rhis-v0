@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sick_records', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->date("date_of_sick");
             $table->integer("age");
             $table->string("type_of_sickness", 100);

@@ -1,6 +1,6 @@
 "use client";
 import { deleteHousehold, getHouseholds } from "@/api/householdApi";
-import { getHouseholdProfiles } from "@/api/householdProfileApi";
+import { deleteHouseholdProfile, getHouseholdProfiles } from "@/api/householdProfileApi";
 import AddHousehold from "@/components/AddHousehold";
 import AddHouseholdProfile from "@/components/AddHouseholdProfile";
 import { FilterModal } from "@/components/FilterModal";
@@ -14,6 +14,7 @@ import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
+import { confirmDialog } from "primereact/confirmdialog";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
 import { Paginator } from "primereact/paginator";
@@ -123,7 +124,8 @@ const HouseholdProfilesTable = () => {
     });
     const { householdProfiles, reload } = useSelector((state : any) => state.householdProfile);
     const [loading, setLoading] = useState({
-        householdProfilesTable: false
+        householdProfilesTable: false,
+        householdProfileDelete : false
     });
     const [paginator, setPaginator] = useState({
         householdProfiles: useRef<any>(null)
@@ -133,6 +135,19 @@ const HouseholdProfilesTable = () => {
         setLoading({ ...loading, householdProfilesTable: true });
         await getHouseholdProfiles(dispatch, { page: e.page + 1 });
         setLoading({ ...loading, householdProfilesTable: false });
+    }
+
+    const deleteProfile = (event : any, id:any) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Are you sure you want to delete this profile?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                setLoading({ ...loading, householdProfileDelete : true });
+                await deleteHouseholdProfile(dispatch, id);
+                setLoading({ ...loading, householdProfileDelete : false });
+            },
+        });
     }
 
     useEffect(() => {
@@ -156,6 +171,7 @@ const HouseholdProfilesTable = () => {
                 <Column  header="Actions" frozen body={(data : any) => (
                     <>
                         <div className="flex gap-2">
+                            <Button label="Delete" loading={loading.householdProfileDelete} severity="danger" size="small" outlined icon="pi pi-trash" onClick={(event) => deleteProfile(event, data.id)} />
                             <Button label="Update" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfile({householdProfile : data}))} />
                             <Button label="Update Additional Info" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfileAdditnlInfo({householdProfile : data}))} />
                         </div>

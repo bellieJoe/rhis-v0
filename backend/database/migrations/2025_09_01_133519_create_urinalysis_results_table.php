@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('urinalysis_results', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->integer("age");
             $table->string("results", 500);
             $table->integer("encoded_by");

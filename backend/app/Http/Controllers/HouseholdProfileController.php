@@ -336,5 +336,20 @@ class HouseholdProfileController extends Controller
     public function show($id) {
         return HouseholdProfile::find($id);
     }
+
+    public function destroy($id) {
+        $household_profile = HouseholdProfile::find($id);
+        if(!$household_profile) {
+            return response()->json([
+                "message" => "Household profile not found"
+            ], 404);
+        }
+
+        $household_profile->delete();
+
+        return response()->json([
+            "message" => "Household profile deleted successfully"
+        ]);
+    }
     
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('new_borns', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->date("date_of_birth");
             $table->integer("place_of_birth");
             $table->double("weight");

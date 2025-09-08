@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('deaths', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->integer("age");
             $table->string("cause_of_death", 100);
             $table->date("date_of_death");

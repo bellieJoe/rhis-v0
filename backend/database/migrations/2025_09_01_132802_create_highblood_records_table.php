@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('highblood_records', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->integer("age");
             $table->string("blood_pressure", 10);
             $table->string("actions", 500)->nullable();

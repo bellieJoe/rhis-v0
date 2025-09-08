@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('diabetes_records', function (Blueprint $table) {
             $table->id();
-            $table->integer("household_profile_id");
+            $table->foreignId("household_profile_id");
             $table->integer("age");
             $table->string("glucose_level", 20);
             $table->string("observation", 500);
