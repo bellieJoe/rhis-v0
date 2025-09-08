@@ -17,6 +17,8 @@ import { Column } from "primereact/column";
 import { confirmDialog } from "primereact/confirmdialog";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -116,6 +118,55 @@ const HouseholdsTable = () => {
     )
 }
 
+
+const HouseholdProfilesFilter = () => {
+    const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const dispatch = useDispatch();
+    const initForm = {
+        household_no : ''
+    };
+    const [form, setForm] = useState({
+        household_no : ''
+    }); 
+    const onSubmit = async () => {
+        setLoading(true);
+        console.log(form)
+        await getHouseholdProfiles(dispatch, { household_no : form.household_no });
+        setLoading(false);
+        setVisible(false);
+    }
+    const onClear = async () => {
+        setForm(initForm);
+        setLoading(true);
+        await getHouseholdProfiles(dispatch, {});
+        setLoading(false);
+        setVisible(false);
+    }
+
+    return (
+        <>
+            <Button size="small" icon="pi pi-filter" outlined onClick={() => setVisible(true)}   />
+            <Dialog 
+                header="Filter Household Profiles" 
+                visible={visible} 
+                onHide={() => setVisible(false)} 
+                style={{ width: '50vw' }} 
+                breakpoints={{ '960px': '75vw', '641px': '100vw' }}
+                position="top">
+                <div className="field">
+                    <label htmlFor="household_no" className="font-bold block mb-2">Household No.</label>
+                    <InputText id="household_no" className="w-full" value={form.household_no} onChange={(e) => setForm({...form, household_no : e.target.value})} />
+                </div>
+                <div className="flex justify-content-end gap-2">
+                    <Button label="Clear" outlined icon="pi pi-check" onClick={onClear} loading={loading}  />
+                    <Button label="Apply" icon="pi pi-check" onClick={onSubmit} loading={loading}  />
+                </div>
+            </Dialog>
+        </>
+    )
+}
+
 const HouseholdProfilesTable = () => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState({
@@ -162,8 +213,7 @@ const HouseholdProfilesTable = () => {
         <div className="card">
             <h5>Household Member Additional Information</h5>
             <div className="flex justify-content-end gap-2 mb-3">
-                <Button label="" size="small" icon="pi pi-filter" outlined   />
-                {/* <Button label="Add Household Profile" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  /> */}
+                <HouseholdProfilesFilter />
             </div>
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
                 <Column field="household.household_no" header="Household No." />
@@ -177,38 +227,7 @@ const HouseholdProfilesTable = () => {
                         </div>
                     </>
                 )} />
-                {/* <Column field="updated_details.firstname" header="Firstname" />
-                <Column field="updated_details.middlename" header="Middlename" />
-                <Column field="updated_details.lastname" header="Lastname" />
-                <Column field="updated_details.member_relationship.name" header="Relationship to the head" />
-                <Column field="birthdate" header="Date of Birth" body={(data : any) => moment(data.birthdate).format('MMM DD, YYYY')} />
-                <Column header="Age" body={(data : any) => calculateAge(data.birthdate)} />
-                <Column field="updated_details.gender.name" header="Sex"  />
-                <Column field="updated_details.civil_status.name" header="Civil Status"  />
-                <Column field="updated_details.educational_attainment.name" header="Educational Attainment"  />
-                <Column field="updated_details.religion.name" header="Religion"  />
-                <Column field="updated_details.enthnicity" header="Ethnicity"  />
-                <Column field="updated_details.fourps_household_no" header="4Ps Household ID No." />
-                <Column field="updated_details.philhealth_id" header="PHILHEALTH ID"  />
-                <Column field="updated_details.philhealth_membership_type.name" header="Membership Type"  />
-                <Column field="updated_details.philhealth_category.name" header="PHILHEALTH Category"  />
-                <Column field="updated_details.medical_history.name" header="Medical History"  />
-                <Column field="updated_details.classification_by_age_hrg.name" header="Classification by Age/Health Risk Group"  />
-                <Column field="updated_details.last_menstrual_period" header="Last Menstrual Period" body={(data : any) => data && data.updated_details?.last_menstrual_period ? moment(data.updated_details.last_menstrual_period).format('MMM DD, YYYY') : "N/A"}  />
-                <Column field="updated_details.using_fp_method" header="Is Using Family Planning Method" body={(data : any) => data && data.updated_details?.using_fp_method ? "Yes" : "No"}  />
-                <Column field="updated_details.family_planning_method.name" header="Family Planning Method Use" />
-                <Column field="updated_details.family_planning_status.name" header="Family Planning Status" />
-                <Column field="updated_details.water_source.name" header="Type of Water Source" />
-                <Column field="updated_details.toilet_facility.name" header="Type of Toilet Facility" />
-                <Column header="Asthma (Hika)" body={(data : any) => (data && data.updated_details?.hc_asthma && data.updated_details?.hc_asthma == 1) ? "Yes" : "No"} />
-                <Column header="Cancer" body={(data : any) => (data && data.updated_details?.hc_cancer && data.updated_details?.hc_cancer == 1) ? "Yes" : "No"} />
-                <Column header="PWD (May kapansanan)" body={(data : any) => (data && data.updated_details?.hc_pwd && data.updated_details?.hc_pwd == 1) ? "Yes" : "No"} />
-                <Column header="Stroke" body={(data : any) => (data && data.updated_details?.hc_stroke && data.updated_details?.hc_stroke == 1) ? "Yes" : "No"} />
-                <Column header="Mass (Bukol)" body={(data : any) => (data && data.updated_details?.hc_mass && data.updated_details?.hc_mass == 1) ? "Yes" : "No"} />
-                <Column header="MHGAP" body={(data : any) => (data && data.updated_details?.hc_mhgap && data.updated_details?.hc_mhgap == 1) ? "Yes" : "No"} />
-                <Column header="Smoker" body={(data : any) => (data && data.updated_details?.hc_smoker && data.updated_details?.hc_smoker == 1) ? "Yes" : "No"} />
-                <Column header="Alchohol Drinker" body={(data : any) => (data && data.updated_details?.hc_alchohol_drinker && data.updated_details?.hc_alchohol_drinker == 1) ? "Yes" : "No"} /> */}
-
+              
             </DataTable>
             <Paginator 
                     ref={paginator.householdProfiles}
@@ -222,7 +241,7 @@ const HouseholdProfilesTable = () => {
         </div>
     );
 }
-        
+     
 const HouseholdProfiles = () => {
     
     return (

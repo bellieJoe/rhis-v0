@@ -44,6 +44,13 @@ class HouseholdProfileController extends Controller
             });
         }
 
+        if($request->filled('household_no') && $request->household_no) {
+            $query->whereHas(
+                'household', function ($q) use ($request) {
+                    $q->where('household_no', $request->household_no);
+            });
+        }
+
         return $query->paginate(20);
     }
     
