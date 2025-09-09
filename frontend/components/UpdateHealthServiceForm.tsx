@@ -776,7 +776,7 @@ export const UpdateHealthServiceForm = () => {
             value: "NEW_BORN_CHILD",
             form : <NewBornChildForm onSubmit={(data) => submitForm(services.find(s => s.value == "NEW_BORN_CHILD"), data)} />,
             handler : storeNewBorn,
-            visible : true
+            visible : calculateAge(householdProfile?.birthdate) < 2
         },
         {
             label: "4. Vaccinated(Binakunahan)",
