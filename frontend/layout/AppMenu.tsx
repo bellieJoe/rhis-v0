@@ -5,7 +5,7 @@ import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
-import { AppMenuItem } from '@/types';
+import { AppMenuItem, AppMenuItemProps } from '@/types';
 import { useSelector } from 'react-redux';
 
 const AppMenu = () => {
@@ -29,12 +29,19 @@ const AppMenu = () => {
         return [];
     }
 
-    const setBhwMenu = () => {
+    const setBhwMenu  = () => {
         return [{
             label: 'BHW Interface',
             items: [
                 { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' },
-                { label: 'Healthcare Services', icon: 'pi pi-fw pi-users', to: '/bhw/healthcare-services' }
+                { label: 'Healthcare Services', icon: 'pi pi-fw pi-users', to: '/bhw/healthcare-services' },
+                { 
+                    label: 'Reports', 
+                    icon: 'pi pi-fw pi-chart-bar', 
+                    items : [
+                        { label: 'Monthly Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/healthcare-services' }
+                    ]
+                }
             ]
         }];
     }
