@@ -10,7 +10,8 @@ export const addHouseholdProfileSlice = createSlice({
         householdNo : "",
         householdId : "",
         date_of_visit : "",
-        title : "Add Household Member"
+        title : "Add Household Member",
+        household : null
     },
     reducers: {
         addHead : (state : any, action) => { 
@@ -21,6 +22,7 @@ export const addHouseholdProfileSlice = createSlice({
             state.householdId = action.payload.householdId,
             state.date_of_visit = action.payload.date_of_visit;
             state.title = "Add Household Head";
+            state.household = action.payload.household
         },
         addMember : (state : any, action) => { 
             state.addMember = true; 
@@ -30,6 +32,7 @@ export const addHouseholdProfileSlice = createSlice({
             state.householdId = action.payload.householdId,
             state.date_of_visit = action.payload.date_of_visit;
             state.title = "Add Household Member";
+            state.household = action.payload.household
         },
         addMemberGeneral : (state : any, action) => { 
             state.addMember = false; 
@@ -39,6 +42,7 @@ export const addHouseholdProfileSlice = createSlice({
             state.householdId = action.payload.householdId,
             state.date_of_visit = action.payload.date_of_visit;
             state.title = "Add Household Member";
+            state.household = null;
         },
         show : (state : any) => { state.visible = true;
             console.log("show add household")

@@ -17,6 +17,8 @@ import { storeHouseholdProfile } from "@/api/householdProfileApi";
 import { addMember, hide } from "@/features/addHouseholdProfileSlice";
 import { reloadHouseholds } from "@/features/householdSlice";
 import { setErrors } from "@/features/errorSlice";
+import { Chip } from "primereact/chip";
+import Required from "./RequiredIndicator";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -32,7 +34,8 @@ const AddHouseholdProfile = () => {
     const { households } = useSelector((state: any) => state.household);
     const [householdItems , setHouseholdItems] = useState([]);
     const addHouseholdProfileStore = useSelector((state: any) => state.addHouseholdProfile);
-    const initialForm = {
+    const initialForm : any = {
+        household : null,
         household_no : "",
         household_id : "",
         date_of_visit : "",
@@ -118,13 +121,12 @@ const AddHouseholdProfile = () => {
 
     const handleHouseholdComplete = async (e: any) => {
         await getHouseholds(dispatch, { search : e.query });
-        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.household_no}`, value: household.id })) : []);
+        setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.household_no}`, value: household.id, household: household })) : []);
         console.log(householdItems)
     }
 
     const handleHouseholdSelect = (e: any) => {
-        console.log(e.value.value);
-        setForm({...form, household_no : e.value.label, household_id : e.value.value});
+        setForm({...form, household_no : e.value.label, household_id : e.value.value, household : e.value.household});
     }
 
     const handleHouseholdCreate = async () => {
@@ -166,6 +168,14 @@ const AddHouseholdProfile = () => {
         }} 
         visible={visible} 
         position="right" 
+        showCloseIcon={false}
+        icons={() =>  (
+            <Button icon="pi pi-times" size="large" severity="danger" text rounded  onClick={() => {
+                dispatch(hide());
+                setForm(initialForm);
+                setActiveIndex(0);
+            }} />
+        )}
         style={{ width: '100vw' }}>
             <h4 className="text-center mb-4">{addHouseholdProfileStore.title}</h4>
             <div className="grid justify-content-center m-0">
@@ -179,24 +189,28 @@ const AddHouseholdProfile = () => {
                             <Button size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
                         </div>
                     </div>
+                    {
+                        (!addHouseholdProfileStore.addHead && !addHouseholdProfileStore.addMember && form.household) &&  (
+                            <div className="flex  flex-wrap gap-1 mb-4">
+                                <Chip label={`Household No.: ${form.household?.household_no}`} />
+                                <Chip label={`Household Head: ${form.household?.head?.updated_details?.full_name}`} />
+                            </div>
+                        )
+                    }
+                    {
+                        (addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember) &&  (
+                            <div className="flex  flex-wrap gap-1 mb-4">
+                                <Chip label={`Household No.: ${addHouseholdProfileStore.household?.household_no}`} />
+                                <Chip label={`Household Head: ${addHouseholdProfileStore.household?.head?.updated_details?.full_name}`} />
+                            </div>
+                        )
+                    }
                     <div className="card mb-4">
                         {activeIndex === 0 && (
                             <div>
-                                {/* <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date of Visit</label>
-                                    <Calendar 
-                                        value={new Date(form.date_of_visit)}  
-                                        dateFormat="mm-dd-yy" 
-                                        placeholder="mm-dd-yyyy" 
-                                        mask="99/99/9999" 
-                                        // disabled={addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember}
-                                        onChange={(e) => setForm({...form, date_of_visit : (e.value ? e.value.toLocaleString() : form.date_of_visit) })}
-                                        className="w-full" />
-                                    <ValidationError name="date_of_visit" />
-                                </div> */}
 
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No.</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No. <Required/></label>
                                     <AutoComplete 
                                         dropdown 
                                         placeholder="Household No." 
@@ -210,10 +224,11 @@ const AddHouseholdProfile = () => {
                                         className="w-full" />
                                     <ValidationError name="household_id" />
                                 </div>
+                                
                                 {
                                     !addHouseholdProfileStore.addHead && (
                                         <div className="mb-3">
-                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head</label>
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head <Required/></label>
                                             <Dropdown 
                                                 showClear
                                                 options={genericTypes.filter((x: any) => {
@@ -234,7 +249,7 @@ const AddHouseholdProfile = () => {
                                 {
                                     form.member_relationship_id == "5" && (
                                         <>
-                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Other Relationship</label>
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Other Relationship <Required/></label>
                                             <InputText 
                                                 type="text" 
                                                 style={{ width: '100%' }} 
@@ -250,7 +265,7 @@ const AddHouseholdProfile = () => {
                         {activeIndex === 1 && (
                             <div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">First Name</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">First Name <Required/></label>
                                     <InputText 
                                         type="text" 
                                         style={{ width: '100%' }} 
@@ -260,7 +275,7 @@ const AddHouseholdProfile = () => {
                                     <ValidationError name="firstname" />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Middle Name</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Middle Name <Required/></label>
                                     <InputText 
                                         type="text" 
                                         style={{ width: '100%' }} 
@@ -270,7 +285,7 @@ const AddHouseholdProfile = () => {
                                     <ValidationError name="middlename" />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Name</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Name <Required/></label>
                                     <InputText 
                                         type="text" 
                                         style={{ width: '100%' }} 
@@ -280,7 +295,7 @@ const AddHouseholdProfile = () => {
                                     <ValidationError name="lastname" />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Birthdate</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Birthdate <Required/></label>
                                     <Calendar 
                                         value={form.birthdate ? new Date(form.birthdate) : ''}  
                                         dateFormat="mm-dd-yy" 
@@ -294,7 +309,7 @@ const AddHouseholdProfile = () => {
 
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Sex</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Sex <Required/></label>
                                     <Dropdown 
                                         showClear
                                         options={genericTypes.filter((x: any) => x.type === "GENDER")} 
@@ -312,7 +327,7 @@ const AddHouseholdProfile = () => {
                         {activeIndex === 2 && (
                             <div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status <Required/></label>
                                     <Dropdown 
                                         showClear
                                         options={genericTypes.filter((x: any) => x.type === "CIVIL_STATUS")} 
@@ -325,7 +340,7 @@ const AddHouseholdProfile = () => {
                                     <ValidationError name="civil_status_id" />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Educational Attainment</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Educational Attainment <Required/></label>
                                     <Dropdown 
                                         showClear
                                         options={genericTypes.filter((x: any) => x.type === "EDUCATIONAL_ATTAINMENT")} 
@@ -338,7 +353,7 @@ const AddHouseholdProfile = () => {
                                     <ValidationError name="educational_attainment_id" />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Religion</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Religion <Required/></label>
                                     <Dropdown 
                                         showClear
                                         options={genericTypes.filter((x: any) => x.type === "RELIGION")} 
@@ -353,259 +368,6 @@ const AddHouseholdProfile = () => {
                                 
                             </div>
                         )}
-
-
-                        {/* {activeIndex === 3 && (
-                            <div>
-                                <div className="mb-3">
-                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                        <Checkbox  checked={form.fourps_member} onChange={(e) => setForm({...form, fourps_member : (e.checked || false)})} ></Checkbox>
-                                        <div className="">
-                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member?</p>
-                                        </div>
-                                    </div>
-                                    {
-                                        form.fourps_member && (
-                                            <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4Ps Household ID No.</label>
-                                                <InputText 
-                                                    type="text" 
-                                                    style={{ width: '100%' }} 
-                                                    value={form.fourps_household_no}
-                                                    onChange={(e) => setForm({...form, fourps_household_no : e.target.value})}
-                                                    placeholder="4ps Household ID" />
-                                                <ValidationError name="fourps_household_no" />
-                                            </div>
-                                        )
-                                    }
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No.</label>
-                                        <InputText 
-                                            type="text" 
-                                            style={{ width: '100%' }} 
-                                            value={form.philhealth_id}
-                                            onChange={(e) => setForm({...form, philhealth_id : e.target.value})}
-                                            placeholder="Philhealth No" />
-                                        <ValidationError name="philhealth_id" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Membership Type</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_MEMBERSHIP")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.philheath_membership_type_id}
-                                            onChange={(e) => setForm({...form, philheath_membership_type_id : e.value})} 
-                                            placeholder="Select Philhealth Membership Type" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="philheath_membership_type_id" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Category</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_CATEGORY")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            onChange={(e) => setForm({...form, philhealth_category_id : e.value})}
-                                            value={form.philhealth_category_id} 
-                                            placeholder="Select Philhealth Category" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="philhealth_category_id" />   
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Medical History</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "MEDICAL_HISTORY")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            onChange={(e) => setForm({...form, medical_history_id : e.value})}
-                                            value={form.medical_history_id} 
-                                            placeholder="Select Medical History" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="medical_history_id" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Classification by Age/Health Risk Group</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "CLASSIFICATION_BY_AHRG")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.classification_by_age_hrg_id}
-                                            onChange={(e) => setForm({...form, classification_by_age_hrg_id : e.value})} 
-                                            placeholder="Select Classification" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="classification_by_age_hrg_id" />
-                                    </div>
-                                    {
-                                        form.gender_id == "80" && (
-                                            <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Menstral Period</label>
-                                                <Calendar 
-                                                    value={new Date(form.last_menstrual_period)}  
-                                                    dateFormat="mm-dd-yy" 
-                                                    placeholder="mm-dd-yyyy" 
-                                                    mask="99/99/9999" 
-                                                    onChange={(e) => setForm({...form, last_menstrual_period : (e.value ? e.value.toLocaleString() : form.last_menstrual_period) })}
-                                                    className="w-full" />
-                                                <ValidationError name="last_menstrual_period" />
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        )}
-
-                        {(activeIndex === 4 && form.gender_id == "80" && form.classification_by_age_hrg_id == "43") && (
-                            <div className="">
-                                <p className="text-italic"><i>For Women of reproductive age only.</i></p>
-                                <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                    <Checkbox  checked={form.is_using_fp_method} onChange={(e) => setForm({...form, is_using_fp_method : (e.checked || false)})} ></Checkbox>
-                                    <div className="">
-                                        <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Using any Family Planning method?</p>
-                                    </div>
-                                    <ValidationError name="is_using_fp_method" />
-                                </div>
-                                
-                                {
-                                    form.is_using_fp_method && (
-                                        <>
-                                            <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Method Used</label>
-                                                <Dropdown 
-                                                    showClear
-                                                    options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_METHOD")} 
-                                                    optionLabel="label"
-                                                    optionValue="id"
-                                                    value={form.family_planning_method_id}
-                                                    onChange={(e) => setForm({...form, family_planning_method_id : e.value})} 
-                                                    placeholder="Select Family Planning Method" 
-                                                    style={{ width: '100%' }} />
-                                                <ValidationError name="family_planning_method_id" />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Status</label>
-                                                <Dropdown 
-                                                    showClear
-                                                    options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_STATUS")} 
-                                                    optionLabel="label"
-                                                    optionValue="id"
-                                                    value={form.family_planning_status_id}
-                                                    onChange={(e) => setForm({...form, family_planning_status_id : e.value})} 
-                                                    placeholder="Select Family Planning Status" 
-                                                    style={{ width: '100%' }} />
-                                                <ValidationError name="family_planning_status_id" />
-                                            </div>
-                                        </>
-                                    )
-                                }
-                            </div>
-                        )}
-                        { (activeIndex === 4 && (form.gender_id != "80" || form.classification_by_age_hrg_id != "43")) && (
-                            <>
-                                <p className="text-center"><i>This is not applicable for the selected age/health risk group and gender.</i></p>
-                            </>
-                        )}
-
-                        {activeIndex === 5 && (
-                            <div className="">
-                                <div className="mb-3">
-                                    <h6>Living Condition</h6>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "WATER_SOURCE_TYPE")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.water_source_type_id} 
-                                            onChange={(e) => setForm({...form, water_source_type_id : e.value})}
-                                            placeholder="Select Water Source" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="water_source_type_id" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type</label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "TOILET_FACILITY_TYPE")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.toilet_facility_type_id} 
-                                            onChange={(e) => setForm({...form, toilet_facility_type_id : e.value})}
-                                            placeholder="Select Toilet Facility" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="toilet_facility_type_id" />
-                                    </div>
-                                </div>
-                                <div className="mb-3">
-                                    <h6 className="mb-0">Health Condition </h6>
-                                    <span><i>(Put a check on the box)</i></span>
-                                    <br /><br />
-                                    <div className="">
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_asthma} onChange={(e) => setForm({...form, hc_asthma : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Asthma (Hika)</p>
-                                            </div>
-                                            <ValidationError name="hc_asthma" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_cancer} onChange={(e) => setForm({...form, hc_cancer : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Cancer</p>
-                                            </div>
-                                            <ValidationError name="hc_cancer" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_pwd} onChange={(e) => setForm({...form, hc_pwd : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">PWD (May kapansanan)</p>
-                                            </div>
-                                            <ValidationError name="hc_pwd" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_stroke} onChange={(e) => setForm({...form, hc_stroke : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Stroke</p>
-                                            </div>
-                                            <ValidationError name="hc_stroke" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox checked={form.hc_mass} onChange={(e) => setForm({...form, hc_mass : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Mass (Bukol)</p>
-                                            </div>
-                                            <ValidationError name="hc_mass" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox checked={form.hc_mhgap} onChange={(e) => setForm({...form, hc_mhgap : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">MHGAP</p>
-                                            </div>
-                                            <ValidationError name="hc_mhgap" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_smoker} onChange={(e) => setForm({...form, hc_smoker : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Smoker</p>
-                                            </div>
-                                            <ValidationError name="hc_smoker" />
-                                        </div>
-                                        <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                            <Checkbox  checked={form.hc_alchohol_drinker} onChange={(e) => setForm({...form, hc_alchohol_drinker : e.checked || false})} ></Checkbox>
-                                            <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Alchohol Drinker</p>
-                                            </div>
-                                            <ValidationError name="hc_alchohol_drinker" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )} */}
 
                         {activeIndex === 3 && (
                             <>

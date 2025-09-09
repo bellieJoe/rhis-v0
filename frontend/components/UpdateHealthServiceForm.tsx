@@ -20,6 +20,7 @@ import { getBarangays } from "@/api/addressApi";
 import { Dropdown } from "primereact/dropdown";
 import { getGenericTypes } from "@/api/genericTypeApi";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Chip } from "primereact/chip";
 
 const UnderDevelopment = () => {
     return (
@@ -873,6 +874,10 @@ export const UpdateHealthServiceForm = () => {
             visible={visible} 
             position="right" 
             style={{ width: '100vw' }} 
+            showCloseIcon={false}
+            icons={() =>  (
+                <Button icon="pi pi-times" size="large" severity="danger" text rounded  onClick={onHide} />
+            )}
             onHide={onHide}>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
@@ -887,16 +892,23 @@ export const UpdateHealthServiceForm = () => {
                         </div>
                     </div>
 
+                    <div className="flex  flex-wrap gap-1 mb-4">
+                        <Chip label={`Household No.: ${householdProfile?.household?.household_no}`} />
+                        <Chip label={`Member Name: ${householdProfile.updated_details?.full_name}`} />
+                        <Chip label={`Gender: ${householdProfile.updated_details?.gender.name}`} />
+                        <Chip label={`Address: ${householdProfile.household?.address}`} />
+                    </div>
+
                     {activeIndex === 0 && (
                         <>
                             <h5 className="text-center mb-4">Select Health Service</h5>
-                            <div className="grid gap-2 justify-content-center flex-wrap">
+                            <div className="grid gap-3 justify-content-center flex-wrap">
                                 {services.map((service, index) =>
                                     
                                         service.visible && 
-                                        <div className={`card col-3 mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => {setForm({...form, service: service.value, form: service.form}); next();}} key={index}>
-                                            <div className="flex align-items-center h-full">
-                                                <h6 style={{ wordBreak: 'break-all' }} className="mb-0 ">{service.label}</h6>
+                                        <div className={`card p-3 py-6 col-12 md:col-4 lg:col-3  mb-2 p-3 hover:bg-gray-200 cursor-pointer ${form.service === service.value && 'bg-gray-300'}`} onClick={() => {setForm({...form, service: service.value, form: service.form}); next();}} key={index}>
+                                            <div className="flex  align-items-center h-full">
+                                                <h5 style={{ wordBreak: 'break-all' }} className="mb-0 ">{service.label}</h5>
                                             </div>
                                         </div>
                                     

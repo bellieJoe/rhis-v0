@@ -18,6 +18,7 @@ import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { addHead } from "@/features/addHouseholdProfileSlice";
 import { formatDate } from "@/utils/helpers";
+import Required from "./RequiredIndicator";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -49,7 +50,8 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             dispatch(addHead({ 
                 householdNo : household.household.household_no, 
                 householdId : household.household.id,
-                date_of_visit : formatDate(form.date_of_visit )
+                date_of_visit : formatDate(form.date_of_visit ),
+                household : household.household
             }));
             dispatch(reloadHouseholds());
             setForm({
@@ -83,13 +85,6 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
         setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
     }
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const response = await getBarangays(dispatch);
-    //         setBarangays(response.map((barangay : any) => ({ label : barangay.full_address, value : barangay.id })));
-    //     })();
-    // }, []);
-
     return (
         <Sidebar 
             title="Add Household" 
@@ -98,25 +93,9 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             visible={visible} 
             position="right" 
             style={{ width: '100vw', maxWidth: '500px'   }}>
-            
-            {/* <div className="flex flex-column gap-2 mb-3">
-                <label htmlFor="householdNo">Household No.</label>
-                <InputText 
-                    id="householdNo" 
-                    placeholder="YYYYMM-00000" 
-                    value={form.household_no} 
-                    onChange={(e) => setForm({...form, household_no : e.target.value})} 
-                    onBeforeInput={(e) => {
-                        if (!/^[0-9-]+$/.test(e.data)) {
-                        e.preventDefault();
-                        }
-                    }}
-                    className="w-full" />
-                <ValidationError name="household_no" />
-            </div> */}
 
             <div className="flex flex-column gap-2 mb-3">
-                <label htmlFor="householdNo">Date of Visit</label>
+                <label htmlFor="householdNo">Date of Visit <Required/></label>
                 <Calendar 
                     value={form.date_of_visit ? new Date(form.date_of_visit) : ''}  
                     dateFormat="mm-dd-yy" 
@@ -138,7 +117,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             </div> */}
 
             <div className="flex flex-column gap-2 mb-3">
-                <label htmlFor="address">Address </label>
+                <label htmlFor="address">Address <Required/></label>
                 <AutoComplete   
                     dropdown
                     id="address" 

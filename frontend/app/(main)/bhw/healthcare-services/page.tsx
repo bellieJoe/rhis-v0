@@ -31,15 +31,11 @@ const HealthcareServices = () => {
     });
 
     useEffect(() => {
-        console.log("fetch municipalities");
         (async () => {
-            console.log("fetching municipalities");
             setLoading({ ...loading, municipalities: true });
             const _municipalities = await getMunicipalityList(dispatch, {
                 province: 23
             });
-            console.log(_municipalities);
-            console.log("fetched municipalities");
             setMunicipalities(_municipalities);
             setLoading({ ...loading, municipalities: false });
         })();
@@ -48,12 +44,14 @@ const HealthcareServices = () => {
     useEffect(() => {
         (async () => {
             if(!filter.municipality) return;
-            setLoading({ ...loading, barangays: true });
+            setLoading({ ...loading, barangays: true, patients: true });
             const _barangays = await getBarangayList(dispatch, {
                 municipality: filter.municipality
             });
             setBarangays(_barangays);
-            setLoading({ ...loading, barangays: false });
+            const _profiles = await getHouseholdProfiles(dispatch, {municipality: (filter.municipality ? filter.municipality : 0)});
+            setHouseholdProfiles(_profiles);
+            setLoading({ ...loading, barangays: false, patients: false });
         })();
     },[filter.municipality]);
 
@@ -66,6 +64,15 @@ const HealthcareServices = () => {
             setLoading({ ...loading, patients: false });
         })();
     },[filter.barangay]);
+
+    useEffect(() => {
+        (async () => {
+            setLoading({ ...loading, patients: true });
+            const _profiles = await getHouseholdProfiles(dispatch, {});
+            setHouseholdProfiles(_profiles);
+            setLoading({ ...loading, patients: false });
+        })();
+    }, []);
 
     return (
         <AuthMiddleware>
@@ -80,6 +87,7 @@ const HealthcareServices = () => {
                     <Column field="household.head.updated_details.full_name" header="Head"></Column>
                     <Column field="updated_details.full_name" header="Household Member Name"></Column>
                     <Column header="Age" body={(data : any) => calculateAge(data.birthdate)}></Column>
+                    <Column header="Address" body={(data : any) => data.household.address}></Column>
                     <Column header="Actions" body={(data : any) => (
                         <>
                             <Button size="small" label="Update Record" icon="pi pi-pencil" outlined onClick={() => dispatch(showUpdateHealthService({householdProfile: data}))}></Button>
@@ -90,7 +98,7 @@ const HealthcareServices = () => {
 
             <UpdateHealthServiceForm />
         </AuthMiddleware>
-    )
+    );
 }
 
 export default HealthcareServices;

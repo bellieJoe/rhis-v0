@@ -82,8 +82,8 @@ const HouseholdsTable = () => {
             </div>
             <DataTable value={households.data} loading={loading.householdsTable} rowHover>
                 <Column field="household_no" header="Household No." />
-                <Column field="address" header="Address" />
                 <Column field="head.updated_details.full_name" header="Household Head" />
+                <Column field="address" header="Address" />
                 <Column 
                     header="Actions" 
                     body={
@@ -98,7 +98,8 @@ const HouseholdsTable = () => {
                                         dispatch(addMember({
                                             householdId : data.id,
                                             householdNo : data.household_no,
-                                            date_of_visit : ""
+                                            date_of_visit : "",
+                                            household : data
                                         })
                                     )}} 
                                     loading={loading.householdDelete}   />
@@ -218,6 +219,7 @@ const HouseholdProfilesTable = () => {
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
                 <Column field="household.household_no" header="Household No." />
                 <Column field="updated_details.full_name" header="Household Member" />
+                <Column field="household.address" header="Address" />
                 <Column  header="Actions" frozen body={(data : any) => (
                     <>
                         <div className="flex gap-2">

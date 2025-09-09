@@ -19,6 +19,7 @@ import { hideUpdateProfileAdditnlInfo } from "@/features/updateHouseholdProfileA
 import { Checkbox } from "primereact/checkbox";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
+import Required from "./RequiredIndicator";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -77,7 +78,11 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
         hc_alchohol_drinker : false,
     }
     const [form, setForm] = useState<any>(initialForm);
-    const items : MenuItem[] = [
+    const items : MenuItem[] = updateHouseholdProfileStore.householdProfile?.updated_details?.gender_id == 79 ? [
+        { label: "Medical Details", className: "mr-2" },
+        { label: "Living and Health Condition", className: "mr-2" },
+        { label: "Review", className: "mr-2"  },
+    ] : [
         { label: "Medical Details", className: "mr-2" },
         { label: "For Women of Reproductive Age", className: "mr-2" },
         { label: "Living and Health Condition", className: "mr-2" },
@@ -88,7 +93,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
     });
 
     useEffect(() => {
-        dispatch(setErrors({}));
+        dispatch(setErrors([]));
         (async()=>{
             await getGenericTypes(dispatch);
         })();
@@ -172,6 +177,14 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             setActiveIndex(0);
         }} 
         visible={visible} 
+        showCloseIcon={false}
+        icons={() =>  (
+            <Button icon="pi pi-times" size="large" severity="danger" text rounded  onClick={() => {
+            dispatch(hideUpdateProfileAdditnlInfo());
+            setForm(initialForm);
+            setActiveIndex(0);
+        }} />
+        )}
         position="right" 
         style={{ width: '100vw' }}>
             <h4 className="text-center mb-4">{ updateHouseholdProfileStore.title }</h4>
@@ -182,8 +195,8 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                     </div>
                     <div className="mb-4">
                         <div className="flex gap-3 justify-content-between">
-                            <Button size="small" label="Previous" icon="pi pi-angle-left" onClick={prev} disabled={activeIndex === 0} />
-                            <Button size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
+                            <Button type="button" size="small" label="Previous" icon="pi pi-angle-left" onClick={prev} disabled={activeIndex === 0} />
+                            <Button type="button" size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
                         </div>
                     </div>
                     <div className="flex  flex-wrap gap-1 mb-4">
@@ -196,7 +209,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                         {activeIndex === 0 && (
                             <div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Ethnicity</label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Ethnicity <Required /></label>
                                     <Dropdown 
                                         showClear
                                         options={[
@@ -221,13 +234,13 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                         <Checkbox  checked={form.fourps_member} onChange={(e) => setForm({...form, fourps_member : (e.checked || false)})} ></Checkbox>
                                         <div className="">
-                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member?</p>
+                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member? </p>
                                         </div>
                                     </div>
                                     {
                                         form.fourps_member && (
                                             <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4Ps Household ID No.</label>
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4Ps Household ID No. <Required /></label>
                                                 <InputText 
                                                     type="text" 
                                                     style={{ width: '100%' }} 
@@ -239,7 +252,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         )
                                     }
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No.</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No. <Required /></label>
                                         <InputText 
                                             type="text" 
                                             style={{ width: '100%' }} 
@@ -249,7 +262,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="philhealth_id" />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Membership Type</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Membership Type <Required /></label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_MEMBERSHIP")} 
@@ -262,7 +275,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="philheath_membership_type_id" />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Category</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Category <Required /></label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "PHILHEALTH_CATEGORY")} 
@@ -275,7 +288,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="philhealth_category_id" />   
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Medical History</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Medical History </label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "MEDICAL_HISTORY")} 
@@ -288,7 +301,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="medical_history_id" />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Classification by Age/Health Risk Group</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Classification by Age/Health Risk Group <Required /></label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "CLASSIFICATION_BY_AHRG")} 
@@ -305,7 +318,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                             <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                 <Checkbox  checked={form.is_pregnant} onChange={(e) => setForm({...form, is_pregnant : (e.checked || false)})} ></Checkbox>
                                                 <div className="">
-                                                    <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is Pregnant?</p>
+                                                    <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is Pregnant? <Required /></p>
                                                 </div>
                                                 <ValidationError name="is_pregnant" />
                                             </div>
@@ -314,12 +327,14 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                     {
                                         (form.gender_id == "80" && form.is_pregnant) ? (
                                             <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Menstrual Period</label>
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Menstrual Period <Required /></label>
                                                 <Calendar 
-                                                    value={form.last_menstrual_period ? new Date(form.last_menstrual_period) : new Date()}  
+                                                    value={form.last_menstrual_period ? new Date(form.last_menstrual_period) : ''}  
                                                     dateFormat="mm-dd-yy" 
                                                     placeholder="mm-dd-yyyy" 
                                                     mask="99/99/9999" 
+                                                    maxDate={new Date()}
+                                                    showIcon
                                                     onChange={(e) => setForm({...form, last_menstrual_period : (e.value ? e.value.toLocaleString() : form.last_menstrual_period) })}
                                                     className="w-full" />
                                                 <ValidationError name="last_menstrual_period" />
@@ -336,7 +351,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                 <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                     <Checkbox  checked={form.is_using_fp_method} onChange={(e) => setForm({...form, is_using_fp_method : (e.checked || false)})} ></Checkbox>
                                     <div className="">
-                                        <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Using any Family Planning method?</p>
+                                        <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Using any Family Planning method? <Required /></p>
                                     </div>
                                     <ValidationError name="is_using_fp_method" />
                                 </div>
@@ -345,7 +360,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                     form.is_using_fp_method && (
                                         <>
                                             <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Method Used</label>
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Method Used <Required /></label>
                                                 <Dropdown 
                                                     showClear
                                                     options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_METHOD")} 
@@ -358,7 +373,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                 <ValidationError name="family_planning_method_id" />
                                             </div>
                                             <div className="mb-3">
-                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Status</label>
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Planning Status <Required /></label>
                                                 <Dropdown 
                                                     showClear
                                                     options={genericTypes.filter((x: any) => x.type === "FAMILY_PLANNING_STATUS")} 
@@ -381,12 +396,13 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                             </>
                         )}
 
-                        {activeIndex === 2 && (
+                        {((activeIndex === 2 && form.gender_id == "80") || (activeIndex === 1 && form.gender_id == "79")) &&
+                        (
                             <div className="">
                                 <div className="mb-3">
                                     <h6>Living Condition</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type <Required /></label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "WATER_SOURCE_TYPE")} 
@@ -399,7 +415,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="water_source_type_id" />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type</label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type <Required /></label>
                                         <Dropdown 
                                             showClear
                                             options={genericTypes.filter((x: any) => x.type === "TOILET_FACILITY_TYPE")} 
@@ -420,7 +436,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                             <Checkbox  checked={form.hc_asthma} onChange={(e) => setForm({...form, hc_asthma : e.checked || false})} ></Checkbox>
                                             <div className="">
-                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Asthma (Hika)</p>
+                                                <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Asthma (Hika) </p>
                                             </div>
                                             <ValidationError name="hc_asthma" />
                                         </div>
@@ -478,7 +494,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                             </div>
                         )}
 
-                        {activeIndex === 3 && (
+                        {((activeIndex === 3  && form.gender_id == "80") || (activeIndex === 2 && form.gender_id == "79")) && (
                             <>
                                 <div className="flex justify-content-end">
                                     <Button label="Submit Profile" icon="pi pi-check" className="p-button-success" loading={loading.updateHouseholdProfile} onClick={handleHouseholdUpdate}  />
@@ -488,67 +504,6 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                 <br />
                                 <br />
                                 <div className="flex flex-column gap-2">
-                                    {/* <div className="flex gap-2">
-                                        <p className="font-bold">Household No:</p>
-                                        <p>{form.household_no}</p>
-                                        <ValidationError name="household_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Relationship to the head:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.member_relationship_id)?.name }</p>
-                                        <ValidationError name="member_relationship_id" />
-                                    </div>
-                                    {
-                                        form.member_relationship_id == "5" && (
-                                            <div className="flex gap-2">
-                                                <p className="font-bold">Other Relationship:</p>
-                                                <p>{ form.other_relation }</p>
-                                                <ValidationError name="other_relation" />
-                                            </div>
-                                        )
-                                    }
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Fullname:</p>
-                                        <p>{ `${form.firstname} ${form.middlename} ${form.lastname}` }</p>
-                                        <ValidationError name="firstname" />
-                                        <ValidationError name="middlename" />
-                                        <ValidationError name="lastname" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Birthdate:</p>
-                                        <p>{ (new Date(form.birthdate)).toDateString() }</p>
-                                        <ValidationError name="birthdate" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Age:</p>
-                                        <p>{ calculateAge(form.birthdate) }</p>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Sex:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.gender_id)?.name }</p>
-                                        <ValidationError name="gender_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Civil Status:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.civil_status_id)?.name }</p>
-                                        <ValidationError name="civil_status_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Civil Status:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.civil_status_id)?.name }</p>
-                                        <ValidationError name="civil_status_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Educational Attainment:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.educational_attainment_id)?.name }</p>
-                                        <ValidationError name="educational_attainment_id" />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <p className="font-bold">Religion:</p>
-                                        <p>{ genericTypes.find((g : any) => g.id === form.religion_id)?.name }</p>
-                                        <ValidationError name="religion_id" />
-                                    </div> */}
                                     <div className="flex gap-2">
                                         <p className="font-bold">Ethnicity:</p>
                                         <p>{ form.enthnicity }</p>

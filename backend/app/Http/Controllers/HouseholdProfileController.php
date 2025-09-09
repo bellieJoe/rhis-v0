@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Household;
 use App\Models\HouseholdProfile;
 use App\Models\HouseholdProfileDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -34,6 +35,16 @@ class HouseholdProfileController extends Controller
                         'is_active' => true,
                         ['member_relationship_id', "<>", 1]
                 ]);
+            });
+        }
+
+        if($request->filled('municipality') && !$request->has('barangay')) {
+            $query->whereHas(
+                'household', function ($q) use ($request) {
+                    $q->whereHas(
+                        'barangay', function ($q) use ($request) {
+                            $q->where('municipality_id', $request->municipality);
+                    });
             });
         }
 
@@ -294,7 +305,9 @@ class HouseholdProfileController extends Controller
             $household_profile = HouseholdProfile::find($request->input("household_profile_id"));
 
             $updatedDetails = HouseholdProfileDetail::where("household_profile_id", $request->input("household_profile_id"))->orderBy("created_at", "desc")->first();
-
+            HouseholdProfile::where("id", $request->input("household_profile_id"))->update([
+                "birthdate" => Carbon::parse($request->input("birthdate")),
+            ]);
             HouseholdProfileDetail::create([
                 "household_profile_id" => $household_profile->id,
                 "lastname" => $request->input("lastname"),
