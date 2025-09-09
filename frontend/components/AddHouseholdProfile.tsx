@@ -286,6 +286,8 @@ const AddHouseholdProfile = () => {
                                         dateFormat="mm-dd-yy" 
                                         placeholder="mm-dd-yyyy" 
                                         mask="99/99/9999" 
+                                        maxDate={new Date()}
+                                        showIcon
                                         onChange={(e) => setForm({...form, birthdate : (e.value ? e.value.toLocaleString() : form.birthdate) })}
                                         className="w-full" />
                                     <ValidationError name="birthdate" />

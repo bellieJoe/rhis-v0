@@ -24,11 +24,10 @@ class HouseholdController extends Controller
         return $query->paginate(20);
     }
 
-
     public function store (Request $request) {
         $request->validate([
             'barangay' => 'required|exists:barangays,id',
-            'household_no' => 'required|unique:households,household_no|max:12',
+            // 'household_no' => 'required|unique:households,household_no|max:12',
             "date_of_visit" => "required|date",
         ], [
             
@@ -38,7 +37,8 @@ class HouseholdController extends Controller
 
         $household = Household::create([
             'barangay_id' => $request->barangay,
-            'household_no' => $request->household_no,
+            // 'household_no' => $request->household_no,
+            'household_no' => 0,
             'date_of_visit' => $request->date_of_visit
         ]);
 
@@ -65,4 +65,6 @@ class HouseholdController extends Controller
             'message' => 'Household deleted successfully'
         ]);
     }
+
+    // public 
 }

@@ -724,6 +724,14 @@ class GenericTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => 89,
+                'type' => GenericType::TYPE_MEDICAL_HISTORY,
+                'code' => 'N/A',
+                'name' => 'Not Applicable',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

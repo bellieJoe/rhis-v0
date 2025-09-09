@@ -99,7 +99,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
             position="right" 
             style={{ width: '100vw', maxWidth: '500px'   }}>
             
-            <div className="flex flex-column gap-2 mb-3">
+            {/* <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="householdNo">Household No.</label>
                 <InputText 
                     id="householdNo" 
@@ -113,7 +113,7 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     }}
                     className="w-full" />
                 <ValidationError name="household_no" />
-            </div>
+            </div> */}
 
             <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="householdNo">Date of Visit</label>
@@ -122,6 +122,8 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     dateFormat="mm-dd-yy" 
                     placeholder="mm-dd-yyyy" 
                     mask="99/99/9999" 
+                    showIcon
+                    maxDate={new Date()}
                     onChange={(e) => setForm({...form, date_of_visit : (e.value ? e.value.toLocaleString() : form.date_of_visit) })}
                     className="w-full" />
                 <ValidationError name="date_of_visit" />

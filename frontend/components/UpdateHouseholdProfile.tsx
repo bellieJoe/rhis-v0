@@ -16,6 +16,7 @@ import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdPr
 import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
+import { Chip } from "primereact/chip";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -162,7 +163,7 @@ const UpdateHouseholdProfile = () => {
         visible={visible} 
         position="right" 
         style={{ width: '100vw' }}>
-            <h4 className="text-center mb-4">Update Household Profile</h4>
+            <h4 className="text-center mb-4">{ updateHouseholdProfileStore.title }</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
                     <div className="w-full overflow-x-scroll scrollbar-none " style={{ 'scrollbarWidth': 'none' }} >
@@ -173,6 +174,10 @@ const UpdateHouseholdProfile = () => {
                             <Button size="small" label="Previous" icon="pi pi-angle-left" onClick={prev} disabled={activeIndex === 0} />
                             <Button size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
                         </div>
+                    </div>
+                    <div className="flex gap-1 mb-4">
+                        <Chip label={`Household No.: ${updateHouseholdProfileStore.householdProfile.household?.household_no}`} />
+                        <Chip label={`Member Name: ${updateHouseholdProfileStore.householdProfile.updated_details?.full_name}`} />
                     </div>
                     <div className="card mb-4">
                         {activeIndex === 0 && (
@@ -268,6 +273,8 @@ const UpdateHouseholdProfile = () => {
                                         dateFormat="mm-dd-yy" 
                                         placeholder="mm-dd-yyyy" 
                                         mask="99/99/9999" 
+                                        maxDate={new Date()}
+                                        showIcon
                                         onChange={(e) => setForm({...form, birthdate : (e.value ? e.value.toLocaleString() : form.birthdate) })}
                                         className="w-full" />
                                     <ValidationError name="birthdate" />

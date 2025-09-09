@@ -18,6 +18,7 @@ import { updateHouseholdProfileAddtnlInfo } from "@/api/householdProfileApi";
 import { hideUpdateProfileAdditnlInfo } from "@/features/updateHouseholdProfileAddtnlInfoSlice";
 import { Checkbox } from "primereact/checkbox";
 import { setErrors } from "@/features/errorSlice";
+import { Chip } from "primereact/chip";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -173,7 +174,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
         visible={visible} 
         position="right" 
         style={{ width: '100vw' }}>
-            <h4 className="text-center mb-4">Update Household Profile Additional Information</h4>
+            <h4 className="text-center mb-4">{ updateHouseholdProfileStore.title }</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
                     <div className="w-full overflow-x-scroll scrollbar-none " style={{ 'scrollbarWidth': 'none' }} >
@@ -185,9 +186,13 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                             <Button size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
                         </div>
                     </div>
+                    <div className="flex gap-1 mb-4">
+                        <Chip label={`Household No.: ${updateHouseholdProfileStore.householdProfile?.household?.household_no}`} />
+                        <Chip label={`Member Name: ${updateHouseholdProfileStore.householdProfile.updated_details?.full_name}`} />
+                        <Chip label={`Gender: ${updateHouseholdProfileStore.householdProfile.updated_details?.gender.name}`} />
+                        <Chip label={`Address: ${updateHouseholdProfileStore.householdProfile.household?.address}`} />
+                    </div>
                     <div className="card mb-4">
-
-
                         {activeIndex === 0 && (
                             <div>
                                 <div className="mb-3">

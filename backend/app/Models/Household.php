@@ -8,7 +8,7 @@ class Household extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ['head'];
+    protected $appends = ['head', 'address'];
 
     public function householdProfiles()
     {
@@ -23,5 +23,23 @@ class Household extends Model
             })
             ->with('householdProfileDetails') 
             ->first();
+    }
+    
+    public function barangay()
+    {
+        return $this->belongsTo(Barangay::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($household) {
+            $household->household_no = $household->id;
+            $household->save();
+        });
+    }
+
+    public function getAddressAttribute()
+    {
+        return $this->barangay->barangay_name . ', ' . $this->barangay->municipality->municipality_name . ', ' . $this->barangay->municipality->province->province_name;
     }
 }

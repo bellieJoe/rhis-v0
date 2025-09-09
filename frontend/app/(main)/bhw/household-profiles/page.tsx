@@ -78,6 +78,7 @@ const HouseholdsTable = () => {
             </div>
             <DataTable value={households.data} loading={loading.householdsTable} rowHover>
                 <Column field="household_no" header="Household No." />
+                <Column field="address" header="Address" />
                 <Column field="head.updated_details.full_name" header="Household Head" />
                 <Column 
                     header="Actions" 
