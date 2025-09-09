@@ -186,7 +186,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                             <Button size="small" label="Next" icon="pi pi-angle-right" onClick={next} disabled={activeIndex === items.length - 1} />
                         </div>
                     </div>
-                    <div className="flex gap-1 mb-4">
+                    <div className="flex  flex-wrap gap-1 mb-4">
                         <Chip label={`Household No.: ${updateHouseholdProfileStore.householdProfile?.household?.household_no}`} />
                         <Chip label={`Member Name: ${updateHouseholdProfileStore.householdProfile.updated_details?.full_name}`} />
                         <Chip label={`Gender: ${updateHouseholdProfileStore.householdProfile.updated_details?.gender.name}`} />

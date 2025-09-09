@@ -7,7 +7,7 @@ import { FilterModal } from "@/components/FilterModal";
 import { AuthMiddleware } from "@/components/middlewares";
 import UpdateHouseholdProfile from "@/components/UpdateHouseholdProfile";
 import UpdateHouseholdProfileAddtnlInfo from "@/components/UpdateHouseholdProfileAddtnlInfo";
-import { addMember, show } from "@/features/addHouseholdProfileSlice";
+import { addMember, addMemberGeneral, show } from "@/features/addHouseholdProfileSlice";
 import { updateProfileAdditnlInfo } from "@/features/updateHouseholdProfileAddtnlInfoSlice";
 import { updateProfile } from "@/features/updateHouseholdProfileSlice";
 import { calculateAge } from "@/utils/helpers";
@@ -74,7 +74,11 @@ const HouseholdsTable = () => {
             <h5>Households</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="Add Household" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHousehold: true })}  />
-                <Button label="Add Household Member" size="small"  icon="pi pi-plus" onClick={() => dispatch(show())}  />
+                <Button label="Add Household Member" size="small"  icon="pi pi-plus" onClick={() => dispatch(addMemberGeneral({
+                    householdId : "",
+                    householdNo : "",
+                    date_of_visit : ""
+                }))}  />
             </div>
             <DataTable value={households.data} loading={loading.householdsTable} rowHover>
                 <Column field="household_no" header="Household No." />
@@ -91,11 +95,6 @@ const HouseholdsTable = () => {
                                     size="small"  
                                     outlined icon="pi pi-plus" 
                                     onClick={(event) => {
-                                        console.log({
-                                            householdId : data.id,
-                                            householdNo : data.household_no,
-                                            date_of_visit : ""
-                                        })
                                         dispatch(addMember({
                                             householdId : data.id,
                                             householdNo : data.household_no,

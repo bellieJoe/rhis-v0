@@ -31,13 +31,30 @@ export const addHouseholdProfileSlice = createSlice({
             state.date_of_visit = action.payload.date_of_visit;
             state.title = "Add Household Member";
         },
+        addMemberGeneral : (state : any, action) => { 
+            state.addMember = false; 
+            state.addHead = false;
+            state.visible = true;
+            state.householdNo = action.payload.householdNo;
+            state.householdId = action.payload.householdId,
+            state.date_of_visit = action.payload.date_of_visit;
+            state.title = "Add Household Member";
+        },
         show : (state : any) => { state.visible = true;
             console.log("show add household")
         },
-        hide : (state : any) => { state.visible = false; },
+        hide : (state : any) => { 
+            state.visible = false; 
+            state.addMember = false; 
+            state.addHead = false;
+            state.householdNo = "";
+            state.householdId = "",
+            state.date_of_visit = "";
+            state.title = "Add Household Member";
+        },
     },
 });
 
-export const { show, hide, addHead, addMember } = addHouseholdProfileSlice.actions;
+export const { show, hide, addHead, addMember, addMemberGeneral } = addHouseholdProfileSlice.actions;
 
 export default addHouseholdProfileSlice.reducer;
