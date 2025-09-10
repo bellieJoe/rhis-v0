@@ -17,6 +17,20 @@ export const getHouseholds = async (dispatch : Dispatch, params : any = {}) => {
         }));
     }
 }
+
+export const getHousehold = async (dispatch : Dispatch, id : any) => {
+    try {
+        const response = await axios.get(`/api/households/${id}`);
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
 export const storeHousehold = async (dispatch : Dispatch, params : any = {}) : Promise<any> => {
     try {
         const response = await axios.post('/api/households', params);

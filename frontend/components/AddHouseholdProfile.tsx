@@ -90,14 +90,14 @@ const AddHouseholdProfile = () => {
     const [loading, setLoading] = useState({
         createHouseholdProfile: false
     });
-    const confirmAddMember = () => {
+    const confirmAddMember = (household : any) => {
         if(addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember) {
             confirmDialog({
                 message: addHouseholdProfileStore.addHead ? 'Do you want to add household member?' : 'Do you want to add another household member?',
                 header: 'Add Member',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                    addHouseholdMember();
+                    addHouseholdMember(household);
                 },
                 reject: () => {
                     hideAddHouseholdProfile();
@@ -108,12 +108,12 @@ const AddHouseholdProfile = () => {
             hideAddHouseholdProfile();
         }
     }
-    const addHouseholdMember = () => {
+    const addHouseholdMember = (household : any) => {
         dispatch(addMember({
             householdNo: form.household_no,
             householdId: form.household_id,
             date_of_visit: form.date_of_visit,
-            household: addHouseholdProfileStore.household
+            household: household
         }));
     }
 
@@ -161,10 +161,10 @@ const AddHouseholdProfile = () => {
         params.birthdate = formatDate(params.birthdate);
         params.last_menstrual_period = params.gender_id == '80' ? formatDate(params.last_menstrual_period) : '';
         setLoading({ ...loading, createHouseholdProfile: true });
-        const success = await storeHouseholdProfile(dispatch, { ...params });
+        const household = await storeHouseholdProfile(dispatch, { ...params });
         setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, createHouseholdProfile: false });
-        if (success) {
+        if (household) {
             if (addHouseholdProfileStore.addHead || addHouseholdProfileStore.addMember) {
                 dispatch(reloadHouseholds());
                 // reset the form to add members
@@ -176,10 +176,10 @@ const AddHouseholdProfile = () => {
                 newForm.date_of_visit = _form.date_of_visit;
                 newForm.member_relationship_id = '';
                 setForm(newForm);
-                confirmAddMember();
+                confirmAddMember(household);
             }
             setActiveIndex(0);
-            confirmAddMember();
+            confirmAddMember(household);
         }
     };
     

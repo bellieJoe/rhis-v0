@@ -3,9 +3,10 @@ import { setToast } from "@/features/toastSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 import axios from "./axios";
 import { reloadHouseholdProfiles, setHouseholdProfiles } from "@/features/householdProfileSlice";
+import { getHousehold } from "./householdApi";
 
 
-export const storeHouseholdProfile = async (dispatch : Dispatch, params : {}) : Promise<boolean> => {
+export const storeHouseholdProfile = async (dispatch : Dispatch, params : any = {}) : Promise<any> => {
     dispatch(setErrors({}));
     try {
         const res  = await axios.post('/api/household-profiles', params);
@@ -16,6 +17,8 @@ export const storeHouseholdProfile = async (dispatch : Dispatch, params : {}) : 
             life : 3000
         }));
         dispatch(reloadHouseholdProfiles());
+        const household = await getHousehold(dispatch, params.household_id);
+        return household;
         return true;
     } catch (error : any) {
         if(error.response.status === 422) {

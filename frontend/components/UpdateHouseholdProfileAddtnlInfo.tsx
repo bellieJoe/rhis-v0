@@ -119,10 +119,10 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             other_religion : updateHouseholdProfileStore.householdProfile.updated_details?.other_religion,
 
             enthnicity : updateHouseholdProfileStore.householdProfile.updated_details?.enthnicity,
-            fourps_member: updateHouseholdProfileStore.householdProfile.updated_details?.fourps_member,
+            fourps_member: updateHouseholdProfileStore.householdProfile.updated_details?.fourps_member ? updateHouseholdProfileStore.householdProfile.updated_details?.fourps_member : false,
             fourps_household_no : updateHouseholdProfileStore.householdProfile.updated_details?.fourps_household_no,
+            philheath_membership_type_id: calculateAge(updateHouseholdProfileStore.householdProfile.birthdate) >= 18 ? 81 : 82,
             philhealth_id : updateHouseholdProfileStore.householdProfile.updated_details?.philhealth_id,
-            philheath_membership_type_id: updateHouseholdProfileStore.householdProfile.updated_details?.philheath_membership_type_id,
             philhealth_category_id: updateHouseholdProfileStore.householdProfile.updated_details?.philhealth_category_id,
             medical_history_id : updateHouseholdProfileStore.householdProfile.updated_details?.medical_history_id,
             other_medical_history: updateHouseholdProfileStore.householdProfile.updated_details?.other_medical_history,
@@ -158,6 +158,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
         const params = { ...form };
         params.birthdate = formatDate(params.birthdate);
         params.last_menstrual_period = params.gender_id == "80" && params.is_pregnant ? formatDate(params.last_menstrual_period) : "";
+        console.log(params);
         setLoading({ ...loading, updateHouseholdProfile : true });
         const success = await updateHouseholdProfileAddtnlInfo(dispatch, { ...params });
         setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
@@ -204,6 +205,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                         <Chip label={`Member Name: ${updateHouseholdProfileStore.householdProfile.updated_details?.full_name}`} />
                         <Chip label={`Gender: ${updateHouseholdProfileStore.householdProfile.updated_details?.gender.name}`} />
                         <Chip label={`Address: ${updateHouseholdProfileStore.householdProfile.household?.address}`} />
+                        <Chip label={`Age: ${calculateAge(updateHouseholdProfileStore.householdProfile.birthdate)}`} />
                     </div>
                     <div className="card mb-4">
                         {activeIndex === 0 && (
@@ -252,16 +254,6 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         )
                                     }
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No. <Required /></label>
-                                        <InputText 
-                                            type="text" 
-                                            style={{ width: '100%' }} 
-                                            value={form.philhealth_id}
-                                            onChange={(e) => setForm({...form, philhealth_id : e.target.value})}
-                                            placeholder="Philhealth No" />
-                                        <ValidationError name="philhealth_id" />
-                                    </div>
-                                    <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Membership Type <Required /></label>
                                         <Dropdown 
                                             showClear
@@ -274,6 +266,20 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                             style={{ width: '100%' }} />
                                         <ValidationError name="philheath_membership_type_id" />
                                     </div>
+                                    {
+                                        form.philheath_membership_type_id == 81 && (
+                                            <div className="mb-3">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth No. <Required /></label>
+                                                <InputText 
+                                                    type="text" 
+                                                    style={{ width: '100%' }} 
+                                                    value={form.philhealth_id}
+                                                    onChange={(e) => setForm({...form, philhealth_id : e.target.value})}
+                                                    placeholder="Philhealth No" />
+                                                <ValidationError name="philhealth_id" />
+                                            </div>
+                                        )
+                                    }
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Philhealth Category <Required /></label>
                                         <Dropdown 

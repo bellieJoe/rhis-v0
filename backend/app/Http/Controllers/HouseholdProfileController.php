@@ -177,14 +177,14 @@ class HouseholdProfileController extends Controller
             "enthnicity" => "required|in:IP,Non-IP",
             "fourps_member" => "required|boolean",
             "fourps_household_no" =>  "nullable|required_if:fourps_member,true|max:50",
-            "philhealth_id" => "required|max:50",
+            "philhealth_id" => "nullable|required_if:philheath_membership_type_id,81|max:50",
             "philheath_membership_type_id" =>  "required|exists:generic_types,id",
             "philhealth_category_id" => "required|exists:generic_types,id",
             "medical_history_id" => "nullable|exists:generic_types,id",
             "other_medical_history" => "nullable|max:50",
             "classification_by_age_hrg_id" =>  "required|exists:generic_types,id",
             "is_pregnant" =>  "required|boolean",
-            "last_menstrual_period" =>  "nullable|required_if:gender_id,80|date|before:today",
+            "last_menstrual_period" =>  "nullable|required_if:is_pregnant,true|date|before:today",
             "is_using_fp_method" => "nullable|required_if:gender_id,80|boolean",
             "family_planning_method_id" =>  "nullable|required_if:is_using_fp_method,true|exists:generic_types,id",
             "family_planning_status_id" =>  "nullable|required_if:is_using_fp_method,true|exists:generic_types,id",
@@ -206,7 +206,7 @@ class HouseholdProfileController extends Controller
 
         return DB::transaction(function () use ($request) {
             $household_profile = HouseholdProfile::find($request->input("household_profile_id"));
-
+            
             $updatedDetails = HouseholdProfileDetail::where("household_profile_id", $request->input("household_profile_id"))->orderBy("created_at", "desc")->first();
 
             HouseholdProfileDetail::create([
@@ -225,7 +225,7 @@ class HouseholdProfileController extends Controller
                 "enthnicity" => $request->input("enthnicity"),
                 "fourps_member" => $request->input("fourps_member"),
                 "fourps_household_no" => $request->input("fourps_member") ? $request->input("fourps_household_no") : null,
-                "philhealth_id" => $request->input("philhealth_id"),
+                "philhealth_id" => $request->input("philheath_membership_type_id") == 81 ? $request->input("philhealth_id")  : null,
                 "philheath_membership_type_id" => $request->input("philheath_membership_type_id"),
                 "philhealth_category_id" => $request->input("philhealth_category_id"),
                 "medical_history_id" => $request->input("medical_history_id"),

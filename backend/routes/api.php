@@ -70,6 +70,7 @@ Route::prefix("households")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [HouseholdController::class, "store"]);
         Route::get("", [HouseholdController::class, "index"]);
+        Route::get("{id}", [HouseholdController::class, "getHousehold"]);
         Route::delete("{id}", [HouseholdController::class, "destroy"]);
     });
 });

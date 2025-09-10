@@ -66,5 +66,9 @@ class HouseholdController extends Controller
         ]);
     }
 
+    public function getHousehold(string $id) {
+        return Household::find($id);
+    }
+
     // public 
 }
