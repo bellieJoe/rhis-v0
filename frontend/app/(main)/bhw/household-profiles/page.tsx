@@ -61,10 +61,10 @@ const HouseholdsTable = () => {
             accept : async () => {
                 setLoading({ ...loading, householdDelete : true });
                 const success = await deleteHousehold(dispatch, id);
+                setLoading({ ...loading, householdDelete : false });
                 if(success) {
                     await getHouseholds(dispatch);
                 }
-                setLoading({ ...loading, householdDelete : false });
             }
         })
     }
