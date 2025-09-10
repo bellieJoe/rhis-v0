@@ -330,3 +330,17 @@ export const storeAnimalBites = async (dispatch : Dispatch, params : any = {}) :
         return false;
     }
 }
+
+export const getMonthlyRecords = async (dispatch : Dispatch, params = {}) => {
+    try {
+        const response = await axios.get('/api/healthcare-services/monthly-records', {params : params});
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000 
+        }));
+    }
+}

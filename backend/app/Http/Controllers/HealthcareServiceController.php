@@ -333,4 +333,47 @@ class HealthcareServiceController extends Controller
             ], 201);
         });
     }
+
+    public function getMonthlyRecords() {
+        $records = (object)[
+            "pregnancyRecords" => $this->queryRecord(Pregnancy::class, request()),
+            "birthRecords" => $this->queryRecord(Birth::class, request()),
+            "newBordRecords" => $this->queryRecord(NewBorn::class, request()),
+            "vaccinatedRecords" => $this->queryRecord(Vaccinated::class, request()),
+            "familyPlanningRecords" => $this->queryRecord(FpRecord::class, request()),
+            "deathRecords" => $this->queryRecord(Death::class, request()),
+            "sickRecords" => $this->queryRecord(SickRecord::class, request()),
+            "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, request()),
+            "highbloodRecords" => $this->queryRecord(HighbloodRecord::class, request()),
+            "urinalysisResultRecords" => $this->queryRecord(UrinalysisResult::class, request()),
+            "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, request()),
+            "animalBiteRecords" => $this->queryRecord(AnimalBiteRecord::class, request()),
+        ];
+        return response()->json($records);
+    }
+
+    private function queryRecord($model, $request) {
+        $query = $model::query();
+        if($request->has('month')) {
+            $query->whereMonth('created_at', $request->month);
+        }
+        if($request->has('year')) {
+            $query->whereYear('created_at', $request->year);
+        }
+        if($request->has('barangay')) {
+            $query->whereHas('household_profile', function ($q) use ($request) {
+                    $q->whereHas('household', function ($q) use ($request) {
+                        $q->where('barangay_id', $request->barangay);
+                    });
+            });
+        }
+        // to avoid duplicates
+        $query->whereIn('id', function($sub) use ($model) {
+            $sub->selectRaw('MIN(id)')
+                ->from((new $model)->getTable())
+                ->groupBy('household_profile_id');
+        });
+        return $query->get();
+    }
+
 }

@@ -100,6 +100,7 @@ Route::prefix("healthcare-services")->group(function () {
         Route::post("has-cancers", [HealthcareServiceController::class, "storeCancerRecord"]);
         Route::post("has-epilepsies", [HealthcareServiceController::class, "storeEpilepsyRecord"]);
         Route::post("animal-bites", [HealthcareServiceController::class, "storeAnimalBiteRecord"]);
+        Route::get("monthly-records", [HealthcareServiceController::class, "getMonthlyRecords"]);
     });
 });
 

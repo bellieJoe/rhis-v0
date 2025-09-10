@@ -10,7 +10,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ValidationError from "./ValidationError";
+import ValidationError from "./forms/ValidationError";
 import { setErrors } from "@/features/errorSlice";
 import { reloadHouseholds } from "@/features/householdSlice";
 import { emit } from "process";
@@ -18,7 +18,7 @@ import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { addHead } from "@/features/addHouseholdProfileSlice";
 import { formatDate } from "@/utils/helpers";
-import Required from "./RequiredIndicator";
+import Required from "./forms/RequiredIndicator";
 
 interface AddHouseholdProfileProps {
     visible: boolean,

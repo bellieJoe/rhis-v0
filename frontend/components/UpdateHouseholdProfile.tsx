@@ -10,14 +10,14 @@ import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ValidationError from "./ValidationError";
+import ValidationError from "./forms/ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
 import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
-import Required from "./RequiredIndicator";
+import Required from "./forms/RequiredIndicator";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,

@@ -14,7 +14,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
 import { ReactNode, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ValidationError from "./ValidationError";
+import ValidationError from "./forms/ValidationError";
 import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { Dropdown } from "primereact/dropdown";

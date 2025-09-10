@@ -10,7 +10,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Steps } from "primereact/steps";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ValidationError from "./ValidationError";
+import ValidationError from "./forms/ValidationError";
 import { calculateAge, convertTinyIntToBoolean, formatDate } from "@/utils/helpers";
 import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
@@ -19,7 +19,7 @@ import { hideUpdateProfileAdditnlInfo } from "@/features/updateHouseholdProfileA
 import { Checkbox } from "primereact/checkbox";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
-import Required from "./RequiredIndicator";
+import Required from "./forms/RequiredIndicator";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
