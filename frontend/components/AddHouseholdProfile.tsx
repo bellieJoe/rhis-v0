@@ -104,6 +104,9 @@ const AddHouseholdProfile = () => {
                 }
             });
         }
+        else {
+            hideAddHouseholdProfile();
+        }
     }
     const addHouseholdMember = () => {
         dispatch(addMember({
@@ -176,6 +179,7 @@ const AddHouseholdProfile = () => {
                 confirmAddMember();
             }
             setActiveIndex(0);
+            confirmAddMember();
         }
     };
     
