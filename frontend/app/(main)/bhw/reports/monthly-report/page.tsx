@@ -2,14 +2,16 @@
 
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
 import { BarangayPicker, MonthPicker, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
+import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 
-const PregnantsTable = () => {
+const PregnantsTable = ({records} : {records: any})  => {
     return (
         <>
             <h6 className="mb-0">1. Buntis</h6>
@@ -23,54 +25,76 @@ const PregnantsTable = () => {
                         <th className="border-bottom-1">Bilang ng Pagbubuntis</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.pregnancyRecords?.length <= 0 && (
+                            <tbody>
+                                <tr>
+                                    <td className="border-bottom-1">1.</td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1"></td>
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1">2.</td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1"></td>
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1">3.</td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1"></td>
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1">4.</td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1"></td>
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1">5.</td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1 border-right-1"></td>
+                                    <td className="border-bottom-1"></td>
+                                </tr>
+                            </tbody>
+                    )
+                }
+                {
+                    records.pregnancyRecords?.length > 0 && (
+                        <tbody>
+                            {
+                                records.pregnancyRecords.map((record: any, index: number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{calculateAge(record.household_profile?.birthdate)}</td>
+                                        <td className="border-bottom-1 border-right-1">{moment(record.last_menstrual_period).format('MMMM DD, YYYY')}</td>
+                                        <td className="border-bottom-1 border-right-1">{moment(record.date_of_giving_birth).format('MMMM DD, YYYY')}</td>
+                                        <td className="border-bottom-1">{record.number_of_pregnancy}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const BirthTable = () => {
+const BirthTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">2. Nanganak</h6>
@@ -84,54 +108,76 @@ const BirthTable = () => {
                         <th className="border-bottom-1">Nagpaanak</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.birthRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.birthRecords?.length > 0 && (
+                        <tbody>
+                            {
+                                records.birthRecords?.map((record: any, index: number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{moment(record.date_gave_birth).format('MMMM DD, YYYY')}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.placeofbirth}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.type_of_birth}</td>
+                                        <td className="border-bottom-1">{record.midwife}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const NewBornTable = () => {
+const NewBornTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">3. Bagong Silang na Sanggol</h6>
@@ -146,59 +192,82 @@ const NewBornTable = () => {
                         <th className="border-bottom-1">Puna</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.newBornRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.newBornRecords?.length > 0 && (
+                        <tbody>
+                            {
+                                records.newBornRecords.map((record : any, index : number) => (
+                                    <tr>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{ moment(record.date_of_birth).format('MMMM DD, YYYY') }</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.weight }</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.gender?.name }</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.placeofbirth }</td>
+                                        <td className="border-bottom-1">{ record.remarks }</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const VaccinatedTable = () => {
+const VaccinatedTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">4. Binakunahan</h6>
@@ -210,44 +279,65 @@ const VaccinatedTable = () => {
                         <th className="border-bottom-1">Bakunang Ibinigay</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.vaccinatedRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.vaccinatedRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.vaccinatedRecords.map((record : any, index : number) => (
+                                    <tr>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.full_name }</td>
+                                        <td className="border-bottom-1 border-right-1">{ moment(record.household_profile?.date_of_birth).format('MMMM DD, YYYY') }</td>
+                                        <td className="border-bottom-1">{ record.vaccine }</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
+                
             </table>
         </>
     )
 }
 
-const FamilyPlanningTable = () => {
+const FamilyPlanningTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">5. Nagplano ng Pamilya</h6>
@@ -260,49 +350,70 @@ const FamilyPlanningTable = () => {
                         <th className="border-bottom-1">Puna</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.familyPlanningRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.familyPlanningRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.familyPlanningRecords.map((record : any, index : number) => (
+                                    <tr>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.full_name }</td>
+                                        <td className="border-bottom-1 border-right-1">{ calculateAge(record.household_profile?.birthdate) }</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.fp_method?.name }</td>
+                                        <td className="border-bottom-1">{ record.remarks }</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const DeathTable = () => {
+const DeathTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">6. Namatay</h6>
@@ -315,49 +426,70 @@ const DeathTable = () => {
                         <th className="border-bottom-1">Sanhi ng Pagkamatay</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.deathRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.deathRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.deathRecords.map((record : any, index : number) => (
+                                    <tr>
+                                        <td className="border-bottom-1 border-right-1">{ moment(record.date_of_death).format('MMMM DD, YYYY') }</td>
+                                        <td className="border-bottom-1 ">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.full_name }</td>
+                                        <td className="border-bottom-1 border-right-1">{ calculateAge(record.household_profile?.birthdate) }</td>
+                                        <td className="border-bottom-1">{ record.cause_of_death }</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const SickTable = () => {
+const SickTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">7. Mga Nagkasakit/May Sakit</h6>
@@ -370,49 +502,70 @@ const SickTable = () => {
                         <th className="border-bottom-1">Uri ng Karamdaman</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 ">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.sickRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 ">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.sickRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.sickRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1 border-right-1">{ moment(record.date_of_sick).format("MMMM DD, YYYY") }</td>
+                                        <td className="border-bottom-1 ">1.</td>
+                                        <td className="border-bottom-1 border-right-1">{ record.household_profile?.updated_details?.full_name }</td>
+                                        <td className="border-bottom-1 border-right-1">{ calculateAge(record.household_profile?.birthdate) }</td>
+                                        <td className="border-bottom-1">{ record.type_of_sickness }</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
 }
 
-const HighbloodTable = () => {
+const HighbloodTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">8. May Sakit na Highblood</h6>
@@ -467,7 +620,7 @@ const HighbloodTable = () => {
     )
 }
 
-const DiabetesTable = () => {
+const DiabetesTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">9. May Sakit na Diabetes</h6>
@@ -528,7 +681,7 @@ const DiabetesTable = () => {
     )
 }
 
-const UrinalysisResultTable = () => {
+const UrinalysisResultTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">10. Resulta ng Pag-Eksamin ng Ihi</h6>
@@ -577,7 +730,7 @@ const UrinalysisResultTable = () => {
     )
 }
 
-const CancerTable = () => {
+const CancerTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">11. May Sakit na Kanser</h6>
@@ -632,7 +785,7 @@ const CancerTable = () => {
     )
 }
 
-const EpilepsyTable = () => {
+const EpilepsyTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">12. May Problema sa Pag-iisip/Epilepsy</h6>
@@ -675,7 +828,7 @@ const EpilepsyTable = () => {
     )
 }
 
-const AnimalBiteTable = () => {
+const AnimalBiteTable = ({records} : {records: any}) => {
     return (
         <>
             <h6 className="mb-0">13. Kinagat ng Hayop/Aso</h6>
@@ -730,35 +883,52 @@ const BHWMonthlyReportPage = () => {
     const [filter, setFilter] = useState<any>({ 
         municipality: null, 
         barangay: null, 
-        month: moment().format('MM'), 
-        year: moment().format('YYYY')
+        month: parseInt(moment().format('M')), 
+        year: parseInt(moment().format('YYYY'))
+    });
+    const [loading, setLoading] = useState({
+        records: false
     });
     const dispatch = useDispatch();
     const [records, setRecords] = useState<any>([]);
 
     useEffect(() => {
+        console.log(filter)
         if(filter.barangay && filter.month && filter.year) {
             (async() => {
+                setLoading({ ...loading, records: true });
                 const _records = await getMonthlyRecords(dispatch, {
                     barangay: filter.barangay,
                     month: filter.month,
                     year: filter.year
                 });
                 setRecords(_records);
+                console.log(_records)
+                setLoading({ ...loading, records: false });
             })();
         }
     }, [filter.barangay, filter.month, filter.year]);
 
     return (
         <>
-            <div className="flex flex-wrap justify-content-end mb-3 gap-2">
-                <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} />
-                <BarangayPicker municipality={filter.municipality} barangay={filter.barangay} onChange={(e: any) => setFilter({ ...filter, barangay: e })} />
-                <MonthPicker value={filter.month} onChange={(e: any) => setFilter({ ...filter, month: e.value })} />
-                <YearPicker value={filter.year} onChange={(e: any) => setFilter({ ...filter, year: e.value })} />
+            <div className="flex flex-wrap justify-content-between mb-3 gap-2">
+                <div className="flex flex-wrap gap-2">
+                    <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} />
+                    <BarangayPicker municipality={filter.municipality} barangay={filter.barangay} onChange={(e: any) => setFilter({ ...filter, barangay: e })} />
+                    <MonthPicker value={filter.month} onChange={(e: any) => setFilter({ ...filter, month: e.value })} />
+                    <YearPicker value={filter.year} onChange={(e: any) => setFilter({ ...filter, year: e.value })} />
+                </div>
                 <Button label="Print" size="small" icon="pi pi-print" onClick={reactToPrintFn}/>
             </div>
             <div className="card">
+                {
+                    loading.records && (
+                        <div className="flex gap-2">
+                            <ProgressSpinner className="flex-none" style={{width: '20px', height: '20px'}} strokeWidth="8" aria-label="Loading"  /> 
+                            <span className="flex-grow-1">Loading</span>
+                        </div>
+                    )
+                }
                 <div className="p-5" ref={contentRef}>
                     <h5 className="text-center mb-0">BUWANANG ULAT</h5>
                     <h5 className="text-center mt-0">BARANGAY HEALTH WORKER</h5>
@@ -781,19 +951,19 @@ const BHWMonthlyReportPage = () => {
 
                     <div className="w-full">
                         <h6>A. HEALTH CARE SERVICE PROVIDER</h6>
-                        <PregnantsTable />
-                        <BirthTable />
-                        <NewBornTable />
-                        <VaccinatedTable />
-                        <FamilyPlanningTable />
-                        <DeathTable />
-                        <SickTable />
-                        <HighbloodTable />
-                        <DiabetesTable />
-                        <UrinalysisResultTable />
-                        <CancerTable />
-                        <EpilepsyTable />
-                        <AnimalBiteTable />
+                        <PregnantsTable records={records} />
+                        <BirthTable records={records} />
+                        <NewBornTable records={records} />
+                        <VaccinatedTable records={records} />
+                        <FamilyPlanningTable records={records} />
+                        <DeathTable records={records} />
+                        <SickTable records={records} />
+                        <HighbloodTable records={records} />
+                        <DiabetesTable records={records} />
+                        <UrinalysisResultTable records={records} />
+                        <CancerTable records={records} />
+                        <EpilepsyTable records={records} />
+                        <AnimalBiteTable records={records} />
                     </div>
                 </div>
             </div>

@@ -103,7 +103,8 @@ class HealthcareServiceController extends Controller
                 "place_of_birth" => $request->place_of_birth,
                 "weight" => $request->weight,
                 "gender_id" => $request->gender,
-                "encoded_by" => auth()->user()->id
+                "encoded_by" => auth()->user()->id,
+                "remarks" => $request->remarks
             ]);
             return response()->json([
                 "message" => "New Born Record created successfully",
@@ -338,7 +339,7 @@ class HealthcareServiceController extends Controller
         $records = (object)[
             "pregnancyRecords" => $this->queryRecord(Pregnancy::class, $request),
             "birthRecords" => $this->queryRecord(Birth::class, $request),
-            "newBordRecords" => $this->queryRecord(NewBorn::class, $request),
+            "newBornRecords" => $this->queryRecord(NewBorn::class, $request),
             "vaccinatedRecords" => $this->queryRecord(Vaccinated::class, $request),
             "familyPlanningRecords" => $this->queryRecord(FpRecord::class, $request),
             "deathRecords" => $this->queryRecord(Death::class, $request),
@@ -354,6 +355,7 @@ class HealthcareServiceController extends Controller
 
     private function queryRecord($model, $request) {
         $query = $model::query();
+        $query->with('household_profile.household');
         if($request->has('month')) {
             $query->whereMonth('created_at', $request->month);
         }
