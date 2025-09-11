@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Birth extends Model
 {
     protected $guarded = [];
+
+    public function household_profile() {
+        return $this->belongsTo(HouseholdProfile::class);
+    }
 }

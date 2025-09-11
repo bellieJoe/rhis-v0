@@ -336,6 +336,7 @@ export const getMonthlyRecords = async (dispatch : Dispatch, params = {}) => {
         const response = await axios.get('/api/healthcare-services/monthly-records', {params : params});
         return response.data;
     } catch (error : any) {
+        console.log(error)
         dispatch(setToast({
             severity :"error", 
             summary : "Error", 

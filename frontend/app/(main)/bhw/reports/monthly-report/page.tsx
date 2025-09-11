@@ -1,7 +1,12 @@
 "use client";
 
+import { getMonthlyRecords } from "@/api/healthcareServicesApi";
+import { BarangayPicker, MonthPicker, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
+import moment from "moment";
 import { Button } from "primereact/button";
-import { useRef } from "react";
+import { Dropdown } from "primereact/dropdown";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 
 const PregnantsTable = () => {
@@ -722,10 +727,35 @@ const AnimalBiteTable = () => {
 const BHWMonthlyReportPage = () => {
     const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+    const [filter, setFilter] = useState<any>({ 
+        municipality: null, 
+        barangay: null, 
+        month: moment().format('MM'), 
+        year: moment().format('YYYY')
+    });
+    const dispatch = useDispatch();
+    const [records, setRecords] = useState<any>([]);
+
+    useEffect(() => {
+        if(filter.barangay && filter.month && filter.year) {
+            (async() => {
+                const _records = await getMonthlyRecords(dispatch, {
+                    barangay: filter.barangay,
+                    month: filter.month,
+                    year: filter.year
+                });
+                setRecords(_records);
+            })();
+        }
+    }, [filter.barangay, filter.month, filter.year]);
 
     return (
         <>
-            <div className="flex justify-content-end mb-3">
+            <div className="flex flex-wrap justify-content-end mb-3 gap-2">
+                <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} />
+                <BarangayPicker municipality={filter.municipality} barangay={filter.barangay} onChange={(e: any) => setFilter({ ...filter, barangay: e })} />
+                <MonthPicker value={filter.month} onChange={(e: any) => setFilter({ ...filter, month: e.value })} />
+                <YearPicker value={filter.year} onChange={(e: any) => setFilter({ ...filter, year: e.value })} />
                 <Button label="Print" size="small" icon="pi pi-print" onClick={reactToPrintFn}/>
             </div>
             <div className="card">

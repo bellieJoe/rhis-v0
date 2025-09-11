@@ -334,20 +334,20 @@ class HealthcareServiceController extends Controller
         });
     }
 
-    public function getMonthlyRecords() {
+    public function getMonthlyRecords(Request $request) {
         $records = (object)[
-            "pregnancyRecords" => $this->queryRecord(Pregnancy::class, request()),
-            "birthRecords" => $this->queryRecord(Birth::class, request()),
-            "newBordRecords" => $this->queryRecord(NewBorn::class, request()),
-            "vaccinatedRecords" => $this->queryRecord(Vaccinated::class, request()),
-            "familyPlanningRecords" => $this->queryRecord(FpRecord::class, request()),
-            "deathRecords" => $this->queryRecord(Death::class, request()),
-            "sickRecords" => $this->queryRecord(SickRecord::class, request()),
-            "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, request()),
-            "highbloodRecords" => $this->queryRecord(HighbloodRecord::class, request()),
-            "urinalysisResultRecords" => $this->queryRecord(UrinalysisResult::class, request()),
-            "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, request()),
-            "animalBiteRecords" => $this->queryRecord(AnimalBiteRecord::class, request()),
+            "pregnancyRecords" => $this->queryRecord(Pregnancy::class, $request),
+            "birthRecords" => $this->queryRecord(Birth::class, $request),
+            "newBordRecords" => $this->queryRecord(NewBorn::class, $request),
+            "vaccinatedRecords" => $this->queryRecord(Vaccinated::class, $request),
+            "familyPlanningRecords" => $this->queryRecord(FpRecord::class, $request),
+            "deathRecords" => $this->queryRecord(Death::class, $request),
+            "sickRecords" => $this->queryRecord(SickRecord::class, $request),
+            "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, $request),
+            "highbloodRecords" => $this->queryRecord(HighbloodRecord::class, $request),
+            "urinalysisResultRecords" => $this->queryRecord(UrinalysisResult::class, $request),
+            "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, $request),
+            "animalBiteRecords" => $this->queryRecord(AnimalBiteRecord::class, $request),
         ];
         return response()->json($records);
     }
