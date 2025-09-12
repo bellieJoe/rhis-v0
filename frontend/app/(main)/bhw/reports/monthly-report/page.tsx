@@ -577,44 +577,65 @@ const HighbloodTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1 border-right-1">BP</th>
                         <th className="border-bottom-1">Mga Ginawa bilang BHW</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                </thead>       
+                {
+                    records.highbloodRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.highbloodRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.highbloodRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index+1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{calculateAge(record.household_profile?.birthdate)}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.blood_pressure}</td>
+                                        <td className="border-bottom-1">{record.actions}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
@@ -634,48 +655,70 @@ const DiabetesTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1">Mga Ginawa bilang BHW</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.diabetesRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.diabetesRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.diabetesRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">1.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{calculateAge(record.household_profile?.birthdate)}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.glucose_level}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.observation}</td>
+                                        <td className="border-bottom-1">{record.actions}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
@@ -693,38 +736,58 @@ const UrinalysisResultTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1">Nakitang Resulta</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.urinalysisResultRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.urinalysisResultRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.urinalysisResultRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.age}</td>
+                                        <td className="border-bottom-1">{record.results}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
@@ -743,43 +806,64 @@ const CancerTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1">Mga Ginawa bilang BHW</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.cancerRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.cancerRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.cancerRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1 " >{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.age}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.affected_areas}</td>
+                                        <td className="border-bottom-1">{record.actions}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
@@ -796,33 +880,52 @@ const EpilepsyTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1">Edad</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.epilepsyRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.epilepsyRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.epilepsyRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1">{record.age}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
@@ -840,38 +943,58 @@ const AnimalBiteTable = ({records} : {records: any}) => {
                         <th className="border-bottom-1">Uri ng Hayop</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td className="border-bottom-1">1.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">2.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">3.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">4.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                    <tr>
-                        <td className="border-bottom-1">5.</td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1 border-right-1"></td>
-                        <td className="border-bottom-1"></td>
-                    </tr>
-                </tbody>
+                {
+                    records.animalBiteRecords?.length <= 0 && (
+                        <tbody>
+                            <tr>
+                                <td className="border-bottom-1">1.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">2.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">3.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">4.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                            <tr>
+                                <td className="border-bottom-1">5.</td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1 border-right-1"></td>
+                                <td className="border-bottom-1"></td>
+                            </tr>
+                        </tbody>
+                    )
+                }
+                {
+                    records.animalBiteRecords?.length > 0 && (
+                        <tbody> 
+                            {
+                                records.animalBiteRecords.map((record : any, index : number) => (
+                                    <tr key={index}>
+                                        <td className="border-bottom-1">{index + 1}.</td>
+                                        <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
+                                        <td className="border-bottom-1 border-right-1">{record.age}</td>
+                                        <td className="border-bottom-1">{record.animal_type}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    )
+                }
             </table>
         </>
     )
