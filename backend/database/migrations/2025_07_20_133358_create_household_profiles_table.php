@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('household_id');
             $table->boolean('is_active');
-            $table->timestamp('birthdate');
+            $table->dateTime('birthdate');
             $table->timestamps();
         });
     }
