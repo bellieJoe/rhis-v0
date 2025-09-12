@@ -1,7 +1,7 @@
 "use client";
 
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
-import { BarangayPicker, MonthPicker, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
+import { BarangayPicker, MonthPicker, MONTHS, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
@@ -1058,16 +1058,16 @@ const BHWMonthlyReportPage = () => {
                     <table className="w-full">
                         <tbody>
                             <tr>
-                                <td width="35%"> </td>
-                                <td className="text-right" width="65%" style={{ width: '50%' }}>Buwan: ____________________________ </td>
+                                <td width="65%"> </td>
+                                <td className="text-left" width="35%" style={{ width: '50%' }}>Buwan: <span style={{textDecoration: 'underline'}}> { filter.month && MONTHS.find((m : any) => m.code === filter.month)?.name} {filter.year} </span> </td>
                             </tr>
                             <tr>
-                                <td width="35%"> </td>
-                                <td className="text-right" width="65%" style={{ width: '50%' }}>Blg. ng Nasasakupan: _____________</td>
+                                <td width="65%"> </td>
+                                <td className="text-left" width="35%" style={{ width: '50%' }}>Blg. ng Nasasakupan: </td>
                             </tr>
                             <tr>
-                                <td width="35%"> </td>
-                                <td className="text-right" width="65%" style={{ width: '50%' }}>Sitio: _______________________________</td>
+                                <td width="65%"> </td>
+                                <td className="text-left" width="35%" style={{ width: '50%' }}>Sitio: </td>
                             </tr>
                         </tbody>
                     </table>
