@@ -344,9 +344,10 @@ class HealthcareServiceController extends Controller
             "familyPlanningRecords" => $this->queryRecord(FpRecord::class, $request),
             "deathRecords" => $this->queryRecord(Death::class, $request),
             "sickRecords" => $this->queryRecord(SickRecord::class, $request),
-            "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, $request),
             "highbloodRecords" => $this->queryRecord(HighbloodRecord::class, $request),
+            "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, $request),
             "urinalysisResultRecords" => $this->queryRecord(UrinalysisResult::class, $request),
+            "cancerRecords" => $this->queryRecord(CancerRecord::class, $request),
             "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, $request),
             "animalBiteRecords" => $this->queryRecord(AnimalBiteRecord::class, $request),
         ];

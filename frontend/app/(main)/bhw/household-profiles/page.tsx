@@ -40,10 +40,10 @@ const HouseholdsTable = () => {
 
     useEffect(() => {
         (async () => {
-            setLoading({ ...loading, householdsTable: true });
+            setLoading(prev => ({ ...prev, householdsTable: true }));
             await getHouseholds(dispatch);
-            console.log("households ", households);
-            setLoading({ ...loading, householdsTable: false });
+            console.log("households ", loading);
+            setLoading(prev => ({ ...prev, householdsTable: false }));
         })();
     }, [householdReload]);
 
@@ -59,14 +59,20 @@ const HouseholdsTable = () => {
             message : 'Are you sure you want to delete this household?',
             icon : 'pi pi-exclamation-triangle',
             accept : async () => {
-                setLoading({ ...loading, householdDelete : true });
-                const success = await deleteHousehold(dispatch, id);
-                setLoading({ ...loading, householdDelete : false });
-                if(success) {
-                    await getHouseholds(dispatch);
+                setLoading(prev => ({ ...prev, householdDelete: true }));
+                try {
+                    const success = await deleteHousehold(dispatch, id);
+                    if (success) {
+                        await getHouseholds(dispatch);
+                    }
+                } catch (err) {
+                    console.error("Delete failed:", err);
+                    // optional: show toast here
+                } finally {
+                    setLoading(prev => ({ ...prev, householdDelete: false }));
                 }
             }
-        })
+        });
     }
     
     return (

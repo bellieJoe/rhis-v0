@@ -87,9 +87,7 @@ export const BarangayPicker = (props : BaranggayPickerProps) => {
     </>
   );
 }
-
-export const MonthPicker = (props: { value: number, onChange: (e: any) => any }) => {
-  const months = [
+export const MONTHS = [
     { name: 'January', code: 1 },
     { name: 'February', code: 2 },
     { name: 'March', code: 3 },
@@ -102,7 +100,10 @@ export const MonthPicker = (props: { value: number, onChange: (e: any) => any })
     { name: 'October', code: 10 },
     { name: 'November', code: 11 },
     { name: 'December', code: 12 },
-  ];
+];
+
+export const MonthPicker = (props: { value: number, onChange: (e: any) => any }) => {
+  const months = MONTHS;
 
   return (
     <>
