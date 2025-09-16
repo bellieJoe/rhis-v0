@@ -11,6 +11,7 @@ use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\Pregnancy;
@@ -102,6 +103,12 @@ Route::prefix("healthcare-services")->group(function () {
         Route::post("has-epilepsies", [HealthcareServiceController::class, "storeEpilepsyRecord"]);
         Route::post("animal-bites", [HealthcareServiceController::class, "storeAnimalBiteRecord"]);
         Route::get("monthly-records", [HealthcareServiceController::class, "getMonthlyRecords"]);
+    });
+});
+
+Route::prefix("reports")->group(function () {
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("summary-report", [ReportController::class, "getSummaryReport"]);
     });
 });
 

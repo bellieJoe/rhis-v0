@@ -39,7 +39,8 @@ const AppMenu = () => {
                     label: 'Reports', 
                     icon: 'pi pi-fw pi-chart-bar', 
                     items : [
-                        { label: 'Monthly Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/monthly-report' }
+                        { label: 'Monthly Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/monthly-report' },
+                        { label: 'Summary Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/summary-report' }
                     ]
                 }
             ]
