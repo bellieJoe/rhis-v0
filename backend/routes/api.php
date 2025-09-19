@@ -13,6 +13,7 @@ use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoleTypeController;
 use App\Http\Controllers\UserController;
 use App\Models\Pregnancy;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ Route::prefix("roles")->group(function (){
 
 Route::prefix("users")->group(function () {
     Route::get("", [UserController::class, "index"]);
+    Route::post("", [UserController::class, "store"]);
 });
 
 Route::prefix("offices")->group(function () {
@@ -110,6 +112,10 @@ Route::prefix("reports")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("summary-report", [ReportController::class, "getSummaryReport"]);
     });
+});
+
+Route::prefix("role-types")->group(function () {
+    Route::get("", [RoleTypeController::class, "index"]);
 });
 
 

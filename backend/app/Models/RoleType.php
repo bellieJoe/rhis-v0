@@ -8,4 +8,9 @@ class RoleType extends Model
 {
     //
     protected $guarded = [];
+    protected $appends = ['caps_name'];
+
+    public function getCapsNameAttribute(){
+        return  strtoupper($this->name);
+    }
 }

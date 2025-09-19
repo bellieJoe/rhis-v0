@@ -14,8 +14,12 @@ class OfficeController extends Controller
         $query = Office::query();
         $query->with('municipality.province', 'province', 'parent');
 
+        if($request->has('full') && $request->full) {
+            return $query->get();
+        }
         return $query->paginate(20);
     }
+
     public function store(Request $request) {
         $request->validate([
             'office_name' => 'required',
