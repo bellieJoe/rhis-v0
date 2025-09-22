@@ -30,25 +30,31 @@ const AppMenu = () => {
     }
 
     const setBhwMenu  = () => {
-        return [{
-            label: 'BHW Interface',
-            items: [
-                { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' },
-                { label: 'Healthcare Services', icon: 'pi pi-fw pi-users', to: '/bhw/healthcare-services' },
-                { 
-                    label: 'Reports', 
-                    icon: 'pi pi-fw pi-chart-bar', 
-                    items : [
-                        { label: 'Monthly Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/monthly-report' },
-                        { label: 'Summary Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/summary-report' }
-                    ]
-                }
-            ]
-        }];
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 1)) {
+            return [{
+                label: 'BHW Interface',
+                items: [
+                    { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' },
+                    { label: 'Healthcare Services', icon: 'pi pi-fw pi-users', to: '/bhw/healthcare-services' },
+                    { 
+                        label: 'Reports', 
+                        icon: 'pi pi-fw pi-chart-bar', 
+                        items : [
+                            { label: 'Monthly Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/monthly-report' },
+                            { label: 'Summary Report', icon: 'pi pi-fw pi-angle-right', to: '/bhw/reports/summary-report' }
+                        ]
+                    }
+                ]
+            }];
+        }
+        return [];
     }
 
     useEffect(() => {
-        setModel([...setAdminMenu(), ...setBhwMenu()]);
+        setModel([
+            ...setAdminMenu(), 
+            ...setBhwMenu(),
+        ]);
     }, [authUser]);
 
 

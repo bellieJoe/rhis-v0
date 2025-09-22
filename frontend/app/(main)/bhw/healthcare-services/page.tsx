@@ -4,7 +4,7 @@ import { getHouseholdProfiles } from "@/api/householdProfileApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import { UpdateHealthServiceForm } from "@/components/UpdateHealthServiceForm";
 import { setHouseholdProfiles } from "@/features/householdProfileSlice";
-import { showUpdateHealthService } from "@/features/updateHealthServiceSlice";
+import { showUpdateHealthService } from "@/features/forms/updateHealthServiceSlice";
 import { calculateAge } from "@/utils/helpers";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";

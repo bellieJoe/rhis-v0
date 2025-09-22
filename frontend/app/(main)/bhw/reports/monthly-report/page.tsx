@@ -2,6 +2,7 @@
 
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
 import { BarangayPicker, MonthPicker, MONTHS, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
+import { AuthMiddleware } from "@/components/middlewares";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
@@ -1033,7 +1034,7 @@ const BHWMonthlyReportPage = () => {
     }, [filter.barangay, filter.month, filter.year]);
 
     return (
-        <>
+        <AuthMiddleware>
             <div className="flex flex-wrap justify-content-between mb-3 gap-2">
                 <div className="flex flex-wrap gap-2">
                     <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} />
@@ -1090,7 +1091,7 @@ const BHWMonthlyReportPage = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </AuthMiddleware>
     )
 }
 

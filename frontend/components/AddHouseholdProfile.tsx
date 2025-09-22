@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ValidationError from './forms/ValidationError';
 import { calculateAge, formatDate } from '@/utils/helpers';
 import { storeHouseholdProfile } from '@/api/householdProfileApi';
-import { addMember, hide } from '@/features/addHouseholdProfileSlice';
+import { addMember, hide } from '@/features/forms/addHouseholdProfileSlice';
 import { reloadHouseholds } from '@/features/householdSlice';
 import { setErrors } from '@/features/errorSlice';
 import { Chip } from 'primereact/chip';

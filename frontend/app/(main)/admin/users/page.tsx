@@ -1,6 +1,10 @@
 "use client";
 import { getUsers } from "@/api/userApi";
+import AddUserForm from "@/components/AddUserForm";
+import AssignBhwForm from "@/components/AssignBhwForm";
 import { AuthMiddleware } from "@/components/middlewares";
+import { showAddUserForm } from "@/features/forms/addUserSlice";
+import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
@@ -28,30 +32,42 @@ const RolesBadges = ({roles} : RolesBadgesProps) => {
 
 const Users = (props : UsersProps) => {
     const dispatch = useDispatch();
-    const { users } = useSelector((state : any) => state.user);
+    const { users, reload } = useSelector((state : any) => state.user);
+    const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState({
         users : false
     });
+    
     useEffect(() => {
         (async() => {
             setLoading({ ...loading,users : true });
             await getUsers(dispatch);
             setLoading({ ...loading,users : false });
         })();
-    }, []);
+    }, [reload]);
 
     return (
         <>
-        <AuthMiddleware>
-            <div className="card">
-                <h5>Users</h5>
-                <DataTable value={users.data} loading={loading.users}>
-                    <Column field="email" header="Email"></Column>
-                    <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
-                    <Column header="Actions" />
-                </DataTable>
-            </div>
-        </AuthMiddleware>
+            <AuthMiddleware>
+                <div className="card">
+                    <h5>Users</h5>
+                    <div className="flex justify-content-end mb-3">
+                        <Button size="small" label="Add User" icon="pi pi-plus" onClick={() => dispatch(showAddUserForm())} />
+                    </div>
+                    <DataTable value={users.data} loading={loading.users}>
+                        <Column field="email" header="Email"></Column>
+                        <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
+                        <Column header="Actions" body={(data : any) => {
+                            return (
+                                <div className="flex gap-2">
+                                    <AssignBhwForm user={data} />
+                                </div>
+                            )
+                        }} />
+                    </DataTable>
+                </div>
+                <AddUserForm />
+            </AuthMiddleware>
         </>
     )
 }

@@ -16,7 +16,7 @@ import { reloadHouseholds } from "@/features/householdSlice";
 import { emit } from "process";
 import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
-import { addHead } from "@/features/addHouseholdProfileSlice";
+import { addHead } from "@/features/forms/addHouseholdProfileSlice";
 import { formatDate } from "@/utils/helpers";
 import Required from "./forms/RequiredIndicator";
 

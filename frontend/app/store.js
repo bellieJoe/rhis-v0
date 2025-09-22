@@ -7,10 +7,12 @@ import genericTypeReducer from '@/features/genericTypeSlice';
 import errorReducer from '@/features/errorSlice';
 import householdReducer from '@/features/householdSlice';
 import householdProfileReducer from '@/features/householdProfileSlice';
-import addHouseholdProfileReducer from '@/features/addHouseholdProfileSlice';
-import updateHouseholdProfileReducer from '@/features/updateHouseholdProfileSlice';
-import updateHouseholdProfileAddtnlInfoReducer from '@/features/updateHouseholdProfileAddtnlInfoSlice';
-import updateHealthServiceReducer from '@/features/updateHealthServiceSlice';
+import addHouseholdProfileReducer from '@/features/forms/addHouseholdProfileSlice';
+import updateHouseholdProfileReducer from '@/features/forms/updateHouseholdProfileSlice';
+import updateHouseholdProfileAddtnlInfoReducer from '@/features/forms/updateHouseholdProfileAddtnlInfoSlice';
+import updateHealthServiceReducer from '@/features/forms/updateHealthServiceSlice';
+import addUserReducer from '@/features/forms/addUserSlice';
+import assignBhwFormReducer from '@/features/forms/assignBhwFormSlice';
 
 
 export default configureStore({
@@ -26,6 +28,8 @@ export default configureStore({
     addHouseholdProfile : addHouseholdProfileReducer,
     updateHouseholdProfile : updateHouseholdProfileReducer,
     updateHouseholdProfileAddtnlInfo : updateHouseholdProfileAddtnlInfoReducer,
-    updateHealthService : updateHealthServiceReducer
+    updateHealthService : updateHealthServiceReducer,
+    addUser : addUserReducer,
+    assignBhwForm : assignBhwFormReducer
   }
 });

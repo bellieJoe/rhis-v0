@@ -16,4 +16,20 @@ export const getUsers = async (dispatch : Dispatch, params : any = {}) => {
         }));
         console.log(error)
     }
+    
+}
+
+export const storeUser = async (dispatch : Dispatch, params : any = {}) => {
+    try {
+        const response = await axios.post('/api/users', params);
+        return true;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+        return false;
+    }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { getSummaryReport } from "@/api/reportApi";
+import { AuthMiddleware } from "@/components/middlewares";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -19,7 +20,7 @@ const SummaryReport = () => {
     }, []);
 
     return (
-        <>
+        <AuthMiddleware>
             <div className="card">
                 <h5 className="text-center">Summary Report</h5>
                 <h6 className="text-center">2025</h6>
@@ -248,7 +249,7 @@ const SummaryReport = () => {
                     </tbody>
                 </table>
             </div>
-        </>
+        </AuthMiddleware>
     )
 }
 

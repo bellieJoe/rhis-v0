@@ -1,8 +1,8 @@
 import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeUrinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
 import handler from "@/app/api/upload";
 import store from "@/app/store";
-import { hide } from "@/features/addHouseholdProfileSlice";
-import { hideUpdateHealthService, onHealthServiceFinish, onHealthServiceSubmit, resetHealthServiceForm } from "@/features/updateHealthServiceSlice";
+import { hide } from "@/features/forms/addHouseholdProfileSlice";
+import { hideUpdateHealthService, onHealthServiceFinish, onHealthServiceSubmit, resetHealthServiceForm } from "@/features/forms/updateHealthServiceSlice";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";

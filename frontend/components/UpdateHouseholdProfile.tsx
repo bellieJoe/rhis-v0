@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./forms/ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
 import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
-import { hideUpdateProfile } from "@/features/updateHouseholdProfileSlice";
+import { hideUpdateProfile } from "@/features/forms/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
