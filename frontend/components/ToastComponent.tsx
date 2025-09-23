@@ -11,10 +11,10 @@ const ToastComponent = () => {
     const { severity, summary, detail, life } = toastState;
 
     useEffect(() => {
-        if (!severity || !summary || !detail || !life) return;
+        if (!severity || !summary) return;
         toast.current?.show({ severity, summary, detail, life });
-    }, [severity, summary, detail, life]);
-
+        dispatch(setToast({}));
+    }, [severity, summary, detail, life, dispatch]);
 
     return <Toast ref={toast} />;
 };

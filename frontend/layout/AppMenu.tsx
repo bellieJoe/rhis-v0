@@ -45,6 +45,7 @@ const AppMenu = () => {
             return [{
                 label: 'BHW Interface',
                 items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/bhw/dashboard' },
                     { label: 'Household Profiles', icon: 'pi pi-fw pi-home', to: '/bhw/household-profiles' },
                     { label: 'Healthcare Services', icon: 'pi pi-fw pi-users', to: '/bhw/healthcare-services' },
                     { 

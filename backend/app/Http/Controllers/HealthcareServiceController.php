@@ -19,6 +19,7 @@ use App\Models\UrinalysisResult;
 use App\Models\Vaccinated;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HealthcareServiceController extends Controller
@@ -367,6 +368,13 @@ class HealthcareServiceController extends Controller
             $query->whereHas('household_profile', function ($q) use ($request) {
                     $q->whereHas('household', function ($q) use ($request) {
                         $q->where('barangay_id', $request->barangay);
+                    });
+            });
+        }
+        if($request->has("sitio")) {
+            $query->whereHas('household_profile', function ($q) use ($request) {
+                    $q->whereHas('household', function ($q) use ($request) {
+                        $q->where('sitio_id', $request->sitio);
                     });
             });
         }

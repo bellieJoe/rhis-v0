@@ -39,6 +39,6 @@ class BhwDesignationController extends Controller
     }
 
     public function getDesignationsByUserId(Request $request) {
-        return BhwDesignation::where('user_id', $request->user_id)->with('barangay')->get();
+        return BhwDesignation::where('user_id', $request->user_id)->with(['barangay', 'sitio'])->get();
     }
 }

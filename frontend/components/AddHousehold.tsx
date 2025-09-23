@@ -19,6 +19,7 @@ import { getBarangays } from "@/api/addressApi";
 import { addHead } from "@/features/forms/addHouseholdProfileSlice";
 import { formatDate } from "@/utils/helpers";
 import Required from "./forms/RequiredIndicator";
+import { getSitios } from "@/api/sitioApi";
 
 interface AddHouseholdProfileProps {
     visible: boolean,
@@ -54,36 +55,36 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                 household : household.household
             }));
             dispatch(reloadHouseholds());
-            setForm({
-                "barangay" : "",
-                "barangay_name" : "",
-                'date_of_visit' : "",
-                "household_no" : "",
-            });
+            setForm(initialState);
         }
     }
-    
-    const [form, setForm] = useState({
+    const initialState = {
         "barangay" : "",
+        "sitio" : null,
         "barangay_name" : "",
         'date_of_visit' : "",
         "household_no" : ""
-    });
-
+    }
+    const [form, setForm] = useState(initialState);
+    const [sitios, setSitios] = useState<any[]>([]);
     const handleBarangayChanged = async (e: any) => {
         setForm({...form, barangay_name : e.value});
     }
-
     const handleBarangaySelect = (e: any) => {
         console.log(e.value.value);
         setForm({...form, barangay_name : e.value.label, barangay : e.value.value});
     }
-
     const handleBarangayComplete = async (e: any) => {
         const barangaysResult = await getBarangays(dispatch, { search : e.query });
         console.log(barangaysResult)
         setBarangays(e.query ? barangaysResult?.map((barangay: any) => ({ label: barangay.full_address, value: barangay.id })) : []);
     }
+    useEffect(() => {
+        (async () => {
+            const _sitios = await getSitios(dispatch, { barangay : form.barangay, paginate : false });
+            setSitios(_sitios);
+        })();
+    }, [form.barangay]);
 
     return (
         <Sidebar 
@@ -131,6 +132,20 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     className="w-full" />
                 <ValidationError name="barangay" />
             </div>
+
+            <div className="flex flex-column gap-2 mb-3">
+                <label htmlFor="sitio">Sitio <Required/></label>
+                <Dropdown   
+                    id="sitio" 
+                    placeholder="Select Sitio" 
+                    value={form.sitio} 
+                    onChange={(e) => setForm({...form, sitio : e.value})}
+                    options={sitios}
+                    optionLabel="sitio_name"
+                    optionValue="id"
+                    className="w-full" />
+                <ValidationError name="sitio" />
+            </div>            
             <div className="flex justify-content-end">
                 <Button size="small" icon="pi pi-save" label="Save" loading={loading.addHousehold} onClick={onSave} />
             </div>

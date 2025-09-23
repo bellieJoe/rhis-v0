@@ -17,4 +17,8 @@ class BhwDesignation extends Model
     public function getOfficeAttribute() {
         return Office::where('barangay_id', $this->barangay_id)->first();
     }
+
+    public function sitio() {
+        return $this->belongsTo(Sitio::class);
+    }
 }

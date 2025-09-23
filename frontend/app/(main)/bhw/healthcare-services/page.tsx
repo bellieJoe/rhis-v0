@@ -79,8 +79,8 @@ const HealthcareServices = () => {
             <div className="card">
                 <h5>Patients</h5>
                 <div className="flex gap-2 mb-2">
-                    <Dropdown filter value={filter.municipality} onChange={(e) => setFilter({...filter, municipality: e.value})} options={municipalities} optionLabel="municipality_name" optionValue="id" placeholder="Select Municipality" className="w-full md:w-14rem"></Dropdown>
-                    <Dropdown filter value={filter.barangay} onChange={(e) => setFilter({...filter, barangay: e.value})} options={barangays} optionLabel="barangay_name" optionValue="id" placeholder="Select Barangay" className="w-full md:w-14rem"></Dropdown>
+                    {/* <Dropdown filter value={filter.municipality} onChange={(e) => setFilter({...filter, municipality: e.value})} options={municipalities} optionLabel="municipality_name" optionValue="id" placeholder="Select Municipality" className="w-full md:w-14rem"></Dropdown> */}
+                    {/* <Dropdown filter value={filter.barangay} onChange={(e) => setFilter({...filter, barangay: e.value})} options={barangays} optionLabel="barangay_name" optionValue="id" placeholder="Select Barangay" className="w-full md:w-14rem"></Dropdown> */}
                 </div>
                 <DataTable value={householdProfiles?.data} loading={loading.patients}>
                     <Column field="household.household_no" header="Household No."></Column>

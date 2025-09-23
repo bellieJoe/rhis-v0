@@ -7,6 +7,7 @@ use App\Models\HouseholdProfile;
 use App\Models\HouseholdProfileDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HouseholdProfileController extends Controller
@@ -16,7 +17,7 @@ class HouseholdProfileController extends Controller
         
         $query = HouseholdProfile::query()
             ->with(['household']);
-            
+        $user = Auth::user();
 
         if($request->has('only_head') && $request->only_head) {
             $query->whereHas(
@@ -59,6 +60,12 @@ class HouseholdProfileController extends Controller
             $query->whereHas(
                 'household', function ($q) use ($request) {
                     $q->where('household_no', $request->household_no);
+            });
+        }
+
+        if($user->roles->first()->role_type_id === 1) {
+            $query->whereHas('household', function ($q) use ($user) {
+                    $q->whereIn('sitio_id', $user->bhwDesignations->pluck('sitio_id'));
             });
         }
 

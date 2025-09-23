@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Household;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HouseholdController extends Controller
 {
     //
     public function index (Request $request) {
         $search = $request->search;
-
+        $user = Auth::user();
         $query = Household::query();
+
+        if($user->roles->first()->role_type_id === 1) {
+            $query->whereIn('sitio_id', $user->bhwDesignations->pluck('sitio_id'));
+        }
 
         if($request->has('search') && $search) {
             $query->where(function($q) use ($search) {
@@ -27,6 +33,7 @@ class HouseholdController extends Controller
     public function store (Request $request) {
         $request->validate([
             'barangay' => 'required|exists:barangays,id',
+            "sitio" => "required|exists:sitios,id",
             // 'household_no' => 'required|unique:households,household_no|max:12',
             "date_of_visit" => "required|date",
         ], [
@@ -38,6 +45,7 @@ class HouseholdController extends Controller
         $household = Household::create([
             'barangay_id' => $request->barangay,
             // 'household_no' => $request->household_no,
+            'sitio_id' => $request->sitio,
             'household_no' => 0,
             'date_of_visit' => $request->date_of_visit
         ]);

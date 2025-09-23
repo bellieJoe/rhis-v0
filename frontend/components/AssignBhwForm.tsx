@@ -50,6 +50,10 @@ const AssignBhwForm = (props : AssignBhwFormProps) => {
     useEffect(() => {
         if(assignBhwFormStore.user?.id) {
             (async () => {
+                setForm({
+                    ...form,
+                    user_id : assignBhwFormStore.user?.id
+                });
                 const _designations = await getBhwDesignationsByUserId(dispatch, { user_id : assignBhwFormStore.user?.id, paginate : false });
                 if(_designations.length > 0) {
                     setForm({

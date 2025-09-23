@@ -1,5 +1,6 @@
 "use client";
 
+import { getBhwDesignationsByUserId } from "@/api/bhwDesignationApi";
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
 import { BarangayPicker, MonthPicker, MONTHS, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
@@ -8,8 +9,8 @@ import moment from "moment";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { use, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 
 const PregnantsTable = ({records} : {records: any})  => {
@@ -1007,22 +1008,24 @@ const BHWMonthlyReportPage = () => {
     const [filter, setFilter] = useState<any>({ 
         municipality: null, 
         barangay: null, 
+        sitio : null,
         month: parseInt(moment().format('M')), 
         year: parseInt(moment().format('YYYY'))
     });
+    const authStore = useSelector((state: any) => state.auth);
     const [loading, setLoading] = useState({
         records: false
     });
     const dispatch = useDispatch();
+    const [sitios, setSitios] = useState<any[]>([]);
     const [records, setRecords] = useState<any>([]);
 
     useEffect(() => {
-        console.log(filter)
-        if(filter.barangay && filter.month && filter.year) {
+        if(filter.sitio && filter.month && filter.year) {
             (async() => {
                 setLoading({ ...loading, records: true });
                 const _records = await getMonthlyRecords(dispatch, {
-                    barangay: filter.barangay,
+                    sitio: filter.sitio,
                     month: filter.month,
                     year: filter.year
                 });
@@ -1031,14 +1034,24 @@ const BHWMonthlyReportPage = () => {
                 setLoading({ ...loading, records: false });
             })();
         }
-    }, [filter.barangay, filter.month, filter.year]);
+    }, [filter.sitio, filter.year, filter.month]);
+
+    useEffect(() => {
+        (async() => {
+            const _designations = await getBhwDesignationsByUserId(dispatch, {user_id : authStore.user?.id});
+            setSitios(_designations.map((designation : any) => {
+                return designation.sitio;
+            }));
+        })();
+    }, [authStore.user?.id]);
 
     return (
         <AuthMiddleware>
             <div className="flex flex-wrap justify-content-between mb-3 gap-2">
                 <div className="flex flex-wrap gap-2">
-                    <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} />
-                    <BarangayPicker municipality={filter.municipality} barangay={filter.barangay} onChange={(e: any) => setFilter({ ...filter, barangay: e })} />
+                    {/* <MunicipalityPicker municipality={filter.municipality} onChange={(e: any) => setFilter({ ...filter, municipality: e })} /> */}
+                    {/* <BarangayPicker municipality={filter.municipality} barangay={filter.barangay} onChange={(e: any) => setFilter({ ...filter, barangay: e })} /> */}
+                    <Dropdown value={filter.sitio} onChange={(e: any) => setFilter({ ...filter, sitio: e.value })} options={sitios} placeholder="Select Sitio" optionLabel="sitio_name" optionValue="id" />
                     <MonthPicker value={filter.month} onChange={(e: any) => setFilter({ ...filter, month: e.value })} />
                     <YearPicker value={filter.year} onChange={(e: any) => setFilter({ ...filter, year: e.value })} />
                 </div>
@@ -1068,7 +1081,7 @@ const BHWMonthlyReportPage = () => {
                             </tr>
                             <tr>
                                 <td width="65%"> </td>
-                                <td className="text-left" width="35%" style={{ width: '50%' }}>Sitio: </td>
+                                <td className="text-left" width="35%" style={{ width: '50%' }}>Sitio: <span style={{textDecoration: 'underline'}}> { filter.sitio && sitios.find((s : any) => s.id === filter.sitio)?.full_address}  </span></td>
                             </tr>
                         </tbody>
                     </table>

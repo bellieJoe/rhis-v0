@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BhwDesignationController;
 use App\Http\Controllers\BirthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
@@ -133,6 +134,12 @@ Route::prefix("sitios")->group(function(){
         Route::get("", [SitioController::class, "index"]);
         Route::delete("/{id}", [SitioController::class, "destroy"]);
         Route::put("/{id}", [SitioController::class, "update"]);
+    });
+});
+
+Route::prefix("dashboard")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("bhw", [DashboardController::class, "getBhwDashboard"]);
     });
 });
 
