@@ -7,7 +7,7 @@ import { OfficePicker } from "./forms/CustomPickers";
 import { getSitios } from "@/api/sitioApi";
 import { Dropdown } from "primereact/dropdown";
 import { MultiSelect } from "primereact/multiselect";
-import { storeBhwDesgination } from "@/api/bhwDesignationApi";
+import { getBhwDesignationsByUserId, storeBhwDesgination } from "@/api/bhwDesignationApi";
 
 interface AssignBhwFormProps {
 
@@ -21,19 +21,21 @@ const AssignBhwForm = (props : AssignBhwFormProps) => {
         form : false
     });
     const initialState = {
+        user_id : null,
         office: null,
         sitios : []
     };
-    const [form, setForm] = useState<any>({});
+    const [form, setForm] = useState<any>(initialState);
     const [sitios, setSitios] = useState([]);
     const onHide = () => {
+        setForm(initialState);
         dispatch(hideAssignBhw());
     }
     const handleSubmit = async () => {
         setLoading({...loading, form : true});
+        console.log(form);
         const success = await storeBhwDesgination(dispatch, { ...form });
         if(success){
-            setForm(initialState);
             onHide();
         }
         setLoading({...loading, form : false});
@@ -45,7 +47,26 @@ const AssignBhwForm = (props : AssignBhwFormProps) => {
             setSitios(_sitios);
         })();
     }, [form.office]);
-    
+    useEffect(() => {
+        if(assignBhwFormStore.user?.id) {
+            (async () => {
+                const _designations = await getBhwDesignationsByUserId(dispatch, { user_id : assignBhwFormStore.user?.id, paginate : false });
+                if(_designations.length > 0) {
+                    setForm({
+                        user_id : assignBhwFormStore.user?.id,
+                        office: _designations[0].office.id,
+                        sitios: _designations.map((d : any) => d.sitio_id)
+                    });
+                    // console.log(_designations)
+                    // console.log({
+                    //     user_id : assignBhwFormStore.user?.id,
+                    //     office: _designations[0].office.id,
+                    //     sitios: _designations.map((d : any) => d.sitio_id)
+                    // });
+                }
+            })();
+        }
+    }, [assignBhwFormStore.user?.id])
     return (
         <>
             <Sidebar

@@ -83,6 +83,10 @@ export const OfficePicker = (props : OfficePickerProps) => {
     init();
   }, []);
 
+  useEffect(() => {
+    setOffice(props.office || null);
+  }, [props.office]);
+
   return (
     <>
       <Dropdown 

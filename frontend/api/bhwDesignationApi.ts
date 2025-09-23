@@ -1,5 +1,6 @@
 import { setToast } from "@/features/toastSlice";
 import axios from "./axios";
+import { Dispatch } from "@reduxjs/toolkit";
 
 export const storeBhwDesgination = async (dispatch : Dispatch, params : any) => {
     try {
@@ -9,5 +10,14 @@ export const storeBhwDesgination = async (dispatch : Dispatch, params : any) => 
     } catch (error : any) {
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
         return false;
+    }
+}
+
+export const getBhwDesignationsByUserId = async (dispatch : Dispatch, params : any = {}) => {
+    try {
+        const response = await axios.get('/api/bhw-designations/get-by-user-id', { params });
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }

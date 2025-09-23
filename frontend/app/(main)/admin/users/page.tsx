@@ -50,7 +50,7 @@ const Users = (props : UsersProps) => {
         return (
             <div className="flex gap-2">
                 {
-                    data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="Assign BHW" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
+                    data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="BHW Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
                 }
             </div>
         )

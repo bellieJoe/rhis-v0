@@ -123,6 +123,7 @@ Route::prefix("role-types")->group(function () {
 Route::prefix("bhw-designations")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [BhwDesignationController::class, "store"]);
+        Route::get("get-by-user-id", [BhwDesignationController::class, "getDesignationsByUserId"]);
     });
 });
 

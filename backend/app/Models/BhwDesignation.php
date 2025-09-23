@@ -8,6 +8,13 @@ class BhwDesignation extends Model
 {
     //
     protected $guarded = [];
+    protected $appends = ['office'];
     
+    public function barangay() {
+        return $this->belongsTo(Sitio::class);
+    }
 
+    public function getOfficeAttribute() {
+        return Office::where('barangay_id', $this->barangay_id)->first();
+    }
 }
