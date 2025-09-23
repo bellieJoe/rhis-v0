@@ -14,6 +14,10 @@ class OfficeController extends Controller
         $query = Office::query();
         $query->with('municipality.province', 'province', 'parent');
 
+        if($request->has('office_type') && $request->office_type) {
+            $query->where('office_type', $request->office_type);
+        }
+
         if($request->has('full') && $request->full) {
             return $query->get();
         }

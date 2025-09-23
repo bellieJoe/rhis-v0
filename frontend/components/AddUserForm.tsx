@@ -37,7 +37,6 @@ const AddUserForm = () => {
         setRoleTypes(_roleTypes);
         const _offices = await getOffices(dispatch, { full: true });
         setOffices(_offices);
-        console.log(_offices);
     }
 
     const handleSubmit = async() => {

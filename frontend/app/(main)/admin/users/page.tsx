@@ -4,6 +4,7 @@ import AddUserForm from "@/components/AddUserForm";
 import AssignBhwForm from "@/components/AssignBhwForm";
 import { AuthMiddleware } from "@/components/middlewares";
 import { showAddUserForm } from "@/features/forms/addUserSlice";
+import { assignBhw } from "@/features/forms/assignBhwFormSlice";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -45,6 +46,15 @@ const Users = (props : UsersProps) => {
             setLoading({ ...loading,users : false });
         })();
     }, [reload]);
+    const userActions = (data : any) => {
+        return (
+            <div className="flex gap-2">
+                {
+                    data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="Assign BHW" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
+                }
+            </div>
+        )
+    }
 
     return (
         <>
@@ -57,16 +67,11 @@ const Users = (props : UsersProps) => {
                     <DataTable value={users.data} loading={loading.users}>
                         <Column field="email" header="Email"></Column>
                         <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
-                        <Column header="Actions" body={(data : any) => {
-                            return (
-                                <div className="flex gap-2">
-                                    <AssignBhwForm user={data} />
-                                </div>
-                            )
-                        }} />
+                        <Column header="Actions" body={userActions} />
                     </DataTable>
                 </div>
                 <AddUserForm />
+                <AssignBhwForm  />
             </AuthMiddleware>
         </>
     )

@@ -1,4 +1,5 @@
 import { getBarangayList, getMunicipalityList } from "@/api/addressApi";
+import { getOffices } from "@/api/officeApi";
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -10,7 +11,6 @@ interface MuncipalityPickerProps {
   onChange: (e: any) => any,
   className? : string
 }
-
 export const MunicipalityPicker = (props : MuncipalityPickerProps) => {
   const [municipalities, setMunicipalities] = useState<any[]>([]);
   const [province, setProvince] = useState(props.province || 23);
@@ -48,6 +48,61 @@ export const MunicipalityPicker = (props : MuncipalityPickerProps) => {
         optionValue="id" 
         className={props.className || ""}
         optionLabel="municipality_name" />
+    </>
+  );
+}
+
+interface OfficePickerProps {
+  placeholder?: string,
+  office : any,
+  onChange: (e: any) => any,
+  className? : string,
+  office_type? : string
+}
+export const OfficePicker = (props : OfficePickerProps) => {
+  const [offices, setOffices] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const [office, setOffice] = useState(props.office || null);
+
+  const handleChange = (e: any) => {
+    setOffice(e.value);
+    props.onChange(e.value);
+  };
+  const init = async () => {
+    let params : any = { full: true };
+    if(props.office_type){
+      params = {
+        ...params,
+        office_type: props.office_type
+      }
+    }
+    const _offices = await getOffices(dispatch, params);
+    setOffices(_offices || []);
+  }
+  useEffect(() => {
+    init();
+  }, []);
+
+  return (
+    <>
+      <Dropdown 
+        filter
+        placeholder={props.placeholder || "Select Office"} 
+        value={office} 
+        onChange={handleChange}  
+        options={offices} 
+        optionValue="id" 
+        className={props.className || ""}
+        optionLabel="name"
+        itemTemplate={(option) => {
+          return (
+            <>
+              <p className="font-bold mb-0">{option.name}</p>
+              <p className="mb-0 text-muted">{option.address}</p>
+            </>
+          )
+        }}
+         />
     </>
   );
 }
