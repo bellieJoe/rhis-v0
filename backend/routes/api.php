@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
+use App\Http\Controllers\BhwDesignationController;
 use App\Http\Controllers\BirthController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleTypeController;
+use App\Http\Controllers\SitioController;
 use App\Http\Controllers\UserController;
 use App\Models\Pregnancy;
 use Illuminate\Http\Request;
@@ -118,6 +120,19 @@ Route::prefix("role-types")->group(function () {
     Route::get("", [RoleTypeController::class, "index"]);
 });
 
+Route::prefix("bhw-designations")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [BhwDesignationController::class, "store"]);
+    });
+});
 
+Route::prefix("sitios")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [SitioController::class, "store"]);
+        Route::get("", [SitioController::class, "index"]);
+        Route::delete("/{id}", [SitioController::class, "destroy"]);
+        Route::put("/{id}", [SitioController::class, "update"]);
+    });
+});
 
 

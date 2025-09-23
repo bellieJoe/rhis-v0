@@ -7,8 +7,10 @@ interface MuncipalityPickerProps {
   province? : string,
   placeholder?: string,
   municipality : any,
-  onChange: (e: any) => any
+  onChange: (e: any) => any,
+  className? : string
 }
+
 export const MunicipalityPicker = (props : MuncipalityPickerProps) => {
   const [municipalities, setMunicipalities] = useState<any[]>([]);
   const [province, setProvince] = useState(props.province || 23);
@@ -44,6 +46,7 @@ export const MunicipalityPicker = (props : MuncipalityPickerProps) => {
         onChange={handleChange}  
         options={municipalities} 
         optionValue="id" 
+        className={props.className || ""}
         optionLabel="municipality_name" />
     </>
   );
@@ -53,7 +56,8 @@ interface BaranggayPickerProps {
   municipality? : any,
   barangay : any,
   placeholder?: string,
-  onChange: (e: any) => any
+  onChange: (e: any) => any,
+  className? : string
 }
 export const BarangayPicker = (props : BaranggayPickerProps) => {
   const [barangays, setBarangays] = useState<any[]>([]);
@@ -83,6 +87,7 @@ export const BarangayPicker = (props : BaranggayPickerProps) => {
         onChange={handleChange}  
         options={barangays} 
         optionValue="id" 
+        className={props.className || ""}
         optionLabel="barangay_name" />
     </>
   );

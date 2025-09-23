@@ -13,6 +13,9 @@ import updateHouseholdProfileAddtnlInfoReducer from '@/features/forms/updateHous
 import updateHealthServiceReducer from '@/features/forms/updateHealthServiceSlice';
 import addUserReducer from '@/features/forms/addUserSlice';
 import assignBhwFormReducer from '@/features/forms/assignBhwFormSlice';
+import addSitioFormReducer from '@/features/forms/addSitioFormSlice';
+import updateSitioFormReducer from '@/features/forms/updateSitioFormSlice';
+import sitioReducer from '@/features/sitioSlice';
 
 
 export default configureStore({
@@ -30,6 +33,9 @@ export default configureStore({
     updateHouseholdProfileAddtnlInfo : updateHouseholdProfileAddtnlInfoReducer,
     updateHealthService : updateHealthServiceReducer,
     addUser : addUserReducer,
-    assignBhwForm : assignBhwFormReducer
+    assignBhwForm : assignBhwFormReducer,
+    addSitioForm : addSitioFormReducer,
+    updateSitioForm : updateSitioFormReducer,
+    sitio : sitioReducer
   }
 });

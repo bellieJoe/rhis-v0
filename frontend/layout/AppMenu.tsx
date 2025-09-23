@@ -21,7 +21,18 @@ const AppMenu = () => {
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
                     { label: 'Users', icon: 'pi pi-fw pi-users', to: '/admin/users' },
-                    { label: 'Offices', icon: 'pi pi-fw pi-building', to: '/admin/offices' }
+                    { label: 'Offices', icon: 'pi pi-fw pi-building', to: '/admin/offices' },
+                    { 
+                        label: 'Address', 
+                        icon: 'pi pi-fw pi-map-marker',  
+                        items: [
+                            {
+                                label: "Sitios",
+                                icon: "pi pi-fw pi-map-marker",
+                                to: "/admin/sitios"
+                            }
+                        ]
+                    }
                 ]
             }];
         }
