@@ -25,4 +25,16 @@ class HouseholdProfile extends Model
         ->orderBy('created_at', 'desc')->first();
     }
 
+    public function vaccinateds() {
+        return $this->hasMany(Vaccinated::class);
+    }
+
+    public function deaths() {
+        return $this->hasMany(Death::class);
+    }
+
+    public function sickRecords() {
+        return $this->hasMany(SickRecord::class);
+    }
+
 }
