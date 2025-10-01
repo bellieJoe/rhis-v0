@@ -346,7 +346,79 @@ class DashboardController extends Controller
                         ->whereRaw($latesDetailQueryString);
                     })->count()
                 ] 
-            ]
+            ],
+            'illnessData' => [
+                [
+                    "name" => "Highblood",
+                    "Total" => (clone $householdProfileQuery)->whereHas('highbloodRecords')->count()
+                ],
+                [
+                    "name" => "Diabetes",
+                    "Total" => (clone $householdProfileQuery)->whereHas('diabetesRecords')->count()
+                ],
+                [
+                    "name" => "Cancer",
+                    "Total" => (clone $householdProfileQuery)->whereHas('cancerRecords')->count()
+                ],
+                [
+                    "name" => "Animal Bites",
+                    "Total" => (clone $householdProfileQuery)->whereHas('animalBiteRecords')->count()
+                ],
+                [
+                    "name" => "Epilepsy",
+                    "Total" => (clone $householdProfileQuery)->whereHas('epilepsyRecords')->count()
+                ]
+            ],
+            "toiletData" => (object)[
+                "sanitary_toilet" => Household::whereHas('householdProfiles', function($q) use ($latesDetailQueryString) {
+                    $q->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                        $q->whereRaw($latesDetailQueryString)
+                        ->whereIn('toilet_facility_type_id', [67,68,69]);
+                    });
+                })->count(),
+                "unsanitary_toilet" => Household::whereHas('householdProfiles', function($q) use ($latesDetailQueryString) {
+                    $q->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                        $q->whereRaw($latesDetailQueryString)
+                        ->whereIn('toilet_facility_type_id', [70,71,72,73]);
+                    });
+                })->count()
+            ],
+            "philhealthMemberCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('philheath_membership_type_id', 81);
+            })->count(),
+            "asthmaCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_asthma', 1);
+            })->count(),
+            "cancerCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_cancer', 1);
+            })->count(),
+            "pwdCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_pwd', 1);
+            })->count(),
+            "strokeCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_stroke', 1);
+            })->count(),
+            "massCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_mass', 1);
+            })->count(),
+            "mhgapCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_mhgap', 1);
+            })->count(),
+            "smokerCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_smoker', 1);
+            })->count(),
+            "alchoholicCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                $q->whereRaw($latesDetailQueryString)
+                ->where('hc_alchohol_drinker', 1);
+            })->count(),
         ]);
     }
 }

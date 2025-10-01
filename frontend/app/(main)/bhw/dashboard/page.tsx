@@ -217,28 +217,97 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
-                       Column Chart	
-                        Illness Disease Category (HB, DB,CC, EPILEPSY, Kinagat ng Hayop, etc.) based po don sa healthcare services na sakit
+                        <h3 className="text-lg font-semibold mb-2 text-center">Sickness</h3>
+                       <ResponsiveContainer width="100%" height={400}>
+                            <BarChart
+                                data={data.illnessData}
+                                layout="horizontal"
+                                margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" type="category" />
+                                <YAxis type="number" />
+                                <Tooltip />
+                                <Bar  dataKey="Total" fill="#8884d8" />
+                                <Legend />
+                            </BarChart>
+                        </ResponsiveContainer>
+
                     </div>
                 </div>
-                <div className="col-12 lg:col-4">
+                <div className="col-12 lg:col-6">
                     <div className="card mb-0">
                        Column Chart
                         Age Bracket (Based po don sa nasa summary report)
                     </div>
                 </div>
-                <div className="col-12 lg:col-4">
-                    <div className="card mb-0">
-                       Count
-                        Philhealth Member
-                        Health Condition (Asthma, Cancer, PWD, etc.)
-                    </div>
-                </div>
-                <div className="col-12 lg:col-4">
-                    <div className="card mb-0">
-                       Count
-                        Total No. of HH with Sanitary Toilet
-                        Total No. of HH without Sanitary Toilet
+                <div className="col-12">
+                    <div className="flex flex-wrap gap-2 justify-content-start">
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Philhealth Members</span>
+                                <div className="text-900 font-medium text-xl">{ data.philhealthMemberCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Has Asthma</span>
+                                <div className="text-900 font-medium text-xl">{ data.asthmaCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Has Cancer</span>
+                                <div className="text-900 font-medium text-xl">{ data.cancerCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">PWD</span>
+                                <div className="text-900 font-medium text-xl">{ data.pwdCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Stroke</span>
+                                <div className="text-900 font-medium text-xl">{ data.strokeCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Has Mass</span>
+                                <div className="text-900 font-medium text-xl">{ data.massCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Smoker</span>
+                                <div className="text-900 font-medium text-xl">{ data.smokerCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Alchohol Drinker</span>
+                                <div className="text-900 font-medium text-xl">{ data.alchoholicCount }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Households w/ Sanitary Toilet</span>
+                                <div className="text-900 font-medium text-xl">{ data.toiletData?.sanitary_toilet }</div>
+                            </div>
+                        </div>
+                        <div className="card mb-0">
+                            <div className="">
+                                <span className="block text-500 font-medium mb-3">Households w/ Unsanitary Toilet</span>
+                                <div className="text-900 font-medium text-xl">{ data.toiletData?.unsanitary_toilet }</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

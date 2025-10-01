@@ -37,4 +37,24 @@ class HouseholdProfile extends Model
         return $this->hasMany(SickRecord::class);
     }
 
+    public function highbloodRecords() {
+        return $this->hasMany(HighbloodRecord::class);
+    }
+
+    public function cancerRecords() {
+        return $this->hasMany(CancerRecord::class);
+    }
+
+    public function epilepsyRecords() {
+        return $this->hasMany(EpilepsyRecord::class);
+    }
+
+    public function animalBiteRecords() {
+        return $this->hasMany(AnimalBiteRecord::class);
+    }
+
+    public function diabetesRecords() {
+        return $this->hasMany(DiabetesRecord::class);
+    }
+
 }
