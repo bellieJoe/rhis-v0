@@ -14,13 +14,13 @@ class DashboardController extends Controller
     public function getBhwDashboard(Request $request){
         // $bar
         // $households = Household::all();
-        $sitio = $request->has('sitio') ? $request->sitio : null;
-        $householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitio) {
-                $q->where('sitio_id', $sitio);
+        $sitios = $request->has('sitios') ? $request->sitios : null;
+        $householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
+                $q->whereIn('sitio_id', $sitios);
             });
         $latesDetailQueryString = "created_at = (select max(created_at) from household_profile_details where household_profile_details.household_profile_id = household_profiles.id)";
         return response([
-            "households" => Household::where('sitio_id', $sitio)->count(),
+            "households" => Household::whereIn('sitio_id', $sitios)->count(),
             "pregnancy" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->where('is_pregnant', true)
                 ->whereRaw($latesDetailQueryString);
@@ -194,156 +194,132 @@ class DashboardController extends Controller
                     'name' => 'January',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 1)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 1)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'February',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 2)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 2)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'March',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 3)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 3)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'April',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 4)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 4)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'May',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 5)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 5)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'June',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 6)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 6)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'July',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 7)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 7)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'August',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 8)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 8)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'September',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 9)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 9)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'October',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 10)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 10)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'November',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 11)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 11)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'December',
                     'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 12)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count(),
                     'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 12)
-                        ->whereYear('created_at', date('Y'))
-                        ->whereRaw($latesDetailQueryString);
+                        ->whereYear('created_at', date('Y'));
                     })->count()
                 ] 
             ],

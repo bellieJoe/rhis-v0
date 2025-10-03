@@ -20,7 +20,7 @@ const BhwDashboard = () => {
     const dispatch = useDispatch();
     const init = async () => {
         const _data = await getBhwDashboard(dispatch, {
-            sitio : 1
+            sitios : [1,3]
         });
         setData(_data);
     }
@@ -200,7 +200,7 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12">
                     <div className="card mb-0 h-full">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated FY {moment(new Date()).format('YYYY')}</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Death and Illness Rate FY {moment(new Date()).format('YYYY')}</h3>
                         <ResponsiveContainer width="100%" height={400}>
                             <LineChart  data={data.deathRateIllnessData}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
