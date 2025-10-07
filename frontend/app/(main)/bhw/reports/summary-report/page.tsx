@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const SummaryReport = () => {
-    const [report, setReport] = useState([]);
+    const [report, setReport] = useState<any>({});
     const [year, setYear] = useState(new Date().getFullYear());
     const [barangay, setBarangay] = useState(null);
     const [municipality, setMunicipality] = useState(null);
@@ -15,6 +15,7 @@ const SummaryReport = () => {
     useEffect(() => {
         (async () => {
             const _report = await getSummaryReport(dispatch, { barangay, year });
+            console.log(_report);
             setReport(_report);
         })();
     }, []);
@@ -31,26 +32,26 @@ const SummaryReport = () => {
                             <td></td>
                         </tr>
                         <tr>
-                            <td>ACTUAL POPULATION:___________</td>
+                            <td>ACTUAL POPULATION: <span className="underline">&nbsp; { report.actual_population } &nbsp;</span></td>
                             <td>TOTAL NO. OF LIVE BIRTH:_________</td>
                         </tr>
                         <tr>
-                            <td>TOTAL NO. OF HOUSE HOLDS:___________</td>
-                            <td>MALE:_________</td>
+                            <td>TOTAL NO. OF HOUSE HOLDS: <span className="underline">&nbsp; { report.total_no_of_households } &nbsp;</span></td>
+                            <td>MALE: </td>
                         </tr>
                         <tr>
-                            <td>TOTAL NO. OF FAMILIES:___________</td>
+                            <td>TOTAL NO. OF FAMILIES: <span className="underline">&nbsp; { report.total_no_of_households } &nbsp;</span></td>
                             <td>FEMALE:_________</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>TOTAL NO. OF HH WITH SANITARY TOILET:___________</td>
+                            <td>TOTAL NO. OF HH WITH SANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_with_sanitary_toilet } &nbsp;</span></td>
                             <td>TOTAL NO. OF HYPERTENSIVE:_________</td>
                         </tr>
                         <tr>
-                            <td>TOTAL NO. OF HH WITHOUT SANITARY TOILET:___________</td>
+                            <td>TOTAL NO. OF HH WITHOUT SANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_without_sanitary_toilet } &nbsp;</span></td>
                             <td>MALE:_________</td>
                         </tr>
                         <tr>

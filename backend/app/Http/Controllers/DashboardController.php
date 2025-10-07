@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\HouseholdProfile;
+use App\Models\Vaccinated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -395,6 +396,14 @@ class DashboardController extends Controller
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_alchohol_drinker', 1);
             })->count(),
+            "typeOfVaccineData" => Vaccinated::whereHas('household_profile', function ($q) use ($latesDetailQueryString, $sitios) {
+                $q->whereHas('household', function ($q) use ($sitios) {
+                    $q->whereIn('sitio_id', $sitios);
+                });
+            })
+            ->select('vaccine', DB::raw('COUNT(*) as total'))
+            ->groupBy('vaccine')
+            ->get(),
         ]);
     }
 }

@@ -5,12 +5,14 @@ import { getBhwDashboard } from "@/api/dashboardApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import { COLORS } from "@/utils/helpers";
 import moment from "moment";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { DataView } from "primereact/dataview";
 import { useEffect, useState } from "react";
 import { FaPersonPregnant } from "react-icons/fa6";
 import { MdOutlineVaccines } from "react-icons/md";
 import { TbCoffin } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 
@@ -18,15 +20,19 @@ import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieCh
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
+    const authStore = useSelector((state : any) => state.auth);
     const init = async () => {
+        console.log(authStore.user);
+        const sitios = authStore.user?.bhw_designations?.map((d : any) => d.sitio_id);
+        if(!sitios || sitios.length === 0) return;
         const _data = await getBhwDashboard(dispatch, {
-            sitios : [1,3]
+            sitios : sitios
         });
         setData(_data);
     }
     useEffect(() => {
         init()  
-    }, []);
+    }, [authStore.user?.id, authStore.user?.bhw_designations]);
 
     return (
         <AuthMiddleware>
@@ -195,7 +201,10 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12">
                     <div className="card mb-0">
-                       Type of Vaccine
+                       <DataTable value={data.typeOfVaccineData} responsiveLayout="scroll">
+                            <Column field="vaccine" header="Vaccine" sortable></Column>
+                            <Column field="total" header="Total" sortable></Column>
+                        </DataTable>
                     </div>
                 </div>
                 <div className="col-12">

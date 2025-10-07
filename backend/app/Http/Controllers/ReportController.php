@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Household;
+use App\Models\HouseholdProfile;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -11,12 +13,15 @@ class ReportController extends Controller
     public function getSummaryReport(Request $request) {
         $year = $request->has('year') ? $request->year : date('Y');
         $barangay = $request->has('barangay') ? $request->barangay : null;
+        $sitios = auth()->user()->bhwDesignations->map(function ($bhwDesignation) {
+            return $bhwDesignation->sitio_id;
+        });
         $data = [
-            "actual_population" => 0,
-            "total_no_of__households" => 0,
+            "actual_population" => $this->actualPopulation($sitios, $year),
+            "total_no_of_households" => $this->totalHouseholds($sitios, $year, $barangay),
             "total_no_of_families" => 0,
-            "total_no_of_hh_with_sanitary_toilet" => 0,
-            "total_no_of_hh_without_sanitary_toilet" => 0,
+            "total_no_of_hh_with_sanitary_toilet" => $this->totalHouseholdsWithSanitaryToilet($sitios, $year),
+            "total_no_of_hh_without_sanitary_toilet" => $this->totalHouseholdsWithUnsanitaryToilet($sitios, $year),
             "total_no_of_children" => 0,
             "zero_to_five_months_male" => 0,
             "zero_to_five_months_female" => 0,
@@ -72,4 +77,64 @@ class ReportController extends Controller
 
         return response()->json((object)$data);
     }
+
+    private function totalHouseholds($sitios, $year){
+        return Household::whereHas('sitio', function ($q) use ($sitios) {
+            $q->whereIn('id', $sitios);
+        })
+         ->where('created_at', '<=', $year . '-12-31')
+         ->count();
+    }
+
+    private function actualPopulation($sitios, $year){
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+            $q->whereIn('sitio_id', $sitios);
+        })
+         ->where('created_at', '<=', $year . '-12-31')
+         ->count();
+    }
+
+    private function totalHouseholdsWithSanitaryToilet($sitios, $year)
+    {
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+            $q->whereIn('sitio_id', $sitios);
+        })
+        ->whereHas('householdProfileDetails', function ($q) use ($year) {
+            $q->whereIn('toilet_facility_type_id', [67, 68, 69])
+            ->whereRaw("
+                created_at = (
+                    SELECT MAX(created_at)
+                    FROM household_profile_details
+                    WHERE household_profile_details.household_profile_id = household_profiles.id
+                    AND created_at <= ?
+                )
+            ", [$year . '-12-31']);
+        })
+        ->count();
+    }
+
+    private function totalHouseholdsWithUnsanitaryToilet($sitios, $year)
+    {
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+            $q->whereIn('sitio_id', $sitios);
+        })
+        ->whereHas('householdProfileDetails', function ($q) use ($year) {
+            $q->whereIn('toilet_facility_type_id', [70, 71, 72, 73])
+            ->whereRaw("
+                created_at = (
+                    SELECT MAX(created_at)
+                    FROM household_profile_details
+                    WHERE household_profile_details.household_profile_id = household_profiles.id
+                    AND created_at <= ?
+                )
+            ", [$year . '-12-31']);
+        })
+        ->count();
+    }
+
+    public function totalHypertensive() {
+
+    }
+
+
 }
