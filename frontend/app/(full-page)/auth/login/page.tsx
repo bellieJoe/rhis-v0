@@ -9,7 +9,7 @@ import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { login } from '@/api/authApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginPage = () => {
     const [password, setPassword] = useState('');
@@ -19,6 +19,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState({
         login : false
     });
+    const authStore = useSelector((state : any) => state.auth);
 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -37,7 +38,16 @@ const LoginPage = () => {
             login : false
         });
         if(!loginSuccess) return;
-        router.push('/');
+        
+        if(authStore.user?.roles.some((role : any) => role.role_type_id == 5)){
+            router.push('/');
+        }
+        if(authStore.user?.roles.some((role : any) => role.role_type_id == 1)){
+            router.push('/bhw/dashboard');
+        }
+        else {
+            router.push('/');
+        }
     }
     
     return (
