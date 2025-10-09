@@ -224,7 +224,7 @@ const BhwDashboard = () => {
                         </ResponsiveContainer>
                     </div>
                 </div>
-                <div className="col-12 lg:col-6">
+                <div className="col-12 lg:col-5">
                     <div className="card mb-0">
                         <h3 className="text-lg font-semibold mb-2 text-center">Sickness</h3>
                        <ResponsiveContainer width="100%" height={400}>
@@ -251,8 +251,39 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
-                       Column Chart
-                        Age Bracket (Based po don sa nasa summary report)
+                        <h3 className="text-lg font-semibold mb-2 text-center">Age Bracket</h3>
+                       {/* <ResponsiveContainer width="100%" height={400}>
+                            <BarChart
+                                data={data.ageCategories}
+                                layout="horizontal"
+                                margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="Name" type="category" />
+                                <YAxis type="number" dataKey="Male" />
+                                <YAxis type="number" dataKey="Female" />
+                                <Tooltip />
+                                <Bar  dataKey="Total" fill="#8884d8" />
+                                <Legend />
+                            </BarChart>
+                        </ResponsiveContainer> */}
+                        <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={data.ageCategories}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="Name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="Male" fill="#8884d8" />
+                            <Bar dataKey="Female" fill="#82ca9d" />
+                        </BarChart>
+                        </ResponsiveContainer>
+
                     </div>
                 </div>
                 <div className="col-12">

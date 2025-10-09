@@ -360,39 +360,39 @@ class DashboardController extends Controller
                     });
                 })->count()
             ],
-            "philhealthMemberCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "philhealthMemberCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('philheath_membership_type_id', 81);
             })->count(),
-            "asthmaCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "asthmaCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_asthma', 1);
             })->count(),
-            "cancerCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "cancerCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_cancer', 1);
             })->count(),
-            "pwdCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "pwdCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_pwd', 1);
             })->count(),
-            "strokeCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "strokeCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_stroke', 1);
             })->count(),
-            "massCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "massCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_mass', 1);
             })->count(),
-            "mhgapCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "mhgapCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_mhgap', 1);
             })->count(),
-            "smokerCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "smokerCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_smoker', 1);
             })->count(),
-            "alchoholicCount" => $householdProfileQuery->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "alchoholicCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_alchohol_drinker', 1);
             })->count(),
@@ -404,6 +404,75 @@ class DashboardController extends Controller
             ->select('vaccine', DB::raw('COUNT(*) as total'))
             ->groupBy('vaccine')
             ->get(),
+            'ageCategories' => [
+                [
+                    "Name" => "0-5 MONTHS",
+                    "Male" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 0 AND 5')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->where("gender_id", 79);
+                        })
+                        ->count(),
+                    "Female" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 0 AND 5')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })
+                        ->count(),
+                ],
+                [
+                    "Name" => "6-11 MONTHS",
+                    "Male" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 6 AND 11')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 6 AND 11')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
+                [
+                    "Name" => "1-4 YEARS",
+                    "Male" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 1 AND 4')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 1 AND 4')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
+                [
+                    "Name" => "5-9 YEARS",
+                    "Male" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 5 AND 9')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 5 AND 9')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
+                [
+                    "Name" => "10-19 YEARS",
+                    "Male" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 10 AND 19')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 10 AND 19')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
+            ]
         ]);
     }
 }
