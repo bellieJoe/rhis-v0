@@ -25,7 +25,109 @@ const SummaryReport = () => {
             <div className="card">
                 <h5 className="text-center">Summary Report</h5>
                 <h6 className="text-center">2025</h6>
-                <table className="w-full">
+                <div className="grid text-sm leading-tight">
+                    <div className="col-6">
+                        <p className="mb-0">BRGY. ____________________</p>
+
+                        <p className="mt-4 mb-0 ">ACTUAL POPULATION: <span className="underline">&nbsp; { report.actual_population } &nbsp;</span></p>
+                        <p className="mb-0">TOTAL NO. OF HOUSEHOLDS: <span className="underline">&nbsp; { report.total_no_of_households } &nbsp;</span></p>
+                        <p className="mb-0">TOTAL NO. OF FAMILIES: <span className="underline">&nbsp; { report.total_no_of_households } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0">TOTAL NO. OF HH WITH SANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_with_sanitary_toilet } &nbsp;</span></p>
+                        <p className="mb-0">TOTAL NO. OF HH WITH UNSANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_without_sanitary_toilet } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF CHILDREN: </p>
+                        <p className="mb-0 ">0-5 MONTHS: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.zero_to_five_months_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.zero_to_five_months_female } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">6-11 MONTHS: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.six_to_eleven_months_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.six_to_eleven_months_female } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">1-4 YEARS OLD: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.one_to_four_years_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.one_to_four_years_female } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">5-9 YEARS OLD: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.five_to_nine_years_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.five_to_nine_years_female } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">10-19 YEARS OLD: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.ten_to_nineteen_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.ten_to_nineteen_female } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF MWRA: </p>
+                        <p className="mb-0 ">10-14: <span className="underline">&nbsp; { report.total_no_of_mwra_ten_to_fourteen } &nbsp;</span></p>
+                        <p className="mb-0 ">15-19: <span className="underline">&nbsp; { report.total_no_of_mwra_fifteen_to_nineteen } &nbsp;</span></p>
+                        <p className="mb-0 ">20-49: <span className="underline">&nbsp; { report.total_no_of_mwra_twenty_to_fourtynine } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF SWRA: </p>
+                        <p className="mb-0 ">10-14: <span className="underline">&nbsp; { report.total_no_of_swra_ten_to_fourteen } &nbsp;</span></p>
+                        <p className="mb-0 ">15-19: <span className="underline">&nbsp; { report.total_no_of_swra_fifteen_to_nineteen } &nbsp;</span></p>
+                        <p className="mb-0 ">20-49: <span className="underline">&nbsp; { report.total_no_of_swra_twenty_to_fourtynine } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF PREGNANT: </p>
+                        <p className="mb-0 ">10-14: <span className="underline">&nbsp; { report.total_no_of_pregnant_ten_to_fourteen } &nbsp;</span></p>
+                        <p className="mb-0 ">15-19: <span className="underline">&nbsp; { report.total_no_of_pregnant_fifteen_to_nineteen } &nbsp;</span></p>
+                        <p className="mb-0 ">20-49: <span className="underline">&nbsp; { report.total_no_of_pregnant_twenty_to_fourtynine } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF NANGANAK: </p>
+                        <p className="mb-0 ">10-14: <span className="underline">&nbsp; { report.total_no_of_nanganak_ten_to_fourteen } &nbsp;</span></p>
+                        <p className="mb-0 ">15-19: <span className="underline">&nbsp; { report.total_no_of_nanganak_fifteen_to_nineteen } &nbsp;</span></p>
+                        <p className="mb-0 ">20-49: <span className="underline">&nbsp; { report.total_no_of_nanganak_twenty_to_fourtynine } &nbsp;</span></p>
+                        
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF DELIVERIES: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+                    </div>
+                    <div className="col-6">
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF LIVE BIRTH: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF HYPERTENSIVE: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_hypertensive_male} &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_hypertensive_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF DIABETIC: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_diabetic_male} &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_diabetic_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF SMOKERS: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_smokers_male} &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_smokers_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF DRINKERS: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_drinkers_male} &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_drinkers_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF PWD: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_drinkers_male} &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_drinkers_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF BED RIDDEN: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp;  &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF MENTAL PATIENTS: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_mental_patients_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_mental_patients_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF SENIOR: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_seniors_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_seniors_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. OF CANCER PATIENT: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_cancer_patient_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_cancer_patient_female } &nbsp;</span></p>
+                    </div>
+                </div>
+
+
+
+
+                {/* <table className="w-full">
                     <tbody>
                         <tr>
                             <td>BRGY.___________</td>
@@ -48,33 +150,29 @@ const SummaryReport = () => {
                         </tr>
                         <tr>
                             <td>TOTAL NO. OF HH WITH SANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_with_sanitary_toilet } &nbsp;</span></td>
-                            <td>TOTAL NO. OF HYPERTENSIVE:_________</td>
+                            <td>TOTAL NO. OF HYPERTENSIVE: <span className="underline">&nbsp; { report.total_no_of_hypertensive_female +  report.total_no_of_hypertensive_male } &nbsp;</span></td>
                         </tr>
                         <tr>
                             <td>TOTAL NO. OF HH WITHOUT SANITARY TOILET: <span className="underline">&nbsp; { report.total_no_of_hh_without_sanitary_toilet } &nbsp;</span></td>
-                            <td>MALE:_________</td>
+                            <td>MALE: <span className="underline">&nbsp; { report.total_no_of_hypertensive_male } &nbsp;</span></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td>FEMALE:_________</td>
+                            <td>FEMALE: <span className="underline">&nbsp; { report.total_no_of_hypertensive_female } &nbsp;</span></td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>TOTAL NO. OF CHILDREN:</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>TOTAL NO. OF CHILDREN:</td>
+                            <td>TOTAL NO. OF CHILDREN :</td>
                             <td>TOTAL NO. OF DIABETIC:_________</td>
                         </tr>
                         <tr>
-                            <td>MALE:_________</td>
+                            <td>MALE: <span className="underline">&nbsp; { report.total_no_of_children_male } &nbsp;</span></td>
                             <td>MALE:_________</td>
                         </tr>
                         <tr>
-                            <td>FEMALE:_________</td>
+                            <td>FEMALE: <span className="underline">&nbsp; { report.total_no_of_children_female } &nbsp;</span></td>
                             <td>FEMALE:_________</td>
                         </tr>
                         <tr>
@@ -85,11 +183,11 @@ const SummaryReport = () => {
                             <td>TOTAL NO. OF SMOKERS</td>
                         </tr>
                         <tr>
-                            <td>MALE:_________</td>
+                            <td>MALE: <span className="underline">&nbsp; { report.six_to_eleven_months_male } &nbsp;</span></td>
                             <td>MALE:_________</td>
                         </tr>
                         <tr>
-                            <td>FEMALE:_________</td>
+                            <td>FEMALE: <span className="underline">&nbsp; { report.six_to_eleven_months_female } &nbsp;</span></td>
                             <td>FEMALE:_________</td>
                         </tr>
                         <tr>
@@ -100,11 +198,11 @@ const SummaryReport = () => {
                             <td>TOTAL NO. OF DRINKERS</td>
                         </tr>
                         <tr>
-                            <td>MALE:_________</td>
+                            <td>MALE: <span className="underline">&nbsp; { report.one_to_four_years_male } &nbsp;</span></td>
                             <td>MALE:_________</td>
                         </tr>
                         <tr>
-                            <td>FEMALE:_________</td>
+                            <td>FEMALE: <span className="underline">&nbsp; { report.one_to_four_years_female } &nbsp;</span></td>
                             <td>FEMALE:_________</td>
                         </tr>
                         <tr>
@@ -115,18 +213,17 @@ const SummaryReport = () => {
                             <td>TOTAL NO. OF PWD</td>
                         </tr>
                         <tr>
-                            <td>MALE:_________</td>
+                            <td>MALE: <span className="underline">&nbsp; { report.five_to_nine_years_male } &nbsp;</span></td>
                             <td>MALE:_________</td>
                         </tr>
                         <tr>
-                            <td>FEMALE:_________</td>
+                            <td>FEMALE: <span className="underline">&nbsp; { report.five_to_nine_years_female } &nbsp;</span></td>
                             <td>FEMALE:_________</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td>10-19 YEARS OLD :</td>
                             <td>TOTAL NO. OF BED RIDDEN</td>
                         </tr>
                         <tr>
@@ -248,7 +345,7 @@ const SummaryReport = () => {
                             <td>FEMALE:________</td>
                         </tr>
                     </tbody>
-                </table>
+                </table> */}
             </div>
         </AuthMiddleware>
     )
