@@ -67,12 +67,12 @@ class ReportController extends Controller
             "total_no_of_seniors_female" => $this->totalNumberSenior($sitios, $year, 80),
             "total_no_of_cancer_patient_male" => $this->totalHc($sitios, $year, 79, 'hc_cancer'),
             "total_no_of_cancer_patient_female" => $this->totalHc($sitios, $year, 80, 'hc_cancer'),
-            "total_no_of_namatay_male" => 0,
-            "total_no_of_namatay_female" => 0,
-            "total_no_of_nagkasakit_male" => 0,
-            "total_no_of_nagkasakit_female" => 0,
-            "total_no_of_animal_bites_male" => 0,
-            "total_no_of_animal_bites_female" => 0,
+            "total_no_of_namatay_male" => $this->totalDeaths($sitios, $year, 79),
+            "total_no_of_namatay_female" => $this->totalDeaths($sitios, $year, 80),
+            "total_no_of_nagkasakit_male" => $this->totalSicks($sitios, $year, 79),
+            "total_no_of_nagkasakit_female" => $this->totalSicks($sitios, $year, 80),
+            "total_no_of_animal_bites_male" => $this->totalAnimalBites($sitios, $year, 79),
+            "total_no_of_animal_bites_female" => $this->totalAnimalBites($sitios, $year, 80),
         ];
 
         return response()->json((object)$data);
@@ -183,6 +183,93 @@ class ReportController extends Controller
                         SELECT MAX(created_at)
                         FROM diabetes_records
                         WHERE diabetes_records.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->count();
+    }
+
+    public function totalDeaths($sitios, $year, $gender_id)
+    {
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+                $q->whereIn('sitio_id', $sitios);
+            })
+            ->whereHas('householdProfileDetails', function ($q) use ($year, $gender_id) {
+                $q->where('gender_id', $gender_id)
+                ->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM household_profile_details
+                        WHERE household_profile_details.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->whereHas('deaths', function ($q) use ($year) {
+                $q->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM deaths
+                        WHERE deaths.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->count();
+    }
+
+    public function totalSicks($sitios, $year, $gender_id)
+    {
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+                $q->whereIn('sitio_id', $sitios);
+            })
+            ->whereHas('householdProfileDetails', function ($q) use ($year, $gender_id) {
+                $q->where('gender_id', $gender_id)
+                ->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM household_profile_details
+                        WHERE household_profile_details.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->whereHas('sickRecords', function ($q) use ($year) {
+                $q->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM sick_records
+                        WHERE sick_records.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->count();
+    }
+
+    public function totalAnimalBites($sitios, $year, $gender_id)
+    {
+        return HouseholdProfile::whereHas('household', function ($q) use ($sitios) {
+                $q->whereIn('sitio_id', $sitios);
+            })
+            ->whereHas('householdProfileDetails', function ($q) use ($year, $gender_id) {
+                $q->where('gender_id', $gender_id)
+                ->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM household_profile_details
+                        WHERE household_profile_details.household_profile_id = household_profiles.id
+                        AND created_at <= ?
+                    )
+                ", [$year . '-12-31']);
+            })
+            ->whereHas('animalBiteRecords', function ($q) use ($year) {
+                $q->whereRaw("
+                    created_at = (
+                        SELECT MAX(created_at)
+                        FROM animal_bite_records
+                        WHERE animal_bite_records.household_profile_id = household_profiles.id
                         AND created_at <= ?
                     )
                 ", [$year . '-12-31']);

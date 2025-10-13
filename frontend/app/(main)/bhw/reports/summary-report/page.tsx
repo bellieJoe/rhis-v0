@@ -121,6 +121,18 @@ const SummaryReport = () => {
                         <p className="mt-4 mb-0 ">TOTAL NO. OF CANCER PATIENT: </p>
                         <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_cancer_patient_male } &nbsp;</span></p>
                         <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_cancer_patient_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. NG NAMATAY: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_namatay_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_namatay_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. NG NAGKASAKIT: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_nagkasakit_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_nagkasakit_female } &nbsp;</span></p>
+
+                        <p className="mt-4 mb-0 ">TOTAL NO. NG HAYOP/ASO: </p>
+                        <p className="mb-0 ">MALE: <span className="underline">&nbsp; { report.total_no_of_animal_bites_male } &nbsp;</span></p>
+                        <p className="mb-0 ">FEMALE: <span className="underline">&nbsp; { report.total_no_of_animal_bites_female } &nbsp;</span></p>
                     </div>
                 </div>
 
