@@ -68,7 +68,7 @@ const BhwDashboard = () => {
                     <div className="card mb-0">
                         <div className="flex justify-content-between mb-3">
                             <div>
-                                <span className="block text-500 font-medium mb-3">Vaccinated</span>
+                                <span className="block text-500 font-medium mb-3">Vaccinated Babies</span>
                                 <div className="text-900 font-medium text-xl">{ data.vaccinated }</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
@@ -118,7 +118,7 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Top 3 Educational Attainments</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
                        <ResponsiveContainer width="100%" height={400}>
                             <BarChart
                                 data={data.educationalAttainmentData}
@@ -185,7 +185,7 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12">
                     <div className="card mb-0 h-full">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated FY {moment(new Date()).format('YYYY')}</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated Babies FY {moment(new Date()).format('YYYY')}</h3>
                         <ResponsiveContainer width="100%" height={400}>
                             <LineChart  data={data.vaccinationPermonthData}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
