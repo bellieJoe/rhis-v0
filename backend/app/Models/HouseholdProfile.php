@@ -57,4 +57,12 @@ class HouseholdProfile extends Model
         return $this->hasMany(DiabetesRecord::class);
     }
 
+    public function pregnancyRecords() {
+        return $this->hasMany(Pregnancy::class);
+    }
+
+    public function Births() {
+        return $this->hasMany(Birth::class);
+    }
+
 }

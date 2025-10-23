@@ -42,4 +42,9 @@ class Household extends Model
     {
         return $this->barangay->barangay_name . ', ' . $this->barangay->municipality->municipality_name . ', ' . $this->barangay->municipality->province->province_name;
     }
+
+    public function sitio()
+    {
+        return $this->belongsTo(Sitio::class);
+    }
 }

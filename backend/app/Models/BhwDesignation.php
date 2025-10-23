@@ -11,12 +11,13 @@ class BhwDesignation extends Model
     protected $appends = ['office'];
     
     public function barangay() {
-        return $this->belongsTo(Sitio::class);
+        return $this->belongsTo(Barangay::class);
     }
 
     public function getOfficeAttribute() {
         return Office::where('barangay_id', $this->barangay_id)->first();
     }
+
 
     public function sitio() {
         return $this->belongsTo(Sitio::class);

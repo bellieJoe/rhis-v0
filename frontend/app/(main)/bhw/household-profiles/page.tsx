@@ -225,6 +225,7 @@ const HouseholdProfilesTable = () => {
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
                 <Column field="household.household_no" header="Household No." />
                 <Column field="updated_details.full_name" header="Household Member" />
+                <Column field="household.head.updated_details.full_name" header="Household Head" />
                 <Column field="household.address" header="Address" />
                 <Column  header="Actions" frozen body={(data : any) => (
                     <>

@@ -5,12 +5,14 @@ import { getBhwDashboard } from "@/api/dashboardApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import { COLORS } from "@/utils/helpers";
 import moment from "moment";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
 import { DataView } from "primereact/dataview";
 import { useEffect, useState } from "react";
 import { FaPersonPregnant } from "react-icons/fa6";
 import { MdOutlineVaccines } from "react-icons/md";
 import { TbCoffin } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 
@@ -18,15 +20,19 @@ import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieCh
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
+    const authStore = useSelector((state : any) => state.auth);
     const init = async () => {
+        console.log(authStore.user);
+        const sitios = authStore.user?.bhw_designations?.map((d : any) => d.sitio_id);
+        if(!sitios || sitios.length === 0) return;
         const _data = await getBhwDashboard(dispatch, {
-            sitios : [1,3]
+            sitios : sitios
         });
         setData(_data);
     }
     useEffect(() => {
         init()  
-    }, []);
+    }, [authStore.user?.id, authStore.user?.bhw_designations]);
 
     return (
         <AuthMiddleware>
@@ -62,7 +68,7 @@ const BhwDashboard = () => {
                     <div className="card mb-0">
                         <div className="flex justify-content-between mb-3">
                             <div>
-                                <span className="block text-500 font-medium mb-3">Vaccinated</span>
+                                <span className="block text-500 font-medium mb-3">Vaccinated Babies</span>
                                 <div className="text-900 font-medium text-xl">{ data.vaccinated }</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
@@ -112,7 +118,7 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Top 3 Educational Attainments</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
                        <ResponsiveContainer width="100%" height={400}>
                             <BarChart
                                 data={data.educationalAttainmentData}
@@ -179,7 +185,7 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12">
                     <div className="card mb-0 h-full">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated FY {moment(new Date()).format('YYYY')}</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated Babies FY {moment(new Date()).format('YYYY')}</h3>
                         <ResponsiveContainer width="100%" height={400}>
                             <LineChart  data={data.vaccinationPermonthData}
                             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -195,7 +201,10 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12">
                     <div className="card mb-0">
-                       Type of Vaccine
+                       <DataTable value={data.typeOfVaccineData} responsiveLayout="scroll">
+                            <Column field="vaccine" header="Vaccine" sortable></Column>
+                            <Column field="total" header="Total" sortable></Column>
+                        </DataTable>
                     </div>
                 </div>
                 <div className="col-12">
@@ -213,6 +222,43 @@ const BhwDashboard = () => {
                                 <Line type="monotone" dataKey="ills" stroke="#82ca9d" />
                             </LineChart>
                         </ResponsiveContainer>
+                    </div>
+                </div>
+                <div className="col-12 lg:col-12">
+                    <div className="card mb-0">
+                        <h3 className="text-lg font-semibold mb-2 text-center">Age Bracket</h3>
+                       {/* <ResponsiveContainer width="100%" height={400}>
+                            <BarChart
+                                data={data.ageCategories}
+                                layout="horizontal"
+                                margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="Name" type="category" />
+                                <YAxis type="number" dataKey="Male" />
+                                <YAxis type="number" dataKey="Female" />
+                                <Tooltip />
+                                <Bar  dataKey="Total" fill="#8884d8" />
+                                <Legend />
+                            </BarChart>
+                        </ResponsiveContainer> */}
+                        <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={data.ageCategories}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="Name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="Male" fill="#8884d8" />
+                            <Bar dataKey="Female" fill="#82ca9d" />
+                        </BarChart>
+                        </ResponsiveContainer>
+
                     </div>
                 </div>
                 <div className="col-12 lg:col-6">
@@ -241,12 +287,6 @@ const BhwDashboard = () => {
                     </div>
                 </div>
                 <div className="col-12 lg:col-6">
-                    <div className="card mb-0">
-                       Column Chart
-                        Age Bracket (Based po don sa nasa summary report)
-                    </div>
-                </div>
-                <div className="col-12">
                     <div className="flex flex-wrap gap-2 justify-content-start">
                         <div className="card mb-0">
                             <div className="">
