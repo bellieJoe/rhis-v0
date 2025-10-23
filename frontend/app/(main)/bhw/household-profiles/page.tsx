@@ -236,7 +236,6 @@ const HouseholdProfilesTable = () => {
                         </div>
                     </>
                 )} />
-              
             </DataTable>
             <Paginator 
                     ref={paginator.householdProfiles}
