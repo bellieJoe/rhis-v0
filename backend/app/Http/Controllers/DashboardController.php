@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     public function getBhwDashboard(Request $request){
-        // $bar
-        // $households = Household::all();
+        $gender_distribution_filter = $request->has('gender_distribution_filter') ? $request->gender_distribution_filter : null;
         $sitios = $request->has('sitios') ? $request->sitios : null;
         $householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
                 $q->whereIn('sitio_id', $sitios);
@@ -28,22 +27,7 @@ class DashboardController extends Controller
             ->count(),
             'vaccinated' => (clone $householdProfileQuery)->whereHas('vaccinateds')->count(),
             'deaths' => (clone $householdProfileQuery)->whereHas('deaths')->count(),
-            'genderData' =>[
-                 (object)[
-                    "name" => "Male",
-                    "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("gender_id", 79)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count()
-                ],
-                 (object)[
-                    "name" => "Female",
-                    "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("gender_id", 80)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count()
-                ]
-            ],
+            'genderData' => $this->getGenderDistribution($householdProfileQuery, $latesDetailQueryString, $gender_distribution_filter),
             'civilStatusData' => [
                 (object)[
                     "name" => "Civil Status",
@@ -473,5 +457,42 @@ class DashboardController extends Controller
                 ],
             ]
         ]);
+    }
+
+    private function getGenderDistribution($householdProfileQuery, $latesDetailQueryString, $filter){
+        if($filter == "all"){
+            return [
+                (object)[
+                "name" => "Male",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("gender_id", 79)
+                    ->whereRaw($latesDetailQueryString);
+                })->count()
+            ],
+                (object)[
+                "name" => "Female",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })->count()
+            ]
+            ];
+        }
+        return [
+                (object)[
+                "name" => "Male",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("gender_id", 79)
+                    ->whereRaw($latesDetailQueryString);
+                })->count()
+            ],
+                (object)[
+                "name" => "Female",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })->count()
+            ]
+        ];
     }
 }
