@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./forms/ValidationError";
 import { setErrors } from "@/features/errorSlice";
 import { reloadHouseholds } from "@/features/householdSlice";
-import { emit } from "process";
 import { AutoComplete } from "primereact/autocomplete";
 import { getBarangays } from "@/api/addressApi";
 import { addHead } from "@/features/forms/addHouseholdProfileSlice";

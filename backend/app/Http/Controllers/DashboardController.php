@@ -11,43 +11,61 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function getBhwDashboard(Request $request){
-        $gender_distribution_filter = $request->has('gender_distribution_filter') ? $request->gender_distribution_filter : null;
+    private $householdProfileQuery;
+    private $latesDetailQueryString = "created_at = (select max(created_at) from household_profile_details where household_profile_details.household_profile_id = household_profiles.id)";            
+
+    public function getBhwDashboard(Request $request) {
+        $name = $request->has('name') ? $request->name : null;
         $sitios = $request->has('sitios') ? $request->sitios : null;
-        $householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
+        $this->householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
                 $q->whereIn('sitio_id', $sitios);
             });
-        $latesDetailQueryString = "created_at = (select max(created_at) from household_profile_details where household_profile_details.household_profile_id = household_profiles.id)";
+        switch ($name) {
+            case 'GENDER_DISTRIBUTION':
+                return $this->getGenderDistribution($request);
+                break;
+            
+            default:
+                return $this->getBhwDashboardFull($request);
+                break;
+        }
+    }
+
+    public function getBhwDashboardFull(Request $request){
+        $gender_distribution_filter = $request->has('gender_distribution_filter') ? $request->gender_distribution_filter : null;
+        $sitios = $request->has('sitios') ? $request->sitios : null;
+        $householdProfileQuery = $this->householdProfileQuery;
+        $latesDetailQueryString = $this->latesDetailQueryString;
         return response([
             "households" => Household::whereIn('sitio_id', $sitios)->count(),
-            "pregnancy" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "pregnancy" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->where('is_pregnant', true)
                 ->whereRaw($latesDetailQueryString);
             })
             ->count(),
-            'vaccinated' => (clone $householdProfileQuery)->whereHas('vaccinateds')->count(),
-            'deaths' => (clone $householdProfileQuery)->whereHas('deaths')->count(),
-            'genderData' => $this->getGenderDistribution($householdProfileQuery, $latesDetailQueryString, $gender_distribution_filter),
+            'vaccinated' => (clone $this->householdProfileQuery)->whereHas('vaccinateds')->count(),
+            'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths')->count(),
+            'genderData' => $this->getGenderDistribution($request),
             'civilStatusData' => [
                 (object)[
                     "name" => "Civil Status",
-                    "single" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    "single" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                         $q->where("civil_status_id", 75)
                         ->whereRaw($latesDetailQueryString);
                     })->count(),
-                    "married" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    "married" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                         $q->where("civil_status_id", 74)
                         ->whereRaw($latesDetailQueryString);
                     })->count(),
-                    "widowed" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    "widowed" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                         $q->where("civil_status_id", 76)
                         ->whereRaw($latesDetailQueryString);
                     })->count(),
-                    "separated" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    "separated" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                         $q->where("civil_status_id", 77)
                         ->whereRaw($latesDetailQueryString);
                     })->count(),
-                    "cohabitation" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    "cohabitation" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                         $q->where("civil_status_id", 78)
                         ->whereRaw($latesDetailQueryString);
                     })->count(),
@@ -101,74 +119,74 @@ class DashboardController extends Controller
             'vaccinationPermonthData' => [
                 [
                     'name' => 'January',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 1)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'February',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 2)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'March',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 3)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'April',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 4)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'May',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 5)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'June',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 6)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'July',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 7)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'August',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 8)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'September',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 9)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'October',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 10)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'November',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 11)->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'December',
-                    'value' => (clone $householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
+                    'value' => (clone $this->householdProfileQuery)->whereHas('vaccinateds', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 12)->whereYear('created_at', date('Y'));
                     })->count()
                 ]
@@ -176,132 +194,132 @@ class DashboardController extends Controller
             'deathRateIllnessData' => [
                     [
                     'name' => 'January',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 1)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 1)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'February',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 2)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 2)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'March',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 3)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 3)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'April',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 4)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 4)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'May',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 5)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 5)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'June',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 6)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 6)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'July',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 7)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 7)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'August',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 8)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 8)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'September',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 9)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 9)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'October',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 10)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 10)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'November',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 11)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 11)
                         ->whereYear('created_at', date('Y'));
                     })->count()
                 ],
                 [
                     'name' => 'December',
-                    'deaths' => (clone $householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
+                    'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 12)
                         ->whereYear('created_at', date('Y'));
                     })->count(),
-                    'ills' => (clone $householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
+                    'ills' => (clone $this->householdProfileQuery)->whereHas('sickRecords', function($q) use ($latesDetailQueryString) {
                         $q->whereMonth('created_at', 12)
                         ->whereYear('created_at', date('Y'));
                     })->count()
@@ -310,23 +328,23 @@ class DashboardController extends Controller
             'illnessData' => [
                 [
                     "name" => "Highblood",
-                    "Total" => (clone $householdProfileQuery)->whereHas('highbloodRecords')->count()
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('highbloodRecords')->count()
                 ],
                 [
                     "name" => "Diabetes",
-                    "Total" => (clone $householdProfileQuery)->whereHas('diabetesRecords')->count()
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('diabetesRecords')->count()
                 ],
                 [
                     "name" => "Cancer",
-                    "Total" => (clone $householdProfileQuery)->whereHas('cancerRecords')->count()
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('cancerRecords')->count()
                 ],
                 [
                     "name" => "Animal Bites",
-                    "Total" => (clone $householdProfileQuery)->whereHas('animalBiteRecords')->count()
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('animalBiteRecords')->count()
                 ],
                 [
                     "name" => "Epilepsy",
-                    "Total" => (clone $householdProfileQuery)->whereHas('epilepsyRecords')->count()
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('epilepsyRecords')->count()
                 ]
             ],
             "toiletData" => (object)[
@@ -343,39 +361,39 @@ class DashboardController extends Controller
                     });
                 })->count()
             ],
-            "philhealthMemberCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "philhealthMemberCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('philheath_membership_type_id', 81);
             })->count(),
-            "asthmaCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "asthmaCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_asthma', 1);
             })->count(),
-            "cancerCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "cancerCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_cancer', 1);
             })->count(),
-            "pwdCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "pwdCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_pwd', 1);
             })->count(),
-            "strokeCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "strokeCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_stroke', 1);
             })->count(),
-            "massCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "massCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_mass', 1);
             })->count(),
-            "mhgapCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "mhgapCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_mhgap', 1);
             })->count(),
-            "smokerCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "smokerCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_smoker', 1);
             })->count(),
-            "alchoholicCount" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+            "alchoholicCount" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                 $q->whereRaw($latesDetailQueryString)
                 ->where('hc_alchohol_drinker', 1);
             })->count(),
@@ -390,13 +408,13 @@ class DashboardController extends Controller
             'ageCategories' => [
                 [
                     "Name" => "0-5 MONTHS",
-                    "Male" => (clone $householdProfileQuery)
+                    "Male" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 0 AND 5')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->where("gender_id", 79);
                         })
                         ->count(),
-                    "Female" => (clone $householdProfileQuery)
+                    "Female" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 0 AND 5')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
@@ -405,12 +423,12 @@ class DashboardController extends Controller
                 ],
                 [
                     "Name" => "6-11 MONTHS",
-                    "Male" => (clone $householdProfileQuery)
+                    "Male" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 6 AND 11')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
                         })->count(),
-                    "Female" => (clone $householdProfileQuery)
+                    "Female" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(MONTH, birthdate, CURDATE()) BETWEEN 6 AND 11')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
@@ -418,12 +436,12 @@ class DashboardController extends Controller
                 ],
                 [
                     "Name" => "1-4 YEARS",
-                    "Male" => (clone $householdProfileQuery)
+                    "Male" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 1 AND 4')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
                         })->count(),
-                    "Female" => (clone $householdProfileQuery)
+                    "Female" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 1 AND 4')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
@@ -431,12 +449,12 @@ class DashboardController extends Controller
                 ],
                 [
                     "Name" => "5-9 YEARS",
-                    "Male" => (clone $householdProfileQuery)
+                    "Male" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 5 AND 9')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
                         })->count(),
-                    "Female" => (clone $householdProfileQuery)
+                    "Female" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 5 AND 9')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
@@ -444,12 +462,12 @@ class DashboardController extends Controller
                 ],
                 [
                     "Name" => "10-19 YEARS",
-                    "Male" => (clone $householdProfileQuery)
+                    "Male" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 10 AND 19')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
                         })->count(),
-                    "Female" => (clone $householdProfileQuery)
+                    "Female" => (clone $this->householdProfileQuery)
                         ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 10 AND 19')
                         ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
@@ -459,39 +477,39 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function getGenderDistribution($householdProfileQuery, $latesDetailQueryString, $filter){
-        if($filter == "all"){
-            return [
-                (object)[
-                "name" => "Male",
-                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                    $q->where("gender_id", 79)
-                    ->whereRaw($latesDetailQueryString);
-                })->count()
-            ],
-                (object)[
-                "name" => "Female",
-                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                    $q->where("gender_id", 80)
-                    ->whereRaw($latesDetailQueryString);
-                })->count()
-            ]
-            ];
-        }
+    private function getGenderDistribution($request){
+        $age_group = $request->has('age_group') ? $request->age_group : null;
+        $householdProfileQuery = $this->householdProfileQuery;
+        $latesDetailQueryString = $this->latesDetailQueryString;
+        $cutoff = date('Y') . '-12-31';
+        $ageCondition = match ($age_group) {
+            '1' => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') BETWEEN 0 AND 5",
+            '2' => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') BETWEEN 6 AND 11",
+            '3' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 1 AND 4",
+            '4' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 5 AND 9",
+            '5' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 10 AND 19",
+            '6' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 20 AND 59",
+            '7' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 60",
+            default => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') >= 0",
+        };
         return [
                 (object)[
                 "name" => "Male",
                 "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("gender_id", 79)
                     ->whereRaw($latesDetailQueryString);
-                })->count()
+                })
+                ->whereRaw($ageCondition)
+                ->count()
             ],
                 (object)[
                 "name" => "Female",
                 "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
-                })->count()
+                })
+                ->whereRaw($ageCondition)
+                ->count()
             ]
         ];
     }

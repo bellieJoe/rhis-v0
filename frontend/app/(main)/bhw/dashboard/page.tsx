@@ -4,10 +4,12 @@
 import { getBhwDashboard } from "@/api/dashboardApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import { COLORS } from "@/utils/helpers";
+import { get } from "http";
 import moment from "moment";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { DataView } from "primereact/dataview";
+import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
 import { FaPersonPregnant } from "react-icons/fa6";
 import { MdOutlineVaccines } from "react-icons/md";
@@ -15,7 +17,85 @@ import { TbCoffin } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-
+const GenderDistribution = () => {
+    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state : any) => state.auth);
+    const getGenderDistribution = async () => {
+        const sitios = authStore.user?.bhw_designations?.map((d : any) => d.sitio_id);
+        if(!sitios || sitios.length === 0) return;
+        console.log("test");
+        const _data = await getBhwDashboard(dispatch, { name: 'GENDER_DISTRIBUTION', age_group: ageBracketFilter, sitios: sitios });
+        setData(_data);
+    }
+    const ageBracketOptions = [
+        {
+            label: 'All',
+            value: null
+        },
+        {
+            label: '0-5 Months',
+            value: '1'
+        },
+        {
+            label: '6-11 Months',
+            value: '2'
+        },
+        {
+            label: '1-4 Years',
+            value: '3'
+        },
+        {
+            label: '5-9 Years',
+            value: '4'
+        },
+        {
+            label: '10-19 Years',
+            value: '5'
+        },
+        {
+            label: '20-59 Years',
+            value: '6'
+        },
+        {
+            label: '60+ Years',
+            value: '7'
+        },
+    ];
+    useEffect(() => {
+        getGenderDistribution();
+    }, [ageBracketFilter]);
+    return (
+        <div className="card mb-0 px-0">
+            <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
+            <div className="flex justify-content-end p-3">
+                <Dropdown  value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Select Age Bracket" className="w-full md:w-auto" />
+            </div>
+            <ResponsiveContainer width="100%" height={400}>
+                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
+                    <Pie
+                    data={data}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="40%"
+                    outerRadius="60%"
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                    nameKey="name"
+                    >
+                    {data.map((entry: any, index: number) => (
+                        <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                    </Pie>
+                    <Tooltip />  
+                    <Legend />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
 
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
@@ -91,30 +171,7 @@ const BhwDashboard = () => {
                     </div>
                 </div>
                 <div className="col-12 lg:col-6">
-                    <div className="card mb-0 px-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
-                                <Pie
-                                data={data.genderData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius="40%"
-                                outerRadius="60%"
-                                fill="#8884d8"
-                                paddingAngle={5}
-                                dataKey="value"
-                                nameKey="name"
-                                >
-                                {data.genderData?.map((entry: any, index: number) => (
-                                    <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                                </Pie>
-                                <Tooltip />  
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
+                    <GenderDistribution />
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
