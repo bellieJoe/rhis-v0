@@ -261,7 +261,7 @@ const AddHouseholdProfile = () => {
                                         <Dropdown
                                             showClear
                                             options={genericTypes.filter((x: any) => {
-                                                return x.type === 'MEMBERS_OF_HOUSEHOLD' && (addHouseholdProfileStore.addHead ? x.id == '1' : x.id != '1' || x.id != 1);
+                                                return x.type === 'MEMBERS_OF_HOUSEHOLD';
                                             })}
                                             optionLabel="label"
                                             optionValue="id"

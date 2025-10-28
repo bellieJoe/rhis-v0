@@ -8,7 +8,7 @@ import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import { login } from '@/api/authApi';
+import { getAuth, login } from '@/api/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 
 const LoginPage = () => {
@@ -38,6 +38,7 @@ const LoginPage = () => {
             login : false
         });
         if(!loginSuccess) return;
+        await getAuth(dispatch);
         
         if(authStore.user?.roles.some((role : any) => role.role_type_id == 5)){
             router.push('/');
