@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\GenericType;
 use App\Models\Household;
 use App\Models\HouseholdProfile;
 use App\Models\Vaccinated;
@@ -26,10 +27,16 @@ class DashboardController extends Controller
                 break;
             case 'CIVIL_STATUS':
                 return $this->getCivilStatus($request);
+                break;
             case 'WRA':
                 return $this->getWra($request);
+                break;
             case '4PS_PIE_CHART':
                 return $this->getFourpsData($request, $sitios);
+                break;
+            case 'FAMILY_PLANNING_CHART':
+                return $this->getFamilyPlanning($request, $sitios);
+                break;
             default:
                 return $this->getBhwDashboardFull($request);
                 break;
@@ -653,6 +660,20 @@ class DashboardController extends Controller
 
     public function getFamilyPlanning($request, $sitios) 
     {
-
+        $types = GenericType::where('type', 'FAMILY_PLANNING_METHOD')->get();
+        return $types->map(function($type) use ($sitios) {
+            return (object)[
+                "Name" => $type->name,
+                "Total" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($type, $sitios) {
+                    $q->where('family_planning_method_id', $type->id)
+                    ->where('is_using_fp_method', 1)
+                    ->whereRaw($this->latesDetailQueryString);
+                })
+                ->whereHas('household', function ($q) use ($sitios) {
+                    $q->whereIn('sitio_id', $sitios);
+                })
+                ->count()
+            ];
+        });
     }
 }

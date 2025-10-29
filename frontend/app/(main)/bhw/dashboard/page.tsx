@@ -15,6 +15,8 @@ import { MdOutlineVaccines } from 'react-icons/md';
 import { TbCoffin } from 'react-icons/tb';
 import { useDispatch, useSelector } from 'react-redux';
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { IoIosPeople } from "react-icons/io";
+import { RiSurveyLine } from "react-icons/ri";
 
 const GenderDistribution = () => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
@@ -232,6 +234,47 @@ const FourPs = () => {
     );
 };
 
+const FamilyPlanningChart = () => {
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state: any) => state.auth);
+    const getData = async () => {
+        const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
+        if (!sitios || sitios.length === 0) return;
+        console.log('test');
+        const _data = await getBhwDashboard(dispatch, { name: 'FAMILY_PLANNING_CHART', sitios: sitios });
+        setData(_data);
+    };
+    useEffect(() => {
+        getData();
+    }, [authStore.user]);
+    return (
+        <div className="card mb-0 h-full">
+            <h3 className="text-lg font-semibold mb-2 text-center">Family Planning</h3>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                    data={data}
+                    layout="horizontal"
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="category" dataKey="Name"  />
+                    <YAxis type="number"  />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="Total" fill="#8884d8" />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+};
+
+
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
@@ -305,6 +348,47 @@ const BhwDashboard = () => {
                         </div>
                     </div>
                 </div>
+                <div className="col-12 lg:col-6 xl:col-3">
+                    <div className="card mb-0">
+                        <div className="flex justify-content-between mb-3">
+                            <div>
+                                <span className="block text-500 font-medium mb-3">Population</span>
+                                <div className="text-900 font-medium text-xl">{data.totalPopulation}</div>
+                            </div>
+                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                <IoIosPeople  className="text-purple-500 text-xl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12 lg:col-6 xl:col-3">
+                    <div className="card mb-0">
+                        <div className="flex justify-content-between mb-3">
+                            <div>
+                                <span className="block text-500 font-medium mb-3">Households Visited</span>
+                                <div className="text-900 font-medium text-xl">{data.households}</div>
+                            </div>
+                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                <RiSurveyLine  className="text-cyan-500 text-xl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12 lg:col-6 xl:col-3">
+                    <div className="card mb-0">
+                        <div className="flex justify-content-between mb-3">
+                            <div>
+                                <span className="block text-500 font-medium mb-3">Families</span>
+                                <div className="text-900 font-medium text-xl">{data.familyCount}</div>
+                            </div>
+                            <div className="flex align-items-center justify-content-center bg-bluegray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                <RiSurveyLine  className="text-bluegray-500 text-xl" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12 lg:col-6 xl:col-3">
+                </div>
                 <div className="col-12 lg:col-6">
                     <GenderDistribution />
                 </div>
@@ -371,6 +455,9 @@ const BhwDashboard = () => {
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
+                </div>
+                <div className="col-12">
+                    <FamilyPlanningChart />
                 </div>
                 <div className="col-12">
                     <div className="card mb-0">

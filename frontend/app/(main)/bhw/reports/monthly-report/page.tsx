@@ -1057,7 +1057,7 @@ const BHWMonthlyReportPage = () => {
                 </div>
                 <Button label="Print" size="small" icon="pi pi-print" onClick={reactToPrintFn}/>
             </div>
-            <div className="card">
+            <div className="card overflow-x-scroll">
                 {
                     loading.records && (
                         <div className="flex gap-2">
@@ -1066,41 +1066,45 @@ const BHWMonthlyReportPage = () => {
                         </div>
                     )
                 }
-                <div className="p-5" ref={contentRef}>
-                    <h5 className="text-center mb-0">BUWANANG ULAT</h5>
-                    <h5 className="text-center mt-0">BARANGAY HEALTH WORKER</h5>
-                    <table className="w-full">
-                        <tbody>
-                            <tr>
-                                <td width="65%"> </td>
-                                <td className="text-left" width="35%" style={{ width: '50%' }}>Buwan: <span style={{textDecoration: 'underline'}}> { filter.month && MONTHS.find((m : any) => m.code === filter.month)?.name} {filter.year} </span> </td>
-                            </tr>
-                            <tr>
-                                <td width="65%"> </td>
-                                <td className="text-left" width="35%" style={{ width: '50%' }}>Blg. ng Nasasakupan: </td>
-                            </tr>
-                            <tr>
-                                <td width="65%"> </td>
-                                <td className="text-left" width="35%" style={{ width: '50%' }}>Sitio: <span style={{textDecoration: 'underline'}}> { filter.sitio && sitios.find((s : any) => s.id === filter.sitio)?.full_address}  </span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div className="" style={{
+                    minWidth: "800px",
+                }}>
+                    <div className="p-5" ref={contentRef}>
+                        <h5 className="text-center mb-0">BUWANANG ULAT</h5>
+                        <h5 className="text-center mt-0">BARANGAY HEALTH WORKER</h5>
+                        <table className="w-full">
+                            <tbody>
+                                <tr>
+                                    <td width="65%"> </td>
+                                    <td className="text-left" width="35%" style={{ width: '50%' }}>Buwan: <span style={{textDecoration: 'underline'}}> { filter.month && MONTHS.find((m : any) => m.code === filter.month)?.name} {filter.year} </span> </td>
+                                </tr>
+                                <tr>
+                                    <td width="65%"> </td>
+                                    <td className="text-left" width="35%" style={{ width: '50%' }}>Blg. ng Nasasakupan: </td>
+                                </tr>
+                                <tr>
+                                    <td width="65%"> </td>
+                                    <td className="text-left" width="35%" style={{ width: '50%' }}>Sitio: <span style={{textDecoration: 'underline'}}> { filter.sitio && sitios.find((s : any) => s.id === filter.sitio)?.full_address}  </span></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <div className="w-full">
-                        <h6>A. HEALTH CARE SERVICE PROVIDER</h6>
-                        <PregnantsTable records={records} />
-                        <BirthTable records={records} />
-                        <NewBornTable records={records} />
-                        <VaccinatedTable records={records} />
-                        <FamilyPlanningTable records={records} />
-                        <DeathTable records={records} />
-                        <SickTable records={records} />
-                        <HighbloodTable records={records} />
-                        <DiabetesTable records={records} />
-                        <UrinalysisResultTable records={records} />
-                        <CancerTable records={records} />
-                        <EpilepsyTable records={records} />
-                        <AnimalBiteTable records={records} />
+                        <div className="w-full">
+                            <h6>A. HEALTH CARE SERVICE PROVIDER</h6>
+                            <PregnantsTable records={records} />
+                            <BirthTable records={records} />
+                            <NewBornTable records={records} />
+                            <VaccinatedTable records={records} />
+                            <FamilyPlanningTable records={records} />
+                            <DeathTable records={records} />
+                            <SickTable records={records} />
+                            <HighbloodTable records={records} />
+                            <DiabetesTable records={records} />
+                            <UrinalysisResultTable records={records} />
+                            <CancerTable records={records} />
+                            <EpilepsyTable records={records} />
+                            <AnimalBiteTable records={records} />
+                        </div>
                     </div>
                 </div>
             </div>
