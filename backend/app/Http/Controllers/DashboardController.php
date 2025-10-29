@@ -28,6 +28,8 @@ class DashboardController extends Controller
                 return $this->getCivilStatus($request);
             case 'WRA':
                 return $this->getWra($request);
+            case '4PS_PIE_CHART':
+                return $this->getFourpsData($request, $sitios);
             default:
                 return $this->getBhwDashboardFull($request);
                 break;
@@ -615,12 +617,33 @@ class DashboardController extends Controller
 
     public function getTotalPopulationData($request, $sitios) 
     {
-
+        return (clone $this->householdProfileQuery)->whereHas('household', function ($q) use ($sitios) {
+            $q->whereIn('sitio_id', $sitios);
+        })->count();
     }
 
     public function getFourpsData($request, $sitios) 
     {
-
+        $householdProfileQuery = $this->householdProfileQuery;
+        $latesDetailQueryString = $this->latesDetailQueryString;
+        return [
+            (object)[
+                "name" => "4p's Members",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("fourps_member", 1)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->count()
+            ],
+            (object)[
+                "name" => "Non 4p's Members",
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("fourps_member", 0)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->count()
+            ]
+        ]; 
     }
 
     public function getHouseholdsVisited($request, $sitios) 
