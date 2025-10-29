@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('household_profile_id');
             $table->foreignId('medication_id');
+            $table->date('other_medication', 100)->nullable();
             $table->integer('encoded_by');
             $table->timestamps();
         });

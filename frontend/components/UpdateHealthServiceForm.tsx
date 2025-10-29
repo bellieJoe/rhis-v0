@@ -739,6 +739,42 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     );
 }
 
+// const MedicationForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+//     const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+//     const { genericTypes } = useSelector((state: any) => state.genericType);
+//     const dispatch = useDispatch();
+//     const [form, setForm] = useState({
+//         household_profile_id : updateHealthServiceStore.householdProfile?.id,
+//         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        
+//         actions : ""
+//     });
+//     return (
+//         <div className="card">
+//             <h5 className="text-center ">11. Animal Bites(Kinagat ng Hayop/Aso)</h5>
+//             <div className="mb-2">
+//                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+//                 <InputText type="text" className="w-full" disabled value={form.name} />
+//                 <ValidationError name="household_profile_id" />
+//             </div>
+//             <div className="mb-2">
+//                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
+//                 <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
+//                 <ValidationError name="age" />
+//             </div>
+//             <div className="mb-2">
+//                 <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
+//                 <InputText type="text" className="w-full" value={form.animal_type} onChange={(e) => setForm({...form, animal_type : e.target.value})} />
+//                 <ValidationError name="animal_type" />
+//             </div>
+//             <div className="flex justify-content-end">
+//                 <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
+//             </div>
+//         </div>
+//     );
+// }
+
+
 export const UpdateHealthServiceForm = () => {
     const dispatch = useDispatch();
     const [activeIndex, setActiveIndex] = useState(0);
