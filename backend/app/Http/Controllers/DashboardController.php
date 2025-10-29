@@ -451,7 +451,12 @@ class DashboardController extends Controller
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
                         })->count(),
                 ],
-            ]
+            ],
+            "familyCount" => $this->getFamilyCount($request, $sitios),
+            "totalPopulation" => $this->getTotalPopulationData($request, $sitios),
+            "fourpsData" => $this->getFourpsData($request, $sitios),
+            "householdsVisited" => $this->getHouseholdsVisited($request, $sitios),
+            "familyPlanning" => $this->getFamilyPlanning($request, $sitios),
         ]);
     }
 
@@ -593,5 +598,38 @@ class DashboardController extends Controller
                 ->count()
             ],
         ];
+    }
+
+    public function getFamilyCount($request, $sitios) 
+    {
+        $latesDetailQueryString = $this->latesDetailQueryString;
+        return (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+            $q->whereRaw($latesDetailQueryString)
+            ->where('member_relationship_id', 1);
+        })
+        ->whereHas('household', function ($q) use ($sitios) {
+            $q->whereIn('sitio_id', $sitios);
+        })
+        ->count();
+    }
+
+    public function getTotalPopulationData($request, $sitios) 
+    {
+
+    }
+
+    public function getFourpsData($request, $sitios) 
+    {
+
+    }
+
+    public function getHouseholdsVisited($request, $sitios) 
+    {
+
+    }
+
+    public function getFamilyPlanning($request, $sitios) 
+    {
+
     }
 }
