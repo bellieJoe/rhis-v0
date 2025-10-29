@@ -66,24 +66,158 @@ const GenderDistribution = () => {
     useEffect(() => {
         getGenderDistribution();
     }, [ageBracketFilter]);
+    useEffect(() => {
+        setAgeBracketFilter(null);
+    }, [])
     return (
         <div className="card mb-0 px-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
             <div className="flex justify-content-end p-3">
-                <Dropdown  value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Select Age Bracket" className="w-full md:w-auto" />
+                <Dropdown  value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
             </div>
             <ResponsiveContainer width="100%" height={400}>
                 <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
                     <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="40%"
+                        outerRadius="60%"
+                        fill="#8884d8"
+                        paddingAngle={5}
+                        dataKey="value"
+                        nameKey="name"
+                    >
+                    {data.map((entry: any, index: number) => (
+                        <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                    </Pie>
+                    <Tooltip />  
+                    <Legend />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
+
+const CivilStatus = () => {
+    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state : any) => state.auth);
+    const getCivilStatus = async () => {
+        const sitios = authStore.user?.bhw_designations?.map((d : any) => d.sitio_id);
+        if(!sitios || sitios.length === 0) return;
+        console.log("test");
+        const _data = await getBhwDashboard(dispatch, { name: 'CIVIL_STATUS', age_group: ageBracketFilter, sitios: sitios });
+        setData(_data);
+    }
+    const ageBracketOptions = [
+        {
+            label: 'All',
+            value: null
+        },
+        {
+            label: '0-5 Months',
+            value: '1'
+        },
+        {
+            label: '6-11 Months',
+            value: '2'
+        },
+        {
+            label: '1-4 Years',
+            value: '3'
+        },
+        {
+            label: '5-9 Years',
+            value: '4'
+        },
+        {
+            label: '10-19 Years',
+            value: '5'
+        },
+        {
+            label: '20-59 Years',
+            value: '6'
+        },
+        {
+            label: '60+ Years',
+            value: '7'
+        },
+    ];
+    useEffect(() => {
+        getCivilStatus();
+    }, [ageBracketFilter]);
+    useEffect(() => {
+        setAgeBracketFilter(null);
+    }, [])
+    return (
+        <div className="card mb-0 h-full">
+            <h3 className="text-lg font-semibold mb-2 text-center">Civil Status</h3>
+            <div className="flex justify-content-end p-3">
+                <Dropdown  value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
+            </div>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart
                     data={data}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius="40%"
-                    outerRadius="60%"
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                    nameKey="name"
+                    layout="vertical"
+                    margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" />
+                    <Tooltip />
+                    <Bar  dataKey="single" fill="#8884d8" />
+                    <Bar  dataKey="married" fill="#82ca9d" />
+                    <Bar  dataKey="widowed" fill="#ffc658" />
+                    <Bar  dataKey="separated" fill="#36a2eb" />
+                    <Bar  dataKey="cohabitation" fill="#ffce56" />
+                    <Legend />
+                </BarChart>
+            </ResponsiveContainer>
+        </div> 
+    );
+}
+
+const WRA = ({civilStatus} : {civilStatus : any}) => {
+    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state : any) => state.auth);
+    const getData = async () => {
+        const sitios = authStore.user?.bhw_designations?.map((d : any) => d.sitio_id);
+        if(!sitios || sitios.length === 0) return;
+        console.log("test");
+        const _data = await getBhwDashboard(dispatch, { name: 'WRA', civil_status: civilStatus, sitios: sitios });
+        setData(_data);
+    }
+    useEffect(() => {
+        getData();
+    }, [ageBracketFilter]);
+    useEffect(() => {
+        setAgeBracketFilter(null);
+    }, []);
+    return (
+        <div className="card mb-0 px-0">
+            <h3 className="text-lg font-semibold mb-2 text-center">{ civilStatus == 75 ? 'SWRA' : 'MWRA' }</h3> 
+            <ResponsiveContainer width="100%" height={400}>
+                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }} >
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="40%"
+                        outerRadius="60%"
+                        fill="#8884d8"
+                        paddingAngle={5}
+                        dataKey="value"
+                        nameKey="name"
                     >
                     {data.map((entry: any, index: number) => (
                         <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
@@ -199,33 +333,13 @@ const BhwDashboard = () => {
                     </div>
                 </div>
                 <div className="col-12 lg:col-6 ">
-                    <div className="card mb-0 h-full">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Civil Status</h3>
-                       <ResponsiveContainer width="100%" height={400}>
-                            <BarChart
-                                data={data.civilStatusData}
-                                layout="vertical"
-                                margin={{
-                                top: 5,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
-                                <YAxis dataKey="name" type="category" />
-                                <Tooltip />
-                                <Bar  dataKey="single" fill="#8884d8" />
-                                <Bar  dataKey="married" fill="#82ca9d" />
-                                <Bar  dataKey="widowed" fill="#ffc658" />
-                                <Bar  dataKey="separated" fill="#36a2eb" />
-                                <Bar  dataKey="cohabitation" fill="#ffce56" />
-                                <Legend />
-                            </BarChart>
-                        </ResponsiveContainer>
-
-                    </div>
+                    <CivilStatus />
+                </div>
+                <div className="col-12 lg:col-6">
+                    <WRA civilStatus={74} />
+                </div>
+                <div className="col-12 lg:col-6">
+                    <WRA civilStatus={75} />
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0 h-full">
@@ -412,4 +526,4 @@ const BhwDashboard = () => {
     );
 }
 
-export default BhwDashboard
+export default BhwDashboard;

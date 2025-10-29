@@ -24,17 +24,19 @@ class DashboardController extends Controller
             case 'GENDER_DISTRIBUTION':
                 return $this->getGenderDistribution($request);
                 break;
-            
+            case 'CIVIL_STATUS':
+                return $this->getCivilStatus($request);
+            case 'WRA':
+                return $this->getWra($request);
             default:
                 return $this->getBhwDashboardFull($request);
                 break;
         }
     }
 
-    public function getBhwDashboardFull(Request $request){
-        $gender_distribution_filter = $request->has('gender_distribution_filter') ? $request->gender_distribution_filter : null;
+    public function getBhwDashboardFull(Request $request)
+    {
         $sitios = $request->has('sitios') ? $request->sitios : null;
-        $householdProfileQuery = $this->householdProfileQuery;
         $latesDetailQueryString = $this->latesDetailQueryString;
         return response([
             "households" => Household::whereIn('sitio_id', $sitios)->count(),
@@ -46,31 +48,7 @@ class DashboardController extends Controller
             'vaccinated' => (clone $this->householdProfileQuery)->whereHas('vaccinateds')->count(),
             'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths')->count(),
             'genderData' => $this->getGenderDistribution($request),
-            'civilStatusData' => [
-                (object)[
-                    "name" => "Civil Status",
-                    "single" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("civil_status_id", 75)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count(),
-                    "married" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("civil_status_id", 74)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count(),
-                    "widowed" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("civil_status_id", 76)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count(),
-                    "separated" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("civil_status_id", 77)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count(),
-                    "cohabitation" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
-                        $q->where("civil_status_id", 78)
-                        ->whereRaw($latesDetailQueryString);
-                    })->count(),
-                ]
-            ],
+            'civilStatusData' => $this->getCivilStatus($request),
             'educationalAttainmentData' => DB::select("
                 WITH latest AS (
                     SELECT hpd.*
@@ -477,7 +455,8 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function getGenderDistribution($request){
+    private function getGenderDistribution($request)
+    {
         $age_group = $request->has('age_group') ? $request->age_group : null;
         $householdProfileQuery = $this->householdProfileQuery;
         $latesDetailQueryString = $this->latesDetailQueryString;
@@ -511,6 +490,108 @@ class DashboardController extends Controller
                 ->whereRaw($ageCondition)
                 ->count()
             ]
+        ];
+    }
+
+    private function getCivilStatus($request) 
+    {
+        $age_group = $request->has('age_group') ? $request->age_group : null;
+        $latesDetailQueryString = $this->latesDetailQueryString;
+        $cutoff = date('Y') . '-12-31';
+        $ageCondition = match ($age_group) {
+            '1' => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') BETWEEN 0 AND 5",
+            '2' => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') BETWEEN 6 AND 11",
+            '3' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 1 AND 4",
+            '4' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 5 AND 9",
+            '5' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 10 AND 19",
+            '6' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 20 AND 59",
+            '7' => "TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 60",
+            default => "TIMESTAMPDIFF(MONTH, birthdate, '{$cutoff}') >= 0",
+        };
+        return [
+            (object)[
+                "name" => "Civil Status",
+                "single" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("civil_status_id", 75)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw($ageCondition)
+                ->count(),
+                "married" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("civil_status_id", 74)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw($ageCondition)
+                ->count(),
+                "widowed" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("civil_status_id", 76)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw($ageCondition)
+                ->count(),
+                "separated" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("civil_status_id", 77)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw($ageCondition)
+                ->count(),
+                "cohabitation" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
+                    $q->where("civil_status_id", 78)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw($ageCondition)
+                ->count(),
+            ]
+        ];
+    }
+
+    public function getWra($request)
+    {
+        $civil_status = $request->has('civil_status') ? $request->civil_status : null;
+        $householdProfileQuery = $this->householdProfileQuery;
+        $latesDetailQueryString = $this->latesDetailQueryString;
+        $cutoff = date('Y') . '-12-31';
+        return [
+            (object)[
+                "name" => '10-14',
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString, $civil_status) {
+                    $q->where("civil_status_id", $civil_status)
+                    ->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 10 AND 14")
+                ->count()
+            ],
+            (object)[
+                "name" => '15-19',
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString, $civil_status) {
+                    $q->where("civil_status_id", $civil_status)
+                    ->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 15 AND 19")
+                ->count()
+            ],
+            (object)[
+                "name" => '20-49',
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString, $civil_status) {
+                    $q->where("civil_status_id", $civil_status)
+                    ->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 20 AND 49")
+                ->count()
+            ],
+            (object)[
+                "name" => '50+',
+                "value" => (clone $householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString, $civil_status) {
+                    $q->where("civil_status_id", $civil_status)
+                    ->where("gender_id", 80)
+                    ->whereRaw($latesDetailQueryString);
+                })
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 50")
+                ->count()
+            ],
         ];
     }
 }
