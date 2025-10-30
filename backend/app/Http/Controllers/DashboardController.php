@@ -40,6 +40,9 @@ class DashboardController extends Controller
             case 'SENIOR_W_MAINTENANCE':
                 return $this->getSeniorCitizenMaintenance($request, $sitios);
                 break;
+            case "EDUCATIONAL_ATTAINMENT_CHART":
+                return $this->getEducationalAttainment($request, $sitios);
+                break;
             default:
                 return $this->getBhwDashboardFull($request);
                 break;
@@ -696,4 +699,48 @@ class DashboardController extends Controller
             ];
         });
     }
+
+    public function getEducationalAttainment($request, $sitios)
+    {
+        $member_filter = $request->has('memberFilter') ? $request->memberFilter : null;
+
+        $latestSubquery = DB::table('household_profile_details as hpd')
+            ->select('hpd.*')
+            ->join(DB::raw('(
+                SELECT household_profile_id, MAX(created_at) AS max_created
+                FROM household_profile_details
+                GROUP BY household_profile_id
+            ) t'), function ($join) {
+                $join->on('t.household_profile_id', '=', 'hpd.household_profile_id')
+                    ->on('t.max_created', '=', 'hpd.created_at');
+            })
+            ->join('household_profiles as hp', 'hp.id', '=', 'hpd.household_profile_id')
+            ->join('households as h', 'h.id', '=', 'hp.household_id')
+            ->join('sitios as s', 's.id', '=', 'h.sitio_id');
+
+        // ✅ Use whereIn instead of whereRaw
+        if (is_array($sitios)) {
+            $latestSubquery->whereIn('s.id', $sitios);
+        } else {
+            $latestSubquery->where('s.id', $sitios);
+        }
+
+        if ($member_filter) {
+            $latestSubquery->where('member_relationship_id', $member_filter);
+        }
+
+        $result = DB::table('generic_types as gt')
+            ->select('gt.id', 'gt.name', DB::raw('COUNT(latest.id) AS total'))
+            ->leftJoinSub($latestSubquery, 'latest', function ($join) {
+                $join->on('latest.educational_attainment_id', '=', 'gt.id');
+            })
+            ->where('gt.type', 'EDUCATIONAL_ATTAINMENT')
+            ->groupBy('gt.id', 'gt.name')
+            ->orderByDesc('total')
+            ->limit(3)
+            ->get();
+
+        return $result;
+    }
+
 }

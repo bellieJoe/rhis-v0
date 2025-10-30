@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { IoIosPeople } from "react-icons/io";
 import { RiSurveyLine } from "react-icons/ri";
+import { getGenericTypes } from '@/api/genericTypeApi';
 
 const GenderDistribution = () => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
@@ -314,6 +315,59 @@ const SeniorMaintenanceChart = () => {
     );
 };
 
+const EducationalAttainmentChart = () => {
+    const [data, setData] = useState<any>([]);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const [memberFilter, setMemberFilter] = useState<any>(null);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state: any) => state.auth);
+    const getData = async () => {
+        getGenericTypes(dispatch);
+        const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
+        if (!sitios || sitios.length === 0) return;
+        console.log('test');
+        const _data = await getBhwDashboard(dispatch, { name: 'EDUCATIONAL_ATTAINMENT_CHART', sitios: sitios, memberFilter: memberFilter });
+        setData(_data);
+    };
+    useEffect(() => {
+        getData();
+    }, [authStore.user, memberFilter]);
+    return (
+        <div className="card mb-0">
+            <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
+            <div className="flex justify-content-end p-2">
+                <Dropdown
+                    value={memberFilter}
+                    options={genericTypes.filter((gt: any) => gt.type === 'MEMBERS_OF_HOUSEHOLD')}
+                    optionLabel="name"
+                    optionValue='id'
+                    placeholder="Select Educational Attainment"
+                    onChange={(e) => setMemberFilter(e.value)}
+                />
+            </div>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                    data={data}
+                    layout="vertical"
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" />
+                    <Tooltip />
+                    <Bar dataKey="total" fill="#8884d8" />
+                    <Legend />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+}
+
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
@@ -432,7 +486,8 @@ const BhwDashboard = () => {
                     <GenderDistribution />
                 </div>
                 <div className="col-12 lg:col-6">
-                    <div className="card mb-0">
+                    <EducationalAttainmentChart />
+                    {/* <div className="card mb-0">
                         <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
                         <ResponsiveContainer width="100%" height={400}>
                             <BarChart
@@ -453,7 +508,7 @@ const BhwDashboard = () => {
                                 <Legend />
                             </BarChart>
                         </ResponsiveContainer>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="col-12 lg:col-6 ">
                     <CivilStatus />

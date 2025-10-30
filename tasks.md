@@ -3,7 +3,7 @@
 ## Key Metrics
 - **Household**
 - **Families**
-- **Total Population (Male/Female)**
+- **Total Population (Male and Female)**
 - **4Ps or Non-4Ps**
 - **Number of Households Visited**
 - **Family Planning**
