@@ -65,4 +65,8 @@ class HouseholdProfile extends Model
         return $this->hasMany(Birth::class);
     }
 
+    public function medicineMaintenance() {
+        return $this->hasMany(MedicationMaintenance::class);
+    }
+
 }

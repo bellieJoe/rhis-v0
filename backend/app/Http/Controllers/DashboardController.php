@@ -37,6 +37,9 @@ class DashboardController extends Controller
             case 'FAMILY_PLANNING_CHART':
                 return $this->getFamilyPlanning($request, $sitios);
                 break;
+            case 'SENIOR_W_MAINTENANCE':
+                return $this->getSeniorCitizenMaintenance($request, $sitios);
+                break;
             default:
                 return $this->getBhwDashboardFull($request);
                 break;
@@ -673,6 +676,23 @@ class DashboardController extends Controller
                     $q->whereIn('sitio_id', $sitios);
                 })
                 ->count()
+            ];
+        });
+    }
+
+    public function getSeniorCitizenMaintenance($request, $sitios) {
+        $cutoff = date('Y') . '-12-31';
+        return GenericType::where('type', 'MEDICATION')->get()->map(function($type) use ($sitios, $cutoff) {
+            return (object)[
+                "Name" => $type->name,
+                "Value" => (clone $this->householdProfileQuery)->whereHas('household', function ($q) use ($sitios) {
+                        $q->whereIn('sitio_id', $sitios);
+                    })
+                    ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 60")
+                    ->whereHas('medicineMaintenance', function ($q) use ($type) {
+                        $q->where('medication_id', $type->id);
+                    })
+                    ->count()
             ];
         });
     }

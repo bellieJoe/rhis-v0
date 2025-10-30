@@ -274,6 +274,45 @@ const FamilyPlanningChart = () => {
     );
 };
 
+const SeniorMaintenanceChart = () => {
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state: any) => state.auth);
+    const getData = async () => {
+        const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
+        if (!sitios || sitios.length === 0) return;
+        console.log('test');
+        const _data = await getBhwDashboard(dispatch, { name: 'SENIOR_W_MAINTENANCE', sitios: sitios });
+        setData(_data);
+    };
+    useEffect(() => {
+        getData();
+    }, [authStore.user]);
+    return (
+        <div className="card mb-0 h-full">
+            <h3 className="text-lg font-semibold mb-2 text-center">Senior with Maintenance</h3>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                    data={data}
+                    layout="horizontal"
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="category" dataKey="Name"  />
+                    <YAxis type="number"  />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="Value" fill="#8884d8" />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+};
 
 const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
@@ -545,6 +584,9 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <FourPs />
+                </div>
+                <div className="col-12 lg:col-6">
+                    <SeniorMaintenanceChart />
                 </div>
                 <div className="col-12 lg:col-6">
                     <div className="flex flex-wrap gap-2 justify-content-start">
