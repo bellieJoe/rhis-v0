@@ -1,4 +1,4 @@
-import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeUrinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
+import { storeAnimalBites, storeDeath, storeFamilyPlanning, storeGaveBirth, storeHasCancer, storeHasDiabetes, storeHasEpilepsy, storeHasHighblood, storeMedication, storeNewBorn, storePregnant, storeSick, storeUnirinalysis, storeUrinalysis, storeVaccinated } from "@/api/healthcareServicesApi";
 import handler from "@/app/api/upload";
 import store from "@/app/store";
 import { hide } from "@/features/forms/addHouseholdProfileSlice";
@@ -739,40 +739,48 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     );
 }
 
-// const MedicationForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
-//     const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
-//     const { genericTypes } = useSelector((state: any) => state.genericType);
-//     const dispatch = useDispatch();
-//     const [form, setForm] = useState({
-//         household_profile_id : updateHealthServiceStore.householdProfile?.id,
-//         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
-        
-//         actions : ""
-//     });
-//     return (
-//         <div className="card">
-//             <h5 className="text-center ">11. Animal Bites(Kinagat ng Hayop/Aso)</h5>
-//             <div className="mb-2">
-//                 <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
-//                 <InputText type="text" className="w-full" disabled value={form.name} />
-//                 <ValidationError name="household_profile_id" />
-//             </div>
-//             <div className="mb-2">
-//                 <label htmlFor="" className="form-label mb-2 block">Age(Edad)</label>
-//                 <InputText type="number" className="w-full" value={form.age} onChange={(e) => setForm({...form, age : e.target.value})} />
-//                 <ValidationError name="age" />
-//             </div>
-//             <div className="mb-2">
-//                 <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
-//                 <InputText type="text" className="w-full" value={form.animal_type} onChange={(e) => setForm({...form, animal_type : e.target.value})} />
-//                 <ValidationError name="animal_type" />
-//             </div>
-//             <div className="flex justify-content-end">
-//                 <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
-//             </div>
-//         </div>
-//     );
-// }
+const MedicationForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
+    const updateHealthServiceStore = useSelector((state: any) => state.updateHealthService);
+    const { genericTypes } = useSelector((state: any) => state.genericType);
+    const dispatch = useDispatch();
+    const [form, setForm] = useState({
+        household_profile_id : updateHealthServiceStore.householdProfile?.id,
+        name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
+        medication_id : '',
+        other_medication: "",
+        actions : ""
+    });
+    useEffect(() => {
+        getGenericTypes(dispatch);
+    }, [])
+    return (
+        <div className="card">
+            <h5 className="text-center ">Drug Maintenance</h5>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Name(Pangalan)</label>
+                <InputText type="text" className="w-full" disabled value={form.name} />
+                <ValidationError name="household_profile_id" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">Medication</label>
+                <Dropdown className="w-full" options={genericTypes.filter((genericType: any) => genericType.type === "MEDICATION")} value={form.medication_id} onChange={(e) => setForm({...form, medication_id : e.value})} placeholder="Select Medication" optionLabel="name" optionValue="id" />
+                <ValidationError name="household_profile_id" />
+            </div>
+            {
+                form.medication_id == '93' && (
+                    <div className="mb-2">
+                        <label htmlFor="" className="form-label mb-2 block">Other Medication</label>
+                        <InputText type="text" className="w-full" value={form.other_medication} onChange={(e) => setForm({...form, other_medication : e.target.value})} />
+                        <ValidationError name="other_medication" />
+                    </div>
+                )
+            }
+            <div className="flex justify-content-end">
+                <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
+            </div>
+        </div>
+    );
+}
 
 
 export const UpdateHealthServiceForm = () => {
@@ -882,6 +890,13 @@ export const UpdateHealthServiceForm = () => {
             value: "ANIMAL_BITE",
             form : <AnimalBitesForm onSubmit={(data) => submitForm(services.find(s => s.value == "ANIMAL_BITE"), data)}/>,
             handler : storeAnimalBites,
+            visible : true
+        },
+        {
+            label: "Drug Maintenance",
+            value: "MEDICATION",
+            form : <MedicationForm onSubmit={(data) => submitForm(services.find(s => s.value == "MEDICATION"), data)}/>,
+            handler : storeMedication,
             visible : true
         }
     ]

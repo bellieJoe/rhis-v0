@@ -12,6 +12,7 @@ use App\Models\EpilepsyRecord;
 use App\Models\FpRecord;
 use App\Models\HighbloodRecord;
 use App\Models\HouseholdProfile;
+use App\Models\MedicationMaintenance;
 use App\Models\NewBorn;
 use App\Models\Pregnancy;
 use App\Models\SickRecord;
@@ -332,6 +333,26 @@ class HealthcareServiceController extends Controller
             ]);
             return response()->json([
                 "message" => "Animal Bite Record created successfully",
+            ], 201);
+        });
+    }
+
+    public function storeMedication(Request $request) {
+        $request->validate([
+            "household_profile_id" => "required|exists:household_profiles,id",
+            "medication_id" => "required|exists:generic_types,id",
+            "other_medication" => "nullable|required_if:medication_id,93"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            MedicationMaintenance::create([
+                "household_profile_id" => $request->household_profile_id,
+                "medication_id" => $request->medication_id,
+                "other_medication" => $request->medication_id == 93 ? $request->other_medication : null,
+                "encoded_by" => auth()->user()->id
+            ]);
+            return response()->json([
+                "message" => "Drug Maintenance successfully saved",
             ], 201);
         });
     }

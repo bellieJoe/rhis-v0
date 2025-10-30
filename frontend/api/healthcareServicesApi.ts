@@ -331,6 +331,31 @@ export const storeAnimalBites = async (dispatch : Dispatch, params : any = {}) :
     }
 }
 
+export const storeMedication = async (dispatch : Dispatch, params : any = {}) : Promise<boolean> => {
+    setErrors({});
+    try {
+        const response = await axios.post('/api/healthcare-services/medication', params);
+        dispatch(setToast({
+            severity : "success",
+            summary : "Success",
+            detail : "Maintenance created successfully",
+            life : 3000
+        }));
+        return true;
+    } catch (error : any) {
+        if(error.response.status === 422) {
+            dispatch(setErrors(error.response.data.errors));
+        }
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+        return false;
+    }
+}
+
 export const getMonthlyRecords = async (dispatch : Dispatch, params = {}) => {
     try {
         const response = await axios.get('/api/healthcare-services/monthly-records', {params : params});

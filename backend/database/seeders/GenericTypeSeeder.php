@@ -732,6 +732,39 @@ class GenericTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // MEDICATION
+            [
+                'id' => 90,
+                'type' => GenericType::TYPE_MEDICATION,
+                'code' => 'N/A',
+                'name' => 'Losartan',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 91,
+                'type' => GenericType::TYPE_MEDICATION,
+                'code' => 'N/A',
+                'name' => 'Amlodipine',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 92,
+                'type' => GenericType::TYPE_MEDICATION,
+                'code' => 'N/A',
+                'name' => 'Metformin',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 93,
+                'type' => GenericType::TYPE_MEDICATION,
+                'code' => 'N/A',
+                'name' => 'Others',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }
