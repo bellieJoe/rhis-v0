@@ -2,9 +2,11 @@
 import { getUsers } from "@/api/userApi";
 import AddUserForm from "@/components/AddUserForm";
 import AssignBhwForm from "@/components/AssignBhwForm";
+import AssignMidwifeForm from "@/components/AssignMidwifeForm";
 import { AuthMiddleware } from "@/components/middlewares";
 import { showAddUserForm } from "@/features/forms/addUserSlice";
 import { assignBhw } from "@/features/forms/assignBhwFormSlice";
+import { assignMidwife } from "@/features/forms/assignMidwifeSlice";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -52,6 +54,9 @@ const Users = (props : UsersProps) => {
                 {
                     data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="BHW Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
                 }
+                {
+                    data.roles.some((role : any) => role.role_type_id === 2) && <Button size="small" outlined label="Midwife Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignMidwife({user : data}))} />
+                }
             </div>
         )
     }
@@ -72,6 +77,7 @@ const Users = (props : UsersProps) => {
                 </div>
                 <AddUserForm />
                 <AssignBhwForm  />
+                <AssignMidwifeForm />
             </AuthMiddleware>
         </>
     )

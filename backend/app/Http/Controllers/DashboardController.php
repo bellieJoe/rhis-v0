@@ -448,6 +448,32 @@ class DashboardController extends Controller
                             $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
                         })->count(),
                 ],
+                [
+                    "Name" => "20-59 YEARS",
+                    "Male" => (clone $this->householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 20 AND 59')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $this->householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 20 AND 59')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
+                [
+                    "Name" => "60+ YEARS",
+                    "Male" => (clone $this->householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) >= 60')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 79);
+                        })->count(),
+                    "Female" => (clone $this->householdProfileQuery)
+                        ->whereRaw('TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) >= 60')
+                        ->whereHas('householdProfileDetails', function ($q) use ($latesDetailQueryString) {
+                            $q->whereRaw($latesDetailQueryString)->where("gender_id", 80);
+                        })->count(),
+                ],
             ],
             "familyCount" => $this->getFamilyCount($request, $sitios),
             "totalPopulation" => $this->getTotalPopulationData($request, $sitios),

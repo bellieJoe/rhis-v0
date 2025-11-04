@@ -1,6 +1,7 @@
 import { getBarangayList, getMunicipalityList } from "@/api/addressApi";
 import { getOffices } from "@/api/officeApi";
 import { Dropdown } from "primereact/dropdown";
+import { MultiSelect } from "primereact/multiselect";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -57,7 +58,8 @@ interface OfficePickerProps {
   office : any,
   onChange: (e: any) => any,
   className? : string,
-  office_type? : string
+  office_type? : string,
+  multiple? : boolean
 }
 export const OfficePicker = (props : OfficePickerProps) => {
   const [offices, setOffices] = useState<any[]>([]);
@@ -90,6 +92,65 @@ export const OfficePicker = (props : OfficePickerProps) => {
   return (
     <>
       <Dropdown 
+        filter
+        placeholder={props.placeholder || "Select Office"} 
+        value={office} 
+        onChange={handleChange}  
+        options={offices} 
+        optionValue="id" 
+        className={props.className || ""}
+        optionLabel="name"
+        itemTemplate={(option) => {
+          return (
+            <>
+              <p className="font-bold mb-0">{option.name}</p>
+              <p className="mb-0 text-muted">{option.address}</p>
+            </>
+          )
+        }}
+         />
+    </>
+  );
+}
+
+interface MultipleOfficePickerProps {
+  placeholder?: string,
+  office : any,
+  onChange: (e: any) => any,
+  className? : string,
+  office_type? : string
+}
+export const MultipleOfficePicker = (props : MultipleOfficePickerProps) => {
+  const [offices, setOffices] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const [office, setOffice] = useState(props.office || null);
+
+  const handleChange = (e: any) => {
+    setOffice(e.value);
+    props.onChange(e.value);
+  };
+  const init = async () => {
+    let params : any = { full: true };
+    if(props.office_type){
+      params = {
+        ...params,
+        office_type: props.office_type
+      }
+    }
+    const _offices = await getOffices(dispatch, params);
+    setOffices(_offices || []);
+  }
+  useEffect(() => {
+    init();
+  }, []);
+
+  useEffect(() => {
+    setOffice(props.office || null);
+  }, [props.office]);
+
+  return (
+    <>
+      <MultiSelect 
         filter
         placeholder={props.placeholder || "Select Office"} 
         value={office} 

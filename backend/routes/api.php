@@ -9,6 +9,7 @@ use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\HouseholdProfileController;
+use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PregnancyController;
@@ -126,6 +127,13 @@ Route::prefix("bhw-designations")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [BhwDesignationController::class, "store"]);
         Route::get("get-by-user-id", [BhwDesignationController::class, "getDesignationsByUserId"]);
+    });
+});
+
+Route::prefix("midwife-designations")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [MidwifeDesignationController::class, "store"]);
+        Route::get("get-by-user-id", [MidwifeDesignationController::class, "getDesignationsByUserId"]);
     });
 });
 

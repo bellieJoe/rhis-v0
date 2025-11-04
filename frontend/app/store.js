@@ -16,6 +16,7 @@ import assignBhwFormReducer from '@/features/forms/assignBhwFormSlice';
 import addSitioFormReducer from '@/features/forms/addSitioFormSlice';
 import updateSitioFormReducer from '@/features/forms/updateSitioFormSlice';
 import sitioReducer from '@/features/sitioSlice';
+import assignMidwifeReducer from '@/features/forms/assignMidwifeSlice';
 
 
 export default configureStore({
@@ -34,8 +35,9 @@ export default configureStore({
     updateHealthService : updateHealthServiceReducer,
     addUser : addUserReducer,
     assignBhwForm : assignBhwFormReducer,
+    assignMidwifeForm : assignMidwifeReducer,
     addSitioForm : addSitioFormReducer,
     updateSitioForm : updateSitioFormReducer,
-    sitio : sitioReducer
+    sitio : sitioReducer,
   }
 });
