@@ -2,7 +2,7 @@
 
 import { getBhwDashboard } from '@/api/dashboardApi';
 import { AuthMiddleware } from '@/components/middlewares';
-import { COLORS } from '@/utils/helpers';
+import { COLORS, getFirstDate, getLastDate } from '@/utils/helpers';
 import { get } from 'http';
 import moment from 'moment';
 import { Column } from 'primereact/column';
@@ -19,19 +19,26 @@ import { IoIosPeople } from "react-icons/io";
 import { RiSurveyLine } from "react-icons/ri";
 import { getGenericTypes } from '@/api/genericTypeApi';
 import { Calendar } from 'primereact/calendar';
+import { Button } from 'primereact/button';
 
 const GenderDistribution = () => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [startDate, setStartDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
+    const [startDate, setStartDate] = useState(getFirstDate());
+    const [endDate, setEndDate] = useState(getLastDate());
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
     const getGenderDistribution = async () => {
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
-        console.log('test');
-        const _data = await getBhwDashboard(dispatch, { name: 'GENDER_DISTRIBUTION', age_group: ageBracketFilter, sitios: sitios });
+        // if(!ageBracketFilter) return;
+        const _data = await getBhwDashboard(dispatch, { 
+            name: 'GENDER_DISTRIBUTION', 
+            age_group: ageBracketFilter, 
+            sitios: sitios ,
+            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
+            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null
+        });
         setData(_data);
     };
     const ageBracketOptions = [
@@ -70,14 +77,19 @@ const GenderDistribution = () => {
     ];
     useEffect(() => {
         getGenderDistribution();
-    }, [authStore.user, ageBracketFilter]);
+    }, [authStore.user, ageBracketFilter, startDate, endDate]);
     return (
         <div className="card mb-0 px-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
-            <div className="flex justify-content-end p-3">
-                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} />
+            <div className="flex justify-content-end p-3 gap-1">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
+                <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
+                    setStartDate(null);
+                    setEndDate(null);
+                    setAgeBracketFilter(null);
+                }} />
             </div>
             <ResponsiveContainer  height={400}>
                 <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
@@ -96,6 +108,8 @@ const GenderDistribution = () => {
 
 const CivilStatus = () => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [startDate, setStartDate] = useState(getFirstDate());
+    const [endDate, setEndDate] = useState(getLastDate());
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
@@ -103,7 +117,13 @@ const CivilStatus = () => {
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
         console.log('test');
-        const _data = await getBhwDashboard(dispatch, { name: 'CIVIL_STATUS', age_group: ageBracketFilter, sitios: sitios });
+        const _data = await getBhwDashboard(dispatch, { 
+            name: 'CIVIL_STATUS', 
+            age_group: ageBracketFilter, 
+            sitios: sitios,
+            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
+            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null
+        });
         setData(_data);
     };
     const ageBracketOptions = [
@@ -142,12 +162,19 @@ const CivilStatus = () => {
     ];
     useEffect(() => {
         getCivilStatus();
-    }, [authStore.user, ageBracketFilter]);
+    }, [authStore.user, ageBracketFilter, startDate, endDate]);
     return (
         <div className="card mb-0 h-full">
             <h3 className="text-lg font-semibold mb-2 text-center">Civil Status</h3>
-            <div className="flex justify-content-end p-3">
+            <div className="flex justify-content-end p-3 gap-1">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
+                <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
+                    setStartDate(null);
+                    setEndDate(null);
+                    setAgeBracketFilter(null);
+                }} />
             </div>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart
@@ -178,21 +205,36 @@ const CivilStatus = () => {
 
 const WRA = ({ civilStatus }: { civilStatus: any }) => {
     const [data, setData] = useState<any>([]);
+    const [startDate, setStartDate] = useState(getFirstDate());
+    const [endDate, setEndDate] = useState(getLastDate());
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
     const getData = async () => {
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
-        console.log('test');
-        const _data = await getBhwDashboard(dispatch, { name: 'WRA', civil_status: civilStatus, sitios: sitios });
+        const _data = await getBhwDashboard(dispatch, { 
+            name: 'WRA', 
+            civil_status: civilStatus, 
+            sitios: sitios,
+            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
+            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null
+        });
         setData(_data);
     };
     useEffect(() => {
         getData();
-    }, [authStore.user]);
+    }, [authStore.user, startDate, endDate]);
     return (
         <div className="card mb-0 px-0">
             <h3 className="text-lg font-semibold mb-2 text-center">{civilStatus == 75 ? 'SWRA' : 'MWRA'}</h3>
+            <div className="flex justify-content-end p-3 gap-1">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+                <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
+                    setStartDate(null);
+                    setEndDate(null);
+                }} />
+            </div>
             <ResponsiveContainer width="100%" height={400}>
                 <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                     <Pie data={data} cx="50%" cy="50%" innerRadius="40%" outerRadius="60%" fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
@@ -324,23 +366,32 @@ const EducationalAttainmentChart = () => {
     const [data, setData] = useState<any>([]);
     const { genericTypes } = useSelector((state: any) => state.genericType);
     const [memberFilter, setMemberFilter] = useState<any>(null);
+    const [startDate, setStartDate] = useState(getFirstDate());
+    const [endDate, setEndDate] = useState(getLastDate());
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
     const getData = async () => {
         getGenericTypes(dispatch);
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
-        console.log('test');
-        const _data = await getBhwDashboard(dispatch, { name: 'EDUCATIONAL_ATTAINMENT_CHART', sitios: sitios, memberFilter: memberFilter });
+        const _data = await getBhwDashboard(dispatch, { 
+            name: 'EDUCATIONAL_ATTAINMENT_CHART', 
+            sitios: sitios, 
+            memberFilter: memberFilter,
+            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
+            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null
+         });
         setData(_data);
     };
     useEffect(() => {
         getData();
-    }, [authStore.user, memberFilter]);
+    }, [authStore.user, memberFilter, startDate, endDate]);
     return (
         <div className="card mb-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
-            <div className="flex justify-content-end p-2">
+            <div className="flex justify-content-end p-2 gap-1">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown
                     value={memberFilter}
                     options={genericTypes.filter((gt: any) => gt.type === 'MEMBERS_OF_HOUSEHOLD')}
@@ -349,6 +400,11 @@ const EducationalAttainmentChart = () => {
                     placeholder="Select Educational Attainment"
                     onChange={(e) => setMemberFilter(e.value)}
                 />
+                <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
+                    setStartDate(null);
+                    setEndDate(null);
+                    setMemberFilter(null);
+                }} />
             </div>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart
@@ -492,28 +548,6 @@ const BhwDashboard = () => {
                 </div>
                 <div className="col-12 lg:col-6">
                     <EducationalAttainmentChart />
-                    {/* <div className="card mb-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <BarChart
-                                data={data.educationalAttainmentData}
-                                layout="vertical"
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
-                                <YAxis dataKey="name" type="category" />
-                                <Tooltip />
-                                <Bar dataKey="total" fill="#8884d8" />
-                                <Legend />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div> */}
                 </div>
                 <div className="col-12 lg:col-6 ">
                     <CivilStatus />

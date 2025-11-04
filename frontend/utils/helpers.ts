@@ -26,4 +26,14 @@ export function convertTinyIntToBoolean(value : number) : boolean {
     return value === 1;
 }
 
+export function getFirstDate()
+{
+  return new Date(new Date().getFullYear(), 0, 1);
+}
+
+export function getLastDate()
+{
+  return new Date(new Date().getFullYear(), 11, 31);
+}
+
 

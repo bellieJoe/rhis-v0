@@ -8,6 +8,7 @@ use App\Models\Household;
 use App\Models\HouseholdProfile;
 use App\Models\Vaccinated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -89,28 +90,7 @@ class DashboardController extends Controller
                 ORDER BY total DESC
                 LIMIT 3
             "),
-            'religionData' => DB::select("
-                WITH latest AS (
-                    SELECT hpd.*
-                    FROM household_profile_details hpd
-                    INNER JOIN (
-                        SELECT household_profile_id, MAX(created_at) AS max_created
-                        FROM household_profile_details
-                        GROUP BY household_profile_id
-                    ) t ON t.household_profile_id = hpd.household_profile_id 
-                    AND t.max_created = hpd.created_at
-                )
-                SELECT 
-                    gt.id,
-                    gt.name,
-                    COUNT(latest.id) AS total
-                FROM generic_types gt
-                LEFT JOIN latest 
-                    ON latest.religion_id = gt.id
-                WHERE gt.type = 'RELIGION'
-                GROUP BY gt.id, gt.name
-                ORDER BY total DESC
-            "),
+            'religionData' => $this->getReligion($request),
             'vaccinationPermonthData' => [
                 [
                     'name' => 'January',
@@ -480,6 +460,9 @@ class DashboardController extends Controller
     private function getGenderDistribution($request)
     {
         $age_group = $request->has('age_group') ? $request->age_group : null;
+        $start = $request->has('start') ? $request->start : null;
+        $end = $request->has('end') ? $request->end : null;
+        $dateQuery = $start && $end && Carbon::parse($start) < Carbon::parse($end) ? " AND created_at BETWEEN '{$start}' AND '{$end}'" : '';
         $householdProfileQuery = $this->householdProfileQuery;
         $latesDetailQueryString = $this->latesDetailQueryString;
         $cutoff = date('Y') . '-12-31';
@@ -500,7 +483,7 @@ class DashboardController extends Controller
                     $q->where("gender_id", 79)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count()
             ],
                 (object)[
@@ -509,7 +492,7 @@ class DashboardController extends Controller
                     $q->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count()
             ]
         ];
@@ -517,6 +500,9 @@ class DashboardController extends Controller
 
     private function getCivilStatus($request) 
     {
+        $start = $request->has('start') ? $request->start : null;
+        $end = $request->has('end') ? $request->end : null;
+        $dateQuery = $start && $end && Carbon::parse($start) < Carbon::parse($end) ? " AND created_at BETWEEN '{$start}' AND '{$end}'" : '';
         $age_group = $request->has('age_group') ? $request->age_group : null;
         $latesDetailQueryString = $this->latesDetailQueryString;
         $cutoff = date('Y') . '-12-31';
@@ -537,31 +523,31 @@ class DashboardController extends Controller
                     $q->where("civil_status_id", 75)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count(),
                 "married" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("civil_status_id", 74)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count(),
                 "widowed" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("civil_status_id", 76)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count(),
                 "separated" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("civil_status_id", 77)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count(),
                 "cohabitation" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', function($q) use ($latesDetailQueryString) {
                     $q->where("civil_status_id", 78)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw($ageCondition)
+                ->whereRaw($ageCondition.$dateQuery)
                 ->count(),
             ]
         ];
@@ -569,6 +555,9 @@ class DashboardController extends Controller
 
     public function getWra($request)
     {
+        $start = $request->has('start') ? $request->start : null;
+        $end = $request->has('end') ? $request->end : null;
+        $dateQuery = $start && $end && Carbon::parse($start) < Carbon::parse($end) ? " AND created_at BETWEEN '{$start}' AND '{$end}'" : '';
         $civil_status = $request->has('civil_status') ? $request->civil_status : null;
         $householdProfileQuery = $this->householdProfileQuery;
         $latesDetailQueryString = $this->latesDetailQueryString;
@@ -581,7 +570,7 @@ class DashboardController extends Controller
                     ->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 10 AND 14")
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 10 AND 14".$dateQuery)
                 ->count()
             ],
             (object)[
@@ -591,7 +580,7 @@ class DashboardController extends Controller
                     ->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 15 AND 19")
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 15 AND 19".$dateQuery)
                 ->count()
             ],
             (object)[
@@ -601,7 +590,7 @@ class DashboardController extends Controller
                     ->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 20 AND 49")
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') BETWEEN 20 AND 49".$dateQuery)
                 ->count()
             ],
             (object)[
@@ -611,7 +600,7 @@ class DashboardController extends Controller
                     ->where("gender_id", 80)
                     ->whereRaw($latesDetailQueryString);
                 })
-                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 50")
+                ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 50".$dateQuery)
                 ->count()
             ],
         ];
@@ -700,14 +689,16 @@ class DashboardController extends Controller
                     ->count()
             ];
         });
-    }
+    }   
 
     public function getEducationalAttainment($request, $sitios)
     {
-        $member_filter = $request->has('memberFilter') ? $request->memberFilter : null;
+        $member_filter = $request->memberFilter ?? null;
+        $start = $request->start ?? null;
+        $end = $request->end ?? null;
 
         $latestSubquery = DB::table('household_profile_details as hpd')
-            ->select('hpd.*')
+            ->select('hpd.*', 'hp.created_at as profile_created_at')
             ->join(DB::raw('(
                 SELECT household_profile_id, MAX(created_at) AS max_created
                 FROM household_profile_details
@@ -720,17 +711,27 @@ class DashboardController extends Controller
             ->join('households as h', 'h.id', '=', 'hp.household_id')
             ->join('sitios as s', 's.id', '=', 'h.sitio_id');
 
-        // ✅ Use whereIn instead of whereRaw
+        // ✅ sitio filter
         if (is_array($sitios)) {
             $latestSubquery->whereIn('s.id', $sitios);
         } else {
             $latestSubquery->where('s.id', $sitios);
         }
 
+        // ✅ member filter
         if ($member_filter) {
             $latestSubquery->where('member_relationship_id', $member_filter);
         }
 
+        // ✅ date filter (applied correctly)
+        if ($start && $end && Carbon::parse($start)->lte(Carbon::parse($end))) {
+            $latestSubquery->whereBetween('hp.created_at', [
+                Carbon::parse($start)->startOfDay(),
+                Carbon::parse($end)->endOfDay(),
+            ]);
+        }
+
+        // ✅ final aggregation
         $result = DB::table('generic_types as gt')
             ->select('gt.id', 'gt.name', DB::raw('COUNT(latest.id) AS total'))
             ->leftJoinSub($latestSubquery, 'latest', function ($join) {
@@ -744,5 +745,52 @@ class DashboardController extends Controller
 
         return $result;
     }
+
+    private function getReligion($request)
+    {
+        $sitios = $request->has('sitios') ? $request->sitios : null;
+
+        // Build sitio filter dynamically
+        $sitioFilter = '';
+        if ($sitios) {
+            if (is_array($sitios)) {
+                // Convert array into comma-separated quoted values for raw SQL
+                $sitioIds = implode(',', array_map('intval', $sitios));
+                $sitioFilter = "WHERE s.id IN ($sitioIds)";
+            } else {
+                $sitioId = (int)$sitios;
+                $sitioFilter = "WHERE s.id = $sitioId";
+            }
+        }
+
+        return DB::select("
+            WITH latest AS (
+                SELECT hpd.*
+                FROM household_profile_details hpd
+                INNER JOIN (
+                    SELECT household_profile_id, MAX(created_at) AS max_created
+                    FROM household_profile_details
+                    GROUP BY household_profile_id
+                ) t 
+                    ON t.household_profile_id = hpd.household_profile_id 
+                    AND t.max_created = hpd.created_at
+                INNER JOIN household_profiles hp ON hp.id = hpd.household_profile_id
+                INNER JOIN households h ON h.id = hp.household_id
+                INNER JOIN sitios s ON s.id = h.sitio_id
+                $sitioFilter
+            )
+            SELECT 
+                gt.id,
+                gt.name,
+                COUNT(latest.id) AS total
+            FROM generic_types gt
+            LEFT JOIN latest 
+                ON latest.religion_id = gt.id
+            WHERE gt.type = 'RELIGION'
+            GROUP BY gt.id, gt.name
+            ORDER BY total DESC
+        ");
+    }
+
 
 }
