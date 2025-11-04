@@ -18,9 +18,12 @@ import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieCh
 import { IoIosPeople } from "react-icons/io";
 import { RiSurveyLine } from "react-icons/ri";
 import { getGenericTypes } from '@/api/genericTypeApi';
+import { Calendar } from 'primereact/calendar';
 
 const GenderDistribution = () => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [startDate, setStartDate] = useState<Date>(new Date());
+    const [endDate, setEndDate] = useState<Date>(new Date());
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
@@ -72,6 +75,8 @@ const GenderDistribution = () => {
         <div className="card mb-0 px-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
             <div className="flex justify-content-end p-3">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
             </div>
             <ResponsiveContainer  height={400}>

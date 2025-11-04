@@ -18,6 +18,8 @@ class DashboardController extends Controller
     public function getBhwDashboard(Request $request) {
         $name = $request->has('name') ? $request->name : null;
         $sitios = $request->has('sitios') ? $request->sitios : null;
+        $start = $request->has('start') ? $request->start : null;
+        $end = $request->has('end') ? $request->end : null;
         $this->householdProfileQuery = HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
                 $q->whereIn('sitio_id', $sitios);
             });
