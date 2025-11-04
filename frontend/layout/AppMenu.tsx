@@ -62,10 +62,32 @@ const AppMenu = () => {
         return [];
     }
 
+    const setMidwifeMenu  = () => {
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 2)) {
+            return [{
+                label: 'Midwife Interface',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/' },
+                    { 
+                        label: 'Target Client List', 
+                        icon: 'pi pi-fw pi-list', 
+                        items : [
+                            { label: 'Maternal Care Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/maternal-care' },
+                            { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/' },
+                            { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/' }
+                        ]
+                    }
+                ]
+            }];
+        }
+        return [];
+    }
+
     useEffect(() => {
         setModel([
             ...setAdminMenu(), 
             ...setBhwMenu(),
+            ...setMidwifeMenu()
         ]);
     }, [authUser]);
 

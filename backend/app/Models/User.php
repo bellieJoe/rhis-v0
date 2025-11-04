@@ -55,4 +55,8 @@ class User extends Authenticatable
     public function bhwDesignations () {
         return $this->hasMany(BhwDesignation::class);
     }
+
+    public function midwifeDesignations () {
+        return $this->hasMany(MidwifeDesignation::class);
+    }
 }
