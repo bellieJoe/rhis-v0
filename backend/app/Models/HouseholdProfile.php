@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details"];
+    protected $appends = ["updated_details", "fullname"];
 
     public function household()
     {
-        return $this->belongsTo(Household::class);
-
+        return $this->belongsTo(Household::class, "household_id", "id");
     }
 
     public function householdProfileDetails() {
@@ -23,6 +23,10 @@ class HouseholdProfile extends Model
     public function getUpdatedDetailsAttribute() {
         return HouseholdProfileDetail::query()->with([...HouseholdProfileDetail::GENERICS_RELATIONS])->where("household_profile_id" , $this->id)
         ->orderBy('created_at', 'desc')->first();
+    }
+
+    public function getFullnameAttribute() {
+        return $this->updated_details->firstname . " " . $this->updated_details->lastname;
     }
 
     public function vaccinateds() {

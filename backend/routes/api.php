@@ -9,6 +9,7 @@ use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\HouseholdProfileController;
+use App\Http\Controllers\MaternalClientController;
 use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
@@ -149,6 +150,15 @@ Route::prefix("sitios")->group(function(){
 Route::prefix("dashboard")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("bhw", [DashboardController::class, "getBhwDashboard"]);
+    });
+});
+
+Route::prefix("maternal-clients")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("get-candidates", [MaternalClientController::class, "getCandidates"]);
+        Route::get("", [MaternalClientController::class, "getClients"]);
+        Route::get("get-by-id/{id}", [MaternalClientController::class, "getClientById"]);
+        Route::post("register", [MaternalClientController::class, "register"]);
     });
 });
 

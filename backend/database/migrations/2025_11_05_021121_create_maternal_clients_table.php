@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('maternal_clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('household_profile_id');
+            $table->string('family_serial_no', 50)->nullable();
             $table->date('date_of_registration');
-            $table->string('first_name', 100);
-            $table->string('middle_name', 100);
-            $table->string('last_name', 100);
+            $table->string('firstname', 100);
+            $table->string('middlename', 100);
+            $table->string('lastname', 100);
             $table->foreignId('address_barangay_id');
             $table->date('lmp')->nullable();
             $table->integer('gravida')->nullable();
@@ -43,6 +44,7 @@ return new class extends Migration
             $table->date('has_anemia')->nullable();
             $table->boolean('given_iron')->nullable();
             $table->string('remarks', 500)->nullable();
+            $table->foreignId('encoded_by');
             $table->timestamps();
         });
     }

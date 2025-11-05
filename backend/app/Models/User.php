@@ -59,4 +59,11 @@ class User extends Authenticatable
     public function midwifeDesignations () {
         return $this->hasMany(MidwifeDesignation::class);
     }
+
+    public function getMidwifeBarangaysAttribute() {
+        $barangays = MidwifeDesignation::where('user_id', $this->id)->with(['barangay'])->get()->map(function ($midwifeDesignation) {
+            return $midwifeDesignation->barangay;
+        });
+        return $barangays;
+    }
 }

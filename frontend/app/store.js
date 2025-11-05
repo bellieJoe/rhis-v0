@@ -17,7 +17,8 @@ import addSitioFormReducer from '@/features/forms/addSitioFormSlice';
 import updateSitioFormReducer from '@/features/forms/updateSitioFormSlice';
 import sitioReducer from '@/features/sitioSlice';
 import assignMidwifeReducer from '@/features/forms/assignMidwifeSlice';
-
+import registerMaternalClientReducer from '@/features/forms/registerMaternalClient';
+import updateMaternalClientRecordReducer from '@/features/forms/updateMaternalClientRecord';
 
 export default configureStore({
   reducer: {
@@ -39,5 +40,7 @@ export default configureStore({
     addSitioForm : addSitioFormReducer,
     updateSitioForm : updateSitioFormReducer,
     sitio : sitioReducer,
+    registerMaternalClient : registerMaternalClientReducer,
+    updateMaternalClientRecord : updateMaternalClientRecordReducer
   }
 });
