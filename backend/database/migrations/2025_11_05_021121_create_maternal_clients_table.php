@@ -36,12 +36,14 @@ return new class extends Migration
             $table->date('tt4_date')->nullable();
             $table->date('tt5_date')->nullable();
             $table->date('iodine_capsule_date_given')->nullable();
+            $table->date('calcium_carbonate_date_completed')->nullable();
+            $table->date('iron_sulfate_date_completed')->nullable();
             $table->double('first_tri_bmi')->nullable();
             $table->date('deworming_tablet_date_given')->nullable();
             $table->date('gestational_diabetes_screening_date')->nullable();
             $table->boolean('is_gestational_diabetes_positive')->nullable();
             $table->date('cbc_date')->nullable();
-            $table->date('has_anemia')->nullable();
+            $table->boolean('has_anemia')->nullable();
             $table->boolean('given_iron')->nullable();
             $table->string('remarks', 500)->nullable();
             $table->foreignId('encoded_by');

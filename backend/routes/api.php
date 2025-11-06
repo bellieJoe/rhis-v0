@@ -159,6 +159,7 @@ Route::prefix("maternal-clients")->group(function(){
         Route::get("", [MaternalClientController::class, "getClients"]);
         Route::get("get-by-id/{id}", [MaternalClientController::class, "getClientById"]);
         Route::post("register", [MaternalClientController::class, "register"]);
+        Route::post("update", [MaternalClientController::class, "update"]);
     });
 });
 

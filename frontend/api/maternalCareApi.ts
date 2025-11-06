@@ -21,6 +21,16 @@ export async function registerMaternalClient(dispatch : Dispatch, params : any) 
     }
 }
 
+export async function updateMaternalClient(dispatch : Dispatch, params : any) {
+    try {
+        await axios.post('/api/maternal-clients/update', params);
+        dispatch(setToast({severity : "success", summary : "Success", detail : "Maternal client updated successfully", life : 3000}));
+        return true;
+    } catch (error:any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+    }
+}
+
 export async function getMaternalClients(dispatch : Dispatch, params : any = {}) {
     try {
         const response = await axios.get('/api/maternal-clients', { params });

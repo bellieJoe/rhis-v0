@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\HouseholdProfile;
 use App\Models\MaternalClient;
+use App\Models\MaternalInfectiousDisease;
+use App\Models\MaternalSupplement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MaternalClientController extends Controller
 {
@@ -42,23 +45,76 @@ class MaternalClientController extends Controller
                 'message' => 'Household Profile not found'
             ], 404);
         }
-        MaternalClient::create([
-            'household_profile_id' => $householdProfileId,
-            'encoded_by' => auth()->user()->id,
-            'firstname' => $householdProfile->updated_details->firstname,
-            'lastname' => $householdProfile->updated_details->lastname,
-            'middlename' => $householdProfile->updated_details->middlename,
-            'date_of_registration' => now(),
-            'address_barangay_id' => $householdProfile->household->barangay_id
-        ]);
-        return response()->json([
-            'message' => 'Maternal Client registered successfully'
-        ]);
+        return DB::transaction(function () use ($householdProfileId, $householdProfile) {
+            $client = MaternalClient::create([
+                'household_profile_id' => $householdProfileId,
+                'encoded_by' => auth()->user()->id,
+                'firstname' => $householdProfile->updated_details->firstname,
+                'lastname' => $householdProfile->updated_details->lastname,
+                'middlename' => $householdProfile->updated_details->middlename,
+                'date_of_registration' => now(),
+                'address_barangay_id' => $householdProfile->household->barangay_id
+            ]);
+            MaternalSupplement::insert([
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 1,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 2,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 3,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 4,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 2,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 3,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 4,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+            ]);
+            MaternalInfectiousDisease::insert([
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'HIV',
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'SYPHILIS',
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'HEPATITIS B',
+                ],
+            ]);
+            return response()->json([
+                'message' => 'Maternal Client registered successfully'
+            ]);
+        });
     }
 
     public function getClients()
     {
-        $clients = MaternalClient::query()->with(['householdProfile.household.barangay.municipality.province']);
+        $clients = MaternalClient::query()->with(['householdProfile.household.barangay.municipality.province', 'maternalSupplements', 'maternalInfectiousDiseases']);
         return response()->json($clients->paginate(15));
     }
 
@@ -71,5 +127,36 @@ class MaternalClientController extends Controller
             ], 404);
         }
         return response()->json($maternalClient);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'family_serial_no' => 'required',
+            'lmp' => 'required',
+            'gravida' => 'required',
+            'parity' => 'required',
+            'edc' => 'required',
+            'has_nearby_facility' => 'required',
+            'is_hypertensive' => 'required',
+        ]);
+        return DB::transaction(function () use ($request) {
+            $maternalClient = MaternalClient::find($request->id);
+            if(!$maternalClient) {
+                return response()->json([
+                    'message' => 'Maternal Client not found'
+                ], 404);
+            }
+            $maternalClient->update($request->all());
+            MaternalSupplement::upsert([
+                ...$request->input('maternal_supplements')
+            ], ['id'], ['amount', 'given_date']);
+            MaternalInfectiousDisease::upsert([
+                ...$request->input('maternal_infectious_diseases')
+            ], ['id'], ['diagnosis_date', 'is_positive']);
+            return response()->json([
+                'message' => 'Maternal Client updated successfully'
+            ]);
+        });
     }
 }

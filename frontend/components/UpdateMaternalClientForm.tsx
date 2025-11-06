@@ -18,7 +18,11 @@ import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
 import Required from "./forms/RequiredIndicator";
-import { hideUpdateMaternalForm } from "@/features/forms/updateMaternalClientRecord";
+import { hideUpdateMaternalForm, updateMaternalClientRecord } from "@/features/forms/updateMaternalClientRecord";
+import { InputTextarea } from "primereact/inputtextarea";
+import moment from "moment";
+import { get } from "http";
+import { updateMaternalClient } from "@/api/maternalCareApi";
 
 interface UpdateMaternalClientProps {
     visible: boolean,
@@ -35,49 +39,100 @@ const UpdateMaternalClientForm = () => {
         { label: 'Yes', value: 1 },
         { label: 'No', value: 0 },
     ];
-    const initialForm : any = {
-        // id : updateMaternalClientStore.maternal_client?.id ? updateMaternalClientStore.maternal_client?.id : null,
-        // family_serial_no : updateMaternalClientStore.maternal_client?.family_serial_no ? updateMaternalClientStore.maternal_client?.family_serial_no : null,
-        // lmp : updateMaternalClientStore.maternal_client?.lmp ? updateMaternalClientStore.maternal_client?.lmp : null,
-        // gravida : updateMaternalClientStore.maternal_client?.gravida ? updateMaternalClientStore.maternal_client?.gravida : null,
-        // parity : updateMaternalClientStore.maternal_client?.parity ? updateMaternalClientStore.maternal_client?.parity : null,
-        // edc : updateMaternalClientStore.maternal_client?.edc ? updateMaternalClientStore.maternal_client?.edc : null,
-        // has_nearby_facility : updateMaternalClientStore.maternal_client?.has_nearby_facility ? updateMaternalClientStore.maternal_client?.has_nearby_facility : null,
-        // is_hypertensive : updateMaternalClientStore.maternal_client?.is_hypertensive ? updateMaternalClientStore.maternal_client?.is_hypertensive : null,
-        // first_tri_checkup_date : updateMaternalClientStore.maternal_client?.first_tri_checkup_date ? updateMaternalClientStore.maternal_client?.first_tri_checkup_date : null,
-        // third_tri_checkup_date_a : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a : null,
-        // third_tri_checkup_date_b : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b : null,
-        // tt1_date : updateMaternalClientStore.maternal_client?.tt1_date ? updateMaternalClientStore.maternal_client?.tt1_date : null,
-        // tt2_date : updateMaternalClientStore.maternal_client?.tt2_date ? updateMaternalClientStore.maternal_client?.tt2_date : null,
-        // tt3_date : updateMaternalClientStore.maternal_client?.tt3_date ? updateMaternalClientStore.maternal_client?.tt3_date : null,
-        // tt4_date : updateMaternalClientStore.maternal_client?.tt4_date ? updateMaternalClientStore.maternal_client?.tt4_date : null,
-        // tt5_date : updateMaternalClientStore.maternal_client?.tt5_date ? updateMaternalClientStore.maternal_client?.tt5_date : null,
-        // iodine_capsule_date_given : updateMaternalClientStore.maternal_client?.iodine_capsule_date_given ? updateMaternalClientStore.maternal_client?.iodine_capsule_date_given : null,
-        // first_tri_bmi : updateMaternalClientStore.maternal_client?.first_tri_bmi ? updateMaternalClientStore.maternal_client?.first_tri_bmi : null,
-        // deworming_tablet_date_given : updateMaternalClientStore.maternal_client?.deworming_tablet_date_given ? updateMaternalClientStore.maternal_client?.deworming_tablet_date_given : null,
-        // gestational_diabetes_screening_date : updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date ? updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date : null,
-        // is_gestational_diabetes_positive : updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive ? updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive : null,
-        // cbc_date : updateMaternalClientStore.maternal_client?.cbc_date ? updateMaternalClientStore.maternal_client?.cbc_date : null,
-        // has_anemia : updateMaternalClientStore.maternal_client?.has_anemia ? updateMaternalClientStore.maternal_client?.has_anemia : null,
-        // given_iron : updateMaternalClientStore.maternal_client?.given_iron ? updateMaternalClientStore.maternal_client?.given_iron : null,
-        // remarks : updateMaternalClientStore.maternal_client?.remarks ? updateMaternalClientStore.maternal_client?.remarks : null,
-        // supplemets: [],
-
-    }
     const [form, setForm] = useState<any>([]);
     const items : MenuItem[] = [
         { label: "Page 1/2", className: "mr-2" },
         { label: "Page 2/2", className: "mr-2"  },
-        { label: "Review", className: "mr-2"  },
     ];
     const [loading, setLoading] = useState({
         updateMaternalClient : false
     });
+    const updateSupplementField = (
+        visitNumber: number,
+        supplementType: string,
+        field: string,
+        value: any
+        ) => {
+        const index = form.maternal_supplements?.findIndex(
+            (s: any) => s.visit_number === visitNumber && s.supplement_type === supplementType
+        );
+        if (index !== -1) {
+            const updatedSupplements = [...form.maternal_supplements];
+            updatedSupplements[index] = {
+            ...updatedSupplements[index],
+            [field]: value, // dynamic field update
+            };
+
+            setForm({
+            ...form,
+            maternal_supplements: updatedSupplements,
+            });
+        }
+    };
+    const getSupplementIndex = (
+        visitNumber: number,
+        supplementType: string
+        ) => {
+        const index = form.maternal_supplements?.findIndex(
+            (s: any) => s.visit_number === visitNumber && s.supplement_type === supplementType
+        );
+
+        return index;
+    };
+    const getSupplementField = (
+        visitNumber: number,
+        supplementType: string,
+        field: string
+        ) => {
+        return (
+            form.maternal_supplements?.find(
+            (s: any) => s.visit_number === visitNumber && s.supplement_type === supplementType
+            )?.[field] || null
+        );
+    };
+    const updateInfectiousDiseaseField = (
+        disease: string,
+        field: string,
+        value: any
+        ) => {
+        const index = form.maternal_infectious_diseases?.findIndex(
+            (s: any) => s.disease === disease
+        );
+        if (index !== -1) {
+            const updatedInfectiousDiseases = [...form.maternal_infectious_diseases];
+            updatedInfectiousDiseases[index] = {
+            ...updatedInfectiousDiseases[index],
+            [field]: value, // dynamic field update
+            };
+
+            setForm({
+            ...form,
+            maternal_infectious_diseases: updatedInfectiousDiseases,
+            });
+        }
+    };
+    const getInfectiousDiseaseIndex = (
+        disease: string
+        ) => {
+        const index = form.maternal_infectious_diseases?.findIndex(
+            (s: any) => s.disease === disease
+        );
+
+        return index;
+    };
+    const getInfectiousDiseaseField = (
+        disease: string,
+        field: string
+        ) => {
+        return (
+            form.maternal_infectious_diseases?.find(
+            (s: any) => s.disease === disease
+            )?.[field] || null
+        );
+    };
     useEffect(() => {
-        setForm(updateMaternalClientStore.maternal_client);
+        setForm(denormalizeDatesFromMySQL(updateMaternalClientStore.maternal_client));
     }, [updateMaternalClientStore.maternal_client?.id]);
-
-
     const next = () => {
         setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));
     };
@@ -85,20 +140,91 @@ const UpdateMaternalClientForm = () => {
     const prev = () => {
         setActiveIndex((prev) => Math.max(prev - 1, 0));
     }
+    /**
+     * Recursively converts all Date objects in an object (or array) to MySQL-compatible date strings ("YYYY-MM-DD").
+     * It handles deeply nested structures.
+     */
+    function normalizeDatesForMySQL(obj: any): any {
+        if (obj === null || obj === undefined) return obj;
 
-    const handleHouseholdUpdate = async () => {
-        const params = { ...form };
-        // params.birthdate = formatDate(params.birthdate);
+        // If it's a Date, convert to MySQL format
+        if (obj instanceof Date) {
+            const year = obj.getFullYear();
+            const month = String(obj.getMonth() + 1).padStart(2, "0");
+            const day = String(obj.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        // If it's an array, recursively normalize each element
+        if (Array.isArray(obj)) {
+            return obj.map((item) => normalizeDatesForMySQL(item));
+        }
+
+        // If it's an object, recursively normalize its properties
+        if (typeof obj === "object") {
+            const newObj: any = {};
+            for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                newObj[key] = normalizeDatesForMySQL(obj[key]);
+            }
+            }
+            return newObj;
+        }
+
+        // If it's neither Date, array, nor object — return as is
+        return obj;
+    }
+
+    function denormalizeDatesFromMySQL(obj: any): any {
+        if (obj === null || obj === undefined) return obj;
+
+        // Check if it's a valid MySQL-style date or datetime string
+        if (typeof obj === "string") {
+            // Match formats: YYYY-MM-DD or YYYY-MM-DD HH:mm:ss
+            const mysqlDateRegex = /^\d{4}-\d{2}-\d{2}(?:\s\d{2}:\d{2}:\d{2})?$/;
+
+            if (mysqlDateRegex.test(obj)) {
+                const date = new Date(obj);
+
+                // Ensure it's a valid date before returning
+                if (!isNaN(date.getTime())) {
+                    return date;
+                }
+            }
+        }
+
+        // If it's an array → process each element
+        if (Array.isArray(obj)) {
+            return obj.map((item) => denormalizeDatesFromMySQL(item));
+        }
+
+        // If it's an object → process each property
+        if (typeof obj === "object") {
+            const newObj: any = {};
+            for (const key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    newObj[key] = denormalizeDatesFromMySQL(obj[key]);
+                }
+            }
+            return newObj;
+        }
+
+        // Primitive (number, boolean, etc.) — return as is
+        return obj;
+    }
+
+
+
+    const handleSubmit = async () => {
+        const params = normalizeDatesForMySQL(form);
+        console.log(params);
         setLoading({ ...loading, updateMaternalClient : true });
-        // const success = await updateHouseholdProfile(dispatch, { ...params });
+        const success = await updateMaternalClient(dispatch, { ...params });
         // setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, updateMaternalClient : false });
-        // if(success) {
-        //     setForm(initialForm);
-        //     dispatch(hideUpdateProfile());
-        //     dispatch(reloadHouseholdProfiles());
-        //     setActiveIndex(0);
-        // }
+        if(success) {
+            onHide();
+        }
     }
     
     const onHide = () => {
@@ -116,7 +242,8 @@ const UpdateMaternalClientForm = () => {
         icons={() =>  (
             <Button icon="pi pi-times" size="large" severity="danger" text rounded  onClick={onHide} />
         )}
-        style={{ width: '100vw' }}>
+        style={{ width: '100vw' }}
+        header={<h5>Update Maternal Client Record</h5>}>
             <h4 className="text-center mb-4">{ updateMaternalClientStore.title }</h4>
             <div className="grid justify-content-center m-0">
                 <div className="col-12 sm:col-11 md:col-8 lg:col-6">
@@ -131,9 +258,9 @@ const UpdateMaternalClientForm = () => {
                     </div>
                     <div className="flex  flex-wrap gap-1 mb-4">
                         <Chip label={`Name: ${updateMaternalClientStore.maternal_client?.fullname}`} />
-                        <Chip label={`Age: `} />
-                        <Chip label={`Address: `} />
-                        <Chip label={`Date of Registration: `} />
+                        <Chip label={`Age: ${calculateAge(form.household_profile?.birthdate)}`} />
+                        <Chip label={`Address: ${form.household_profile?.household?.barangay?.barangay_name}, ${form.household_profile?.household?.barangay?.municipality?.municipality_name}, ${form.household_profile?.household?.barangay?.municipality?.province?.province_name}`} />
+                        <Chip label={`Date of Registration: ${moment(form.date_of_registration).format('MMM d, Y')}`} />
                     </div>
                     <div className="card mb-4">
                         {activeIndex === 0 && (
@@ -143,7 +270,7 @@ const UpdateMaternalClientForm = () => {
                                     <InputText
                                         className="w-full"
                                         value={form.family_serial_no}
-                                        onChange={(e) => setForm({...form, family_serial_no : e})} />
+                                        onChange={(e) => setForm({...form, family_serial_no : e.target.value})} />
                                     <ValidationError name="family_serial_no" />
                                 </div>
                                 <div className="mb-3">
@@ -160,7 +287,7 @@ const UpdateMaternalClientForm = () => {
                                         type="number"
                                         className="w-full"
                                         value={form.gravida}
-                                        onChange={(e) => setForm({...form, gravida : e})} />
+                                        onChange={(e) => setForm({...form, gravida : e.target.value})} />
                                     <ValidationError name="gravida" />  
                                 </div>
                                 <div className="mb-3">
@@ -169,7 +296,7 @@ const UpdateMaternalClientForm = () => {
                                         type="number"
                                         className="w-full"
                                         value={form.parity}
-                                        onChange={(e) => setForm({...form, parity : e})} />
+                                        onChange={(e) => setForm({...form, parity : e.target.value})} />
                                     <ValidationError name="parity" />  
                                 </div>
                                 <div className="mb-3">
@@ -192,7 +319,7 @@ const UpdateMaternalClientForm = () => {
                                     <ValidationError name="has_nearby_facility" />  
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">There is an available facility 2 hours from the resident of the pregnant women? <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Pregnancy with Hypertennsive Complication?</label>
                                     <Dropdown
                                         options={yesNoOptions}
                                         className="w-full"
@@ -237,7 +364,7 @@ const UpdateMaternalClientForm = () => {
                                         <ValidationError name="third_tri_checkup_date_a" />
                                     </div>
                                     <div className="col-12 md:col-6 mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1"></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">&nbsp;</label>
                                         <Calendar
                                             className="w-full"
                                             value={form.third_tri_checkup_date_b}
@@ -245,6 +372,7 @@ const UpdateMaternalClientForm = () => {
                                         <ValidationError name="third_tri_checkup_date_b" />
                                     </div>
                                 </div>
+                                <hr />
                                 <h6>Immunization Status</h6>
                                 <p className="text-400">Date Tetanus diptheria (Td) or Tetanus Toxoid (TT) given</p>
                                 <div className="grid">
@@ -289,6 +417,10 @@ const UpdateMaternalClientForm = () => {
                                         <ValidationError name="tt5_date" />
                                     </div>
                                 </div>
+                            </div>
+                        )}
+                        {activeIndex === 1 && (
+                            <div>
                                 <div className="">
                                     <h6>Micronutrient Supplementation</h6>
                                     <div className="">
@@ -297,14 +429,19 @@ const UpdateMaternalClientForm = () => {
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Visit </label>
                                             <div className="flex gap-1">
                                                 <Calendar
-                                                    className=""
                                                     placeholder="Date Given"
-                                                    />
+                                                    value={getSupplementField(1, 'IRON SULFATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(1, 'IRON SULFATE', 'given_date', e.value) }
+                                                />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(1, 'IRON SULFATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(1, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(1, 'IRON SULFATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(1, 'IRON SULFATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd Visit </label>
@@ -312,12 +449,18 @@ const UpdateMaternalClientForm = () => {
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(2, 'IRON SULFATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(2, 'IRON SULFATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(2, 'IRON SULFATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(2, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(2, 'IRON SULFATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(2, 'IRON SULFATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd Visit </label>
@@ -325,12 +468,18 @@ const UpdateMaternalClientForm = () => {
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(3, 'IRON SULFATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(3, 'IRON SULFATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(3, 'IRON SULFATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(3, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(3, 'IRON SULFATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(3, 'IRON SULFATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4th Visit </label>
@@ -338,48 +487,51 @@ const UpdateMaternalClientForm = () => {
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(4, 'IRON SULFATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(4, 'IRON SULFATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(4, 'IRON SULFATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(4, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(4, 'IRON SULFATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(4, 'IRON SULFATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed </label>
                                             <Calendar
                                                 className=""
                                                 placeholder="Date Completed"
+                                                value={form.iron_sulfate_date_completed	}
+                                                onChange={(e) => setForm({...form, iron_sulfate_date_completed : e.value})}
                                                 />
+                                            <ValidationError name="iron_sulfate_date_completed" />
                                         </div>
                                     </div>
+                                    <hr />
                                     <div className="">
                                         <h6>Calcium Carbonate</h6>
                                         <div className="mb-3">
-                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Visit </label>
-                                            <div className="flex gap-1">
-                                                <Calendar
-                                                    className=""
-                                                    placeholder="Date Given"
-                                                    />
-                                                <InputText
-                                                    type="number"
-                                                    placeholder="Amount Given"
-                                                    />
-                                            </div>
-                                        </div>
-                                        <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd Visit </label>
                                             <div className="flex gap-1">
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(2, 'CALCIUM CARBONATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(2, 'CALCIUM CARBONATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(2, 'CALCIUM CARBONATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(2, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(2, 'CALCIUM CARBONATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(2, 'CALCIUM CARBONATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd Visit </label>
@@ -387,12 +539,18 @@ const UpdateMaternalClientForm = () => {
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(3, 'CALCIUM CARBONATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(3, 'CALCIUM CARBONATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(3, 'CALCIUM CARBONATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(3, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(3, 'CALCIUM CARBONATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(3, 'CALCIUM CARBONATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4th Visit </label>
@@ -400,177 +558,216 @@ const UpdateMaternalClientForm = () => {
                                                 <Calendar
                                                     className=""
                                                     placeholder="Date Given"
+                                                    value={getSupplementField(4, 'CALCIUM CARBONATE', 'given_date')}
+                                                    onChange={(e) => updateSupplementField(4, 'CALCIUM CARBONATE', 'given_date', e.value) }
                                                     />
                                                 <InputText
                                                     type="number"
                                                     placeholder="Amount Given"
+                                                    value={getSupplementField(4, 'CALCIUM CARBONATE', 'amount')}
+                                                    onChange={(e) => updateSupplementField(4, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
                                             </div>
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(4, 'CALCIUM CARBONATE')}.amount`} />
+                                            <ValidationError name={`maternal_supplements.${getSupplementIndex(4, 'CALCIUM CARBONATE')}.given_date`} />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed </label>
                                             <Calendar
                                                 className=""
                                                 placeholder="Date Completed"
+                                                value={form.calcium_carbonate_date_completed}
+                                                onChange={(e) => setForm({...form, calcium_carbonate_date_completed : e.value})}
                                                 />
+                                            <ValidationError name="calcium_carbonate_date_completed" />
                                         </div>
                                     </div>
-                                </div>
-
-                                {/* <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No. <Required/></label>
-                                    <AutoComplete 
-                                        dropdown 
-                                        placeholder="Household No." 
-                                        onChange={handleHouseholdNoChanged}
-                                        suggestions={householdItems}
-                                        field="label"
-                                        completeMethod={handleHouseholdComplete}
-                                        value={form.household_no}
-                                        disabled={true}
-                                        onSelect={handleHouseholdSelect}
-                                        className="w-full" />
-                                    <ValidationError name="household_id" />
-                                </div>
-                                {
-                                    updateHouseholdProfileStore.householdProfile.member_relationship_id == 1 && (
+                                    <hr />
+                                    <div className="">
+                                        <h6>Iodine Capsules</h6>
                                         <div className="mb-3">
-                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Relationship to Head <Required/></label>
-                                            <Dropdown 
-                                                showClear
-                                                options={genericTypes.filter((x: any) => {
-                                                    return x.type === "MEMBERS_OF_HOUSEHOLD";
-                                                })} 
-                                                optionLabel="label"
-                                                optionValue="id"
-                                                value={form.member_relationship_id} 
-                                                disabled={true}
-                                                placeholder="Select Relationship" 
-                                                onChange={(e) => setForm({...form, member_relationship_id : e.value})}
-                                                style={{ width: '100%' }} />
-                                            <ValidationError name="member_relationship_id" />
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Visit </label>
+                                            <Calendar
+                                                className=""
+                                                placeholder="Date Given"
+                                                value={form?.iodine_capsule_date_given}
+                                                onChange={(e) => {setForm({...form, iodine_capsule_date_given : e.value})}}
+                                                />
+                                            <ValidationError name="iodine_capsule_date_given" />
                                         </div>
-                                    )
-                                }
-                                {
-                                    form.member_relationship_id == "5" && (
-                                        <>
-                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Other Relationship <Required/></label>
-                                            <InputText 
-                                                type="text" 
-                                                style={{ width: '100%' }} 
-                                                placeholder="Other Relationship" 
-                                                value={form.other_relation}
-                                                onChange={(e) => setForm({...form, other_relation : e.target.value})} />
-                                            <ValidationError name="other_relation" />
-                                        </>
-                                    )
-                                } */}
-                            </div>
-                        )}
-                        {activeIndex === 1 && (
-                            <div>
-                                {/* <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">First Name <Required/></label>
-                                    <InputText 
-                                        type="text" 
-                                        style={{ width: '100%' }} 
-                                        onChange={(e:any) => setForm({...form, firstname : e.target.value})}
-                                        value={form.firstname}
-                                        placeholder="First Name" />
-                                    <ValidationError name="firstname" />
+                                    </div>
+                                    <hr />
+                                    <div className="">
+                                        <h6>Nutritional Assessment</h6>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">BMI</label>
+                                            <InputText
+                                                type="number"
+                                                className="w-full"
+                                                placeholder="BMI"
+                                                value={form?.first_tri_bmi}
+                                                onChange={(e) => {setForm({...form, first_tri_bmi : e.target.value})}}
+                                                />
+                                            <ValidationError name="first_tri_bmi" />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Deworming Tablet Date Given</label>
+                                        <Calendar
+                                            className="w-full"
+                                            placeholder="Date Given"
+                                            value={form?.deworming_tablet_date_given}
+                                            onChange={(e) => {setForm({...form, deworming_tablet_date_given: e.value})}}
+                                            />
+                                        <ValidationError name="deworming_tablet_date_given" />
+                                    </div>
+                                    <hr />
+                                    <div className="">
+                                        <h6>Infectious Disease Surveillance</h6>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Syphylis Screening</label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Diagnosis Date"
+                                                    value={getInfectiousDiseaseField('SYPHILIS', 'diagnosis_date')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('SYPHILIS', 'diagnosis_date', e.value) }
+                                                    />
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    optionValue="value"
+                                                    placeholder="Is Positive?"
+                                                    value={getInfectiousDiseaseField('SYPHILIS', 'is_positive')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('SYPHILIS', 'is_positive', e.value) }
+                                                    />
+                                            </div>
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('SYPHILIS')}.diagnosis_date`} />
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('SYPHILIS')}.is_positive`} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Hepatitis B Screening</label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Diagnosis Date"
+                                                    value={getInfectiousDiseaseField('HEPATITIS B', 'diagnosis_date')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('HEPATITIS B', 'diagnosis_date', e.value) }
+                                                    />
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    optionValue="value"
+                                                    placeholder="Is Positive?"
+                                                    value={getInfectiousDiseaseField('HEPATITIS B', 'is_positive')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('HEPATITIS B', 'is_positive', e.value) }
+                                                    />
+                                            </div>
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('HEPATITIS B')}.diagnosis_date`} />
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('HEPATITIS B')}.is_positive`} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">HIV Screening</label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Diagnosis Date"
+                                                    value={getInfectiousDiseaseField('HIV', 'diagnosis_date')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('HIV', 'diagnosis_date', e.value) }
+                                                    />
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    optionValue="value"
+                                                    placeholder="Is Positive?"
+                                                    value={getInfectiousDiseaseField('HIV', 'is_positive')}
+                                                    onChange={(e) => updateInfectiousDiseaseField('HIV', 'is_positive', e.value) }
+                                                    />
+                                            </div>
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('HIV')}.diagnosis_date`} />
+                                            <ValidationError name={`maternal_infectious_diseases.${getInfectiousDiseaseIndex('HIV')}.is_positive`} />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div className="">
+                                        <h6>Laboratory Screening</h6>
+                                        <div className="grid">
+                                            <div className="mb-3 col-6">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Gestational Diabetes</label>
+                                                <Calendar
+                                                    className="w-full"
+                                                    placeholder="Date Given"
+                                                    value={form?.gestational_diabetes_screening_date}
+                                                    onChange={(e) => {setForm({...form, gestational_diabetes_screening_date: e.value})}}
+                                                    />
+                                                <ValidationError name="gestational_diabetes_screening_date" />
+                                            </div>
+                                            <div className="mb-3 col-6">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Is Positive?</label>
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    className="w-full"
+                                                    placeholder="Result"
+                                                    value={form?.is_gestational_diabetes_positive}
+                                                    onChange={(e) => {setForm({...form, is_gestational_diabetes_positive: e.value})}}
+                                                    />
+                                                <ValidationError name="is_gestational_diabetes_positive" />
+                                            </div>
+                                        </div>
+                                        <div className="grid">
+                                            <div className="mb-3 col-6">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">CBC/Hdb&Hct Count</label>
+                                                <Calendar
+                                                    className="w-full"
+                                                    placeholder="Date Screened"
+                                                    value={form?.cbc_date}
+                                                    onChange={(e) => {setForm({...form, cbc_date: e.value})}}
+                                                    />
+                                                <ValidationError name="cbc_date" />
+                                            </div>
+                                            <div className="mb-3 col-6">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Is Positive?</label>
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    className="w-full"
+                                                    placeholder="Result"
+                                                    value={form?.has_anemia}
+                                                    onChange={(e) => {setForm({...form, has_anemia: e.value})}}
+                                                    />
+                                                <ValidationError name="has_anemia" />
+                                            </div>
+                                            <div className="mb-3 col-6">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Given Iron?</label>
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    optionLabel="label"
+                                                    className="w-full"
+                                                    placeholder="Result"
+                                                    value={form?.given_iron}
+                                                    onChange={(e) => {setForm({...form, given_iron: e.value})}}
+                                                    />
+                                                <ValidationError name="given_iron" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Remarks</label>
+                                        <InputTextarea
+                                            className="w-full"
+                                            placeholder="Remarks"
+                                            value={form?.remarks}
+                                            onChange={(e) => {setForm({...form, remarks: e.target.value})}}
+                                            />
+                                        <ValidationError name="remarks" />
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Middle Name <Required/></label>
-                                    <InputText 
-                                        type="text" 
-                                        style={{ width: '100%' }} 
-                                        value={form.middlename}
-                                        onChange={(e:any) => setForm({...form, middlename : e.target.value})}
-                                        placeholder="Middle Name" />
-                                    <ValidationError name="middlename" />
+                                <div className="flex justify-content-end">
+                                    <Button label="Submit" icon="pi pi-check" className="p-button-success" onClick={handleSubmit} />
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Name <Required/></label>
-                                    <InputText 
-                                        type="text" 
-                                        style={{ width: '100%' }} 
-                                        value={form.lastname}
-                                        onChange={(e:any) => setForm({...form, lastname : e.target.value})}
-                                        placeholder="Last Name" />
-                                    <ValidationError name="lastname" />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Birthdate <Required/></label>
-                                    <Calendar 
-                                        value={form.birthdate ? new Date(form.birthdate) : ''} 
-                                        dateFormat="mm-dd-yy" 
-                                        placeholder="mm-dd-yyyy" 
-                                        mask="99/99/9999" 
-                                        maxDate={new Date()}
-                                        showIcon
-                                        onChange={(e) => setForm({...form, birthdate : (e.value ? e.value.toLocaleString() : form.birthdate) })}
-                                        className="w-full" />
-                                    <ValidationError name="birthdate" />
-
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Sex <Required/></label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => x.type === "GENDER")} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        value={form.gender_id}
-                                        onChange={(e) => setForm({...form, gender_id : e.value})} 
-                                        placeholder="Select Gender" 
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="gender_id" />
-                                </div> */}
-                                
-                            </div>
-                        )}
-                        {activeIndex === 2 && (
-                            <div>
-                                {/* <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status <Required/></label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => x.type === "CIVIL_STATUS")} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        onChange={(e) => setForm({...form, civil_status_id : e.value})}
-                                        value={form.civil_status_id} 
-                                        placeholder="Select Civil Status" 
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="civil_status_id" />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Educational Attainment <Required/></label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => x.type === "EDUCATIONAL_ATTAINMENT")} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        value={form.educational_attainment_id} 
-                                        onChange={(e) => setForm({...form, educational_attainment_id : e.value})}
-                                        placeholder="Select Educational Attainment" 
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="educational_attainment_id" />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Religion <Required/></label>
-                                    <Dropdown 
-                                        showClear
-                                        options={genericTypes.filter((x: any) => x.type === "RELIGION")} 
-                                        optionLabel="label"
-                                        optionValue="id"
-                                        value={form.religion_id}
-                                        onChange={(e) => setForm({...form, religion_id : e.value})} 
-                                        placeholder="Select Religion" 
-                                        style={{ width: '100%' }} />
-                                    <ValidationError name="religion_id" />
-                                </div> */}
                             </div>
                         )}
                     </div>
