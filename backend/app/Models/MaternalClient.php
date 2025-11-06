@@ -19,4 +19,9 @@ class MaternalClient extends Model
     {
         return $this->firstname . ' ' . $this->middlename . ' ' . $this->lastname;
     }
+
+    public function maternalSupplements()
+    {
+        return $this->hasMany(MaternalSupplement::class);
+    }
 }

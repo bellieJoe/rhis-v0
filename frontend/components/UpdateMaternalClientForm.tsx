@@ -31,35 +31,40 @@ const UpdateMaternalClientForm = () => {
     const { visible } = useSelector((state: any) => state.updateHouseholdProfile);
     const dispatch = useDispatch();
     const updateMaternalClientStore = useSelector((state: any) => state.updateMaternalClientRecord);
+    const yesNoOptions = [
+        { label: 'Yes', value: 1 },
+        { label: 'No', value: 0 },
+    ];
     const initialForm : any = {
-        id : updateMaternalClientStore.maternal_client?.id ? updateMaternalClientStore.maternal_client?.id : null,
-        family_serial_no : updateMaternalClientStore.maternal_client?.family_serial_no ? updateMaternalClientStore.maternal_client?.family_serial_no : null,
-        lmp : updateMaternalClientStore.maternal_client?.lmp ? updateMaternalClientStore.maternal_client?.lmp : null,
-        gravida : updateMaternalClientStore.maternal_client?.gravida ? updateMaternalClientStore.maternal_client?.gravida : null,
-        parity : updateMaternalClientStore.maternal_client?.parity ? updateMaternalClientStore.maternal_client?.parity : null,
-        edc : updateMaternalClientStore.maternal_client?.edc ? updateMaternalClientStore.maternal_client?.edc : null,
-        has_nearby_facility : updateMaternalClientStore.maternal_client?.has_nearby_facility ? updateMaternalClientStore.maternal_client?.has_nearby_facility : null,
-        is_hypertensive : updateMaternalClientStore.maternal_client?.is_hypertensive ? updateMaternalClientStore.maternal_client?.is_hypertensive : null,
-        first_tri_checkup_date : updateMaternalClientStore.maternal_client?.first_tri_checkup_date ? updateMaternalClientStore.maternal_client?.first_tri_checkup_date : null,
-        third_tri_checkup_date_a : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a : null,
-        third_tri_checkup_date_b : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b : null,
-        tt1_date : updateMaternalClientStore.maternal_client?.tt1_date ? updateMaternalClientStore.maternal_client?.tt1_date : null,
-        tt2_date : updateMaternalClientStore.maternal_client?.tt2_date ? updateMaternalClientStore.maternal_client?.tt2_date : null,
-        tt3_date : updateMaternalClientStore.maternal_client?.tt3_date ? updateMaternalClientStore.maternal_client?.tt3_date : null,
-        tt4_date : updateMaternalClientStore.maternal_client?.tt4_date ? updateMaternalClientStore.maternal_client?.tt4_date : null,
-        tt5_date : updateMaternalClientStore.maternal_client?.tt5_date ? updateMaternalClientStore.maternal_client?.tt5_date : null,
-        iodine_capsule_date_given : updateMaternalClientStore.maternal_client?.iodine_capsule_date_given ? updateMaternalClientStore.maternal_client?.iodine_capsule_date_given : null,
-        first_tri_bmi : updateMaternalClientStore.maternal_client?.first_tri_bmi ? updateMaternalClientStore.maternal_client?.first_tri_bmi : null,
-        deworming_tablet_date_given : updateMaternalClientStore.maternal_client?.deworming_tablet_date_given ? updateMaternalClientStore.maternal_client?.deworming_tablet_date_given : null,
-        gestational_diabetes_screening_date : updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date ? updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date : null,
-        is_gestational_diabetes_positive : updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive ? updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive : null,
-        cbc_date : updateMaternalClientStore.maternal_client?.cbc_date ? updateMaternalClientStore.maternal_client?.cbc_date : null,
-        has_anemia : updateMaternalClientStore.maternal_client?.has_anemia ? updateMaternalClientStore.maternal_client?.has_anemia : null,
-        given_iron : updateMaternalClientStore.maternal_client?.given_iron ? updateMaternalClientStore.maternal_client?.given_iron : null,
-        remarks : updateMaternalClientStore.maternal_client?.remarks ? updateMaternalClientStore.maternal_client?.remarks : null,
-        
+        // id : updateMaternalClientStore.maternal_client?.id ? updateMaternalClientStore.maternal_client?.id : null,
+        // family_serial_no : updateMaternalClientStore.maternal_client?.family_serial_no ? updateMaternalClientStore.maternal_client?.family_serial_no : null,
+        // lmp : updateMaternalClientStore.maternal_client?.lmp ? updateMaternalClientStore.maternal_client?.lmp : null,
+        // gravida : updateMaternalClientStore.maternal_client?.gravida ? updateMaternalClientStore.maternal_client?.gravida : null,
+        // parity : updateMaternalClientStore.maternal_client?.parity ? updateMaternalClientStore.maternal_client?.parity : null,
+        // edc : updateMaternalClientStore.maternal_client?.edc ? updateMaternalClientStore.maternal_client?.edc : null,
+        // has_nearby_facility : updateMaternalClientStore.maternal_client?.has_nearby_facility ? updateMaternalClientStore.maternal_client?.has_nearby_facility : null,
+        // is_hypertensive : updateMaternalClientStore.maternal_client?.is_hypertensive ? updateMaternalClientStore.maternal_client?.is_hypertensive : null,
+        // first_tri_checkup_date : updateMaternalClientStore.maternal_client?.first_tri_checkup_date ? updateMaternalClientStore.maternal_client?.first_tri_checkup_date : null,
+        // third_tri_checkup_date_a : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_a : null,
+        // third_tri_checkup_date_b : updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b ? updateMaternalClientStore.maternal_client?.third_tri_checkup_date_b : null,
+        // tt1_date : updateMaternalClientStore.maternal_client?.tt1_date ? updateMaternalClientStore.maternal_client?.tt1_date : null,
+        // tt2_date : updateMaternalClientStore.maternal_client?.tt2_date ? updateMaternalClientStore.maternal_client?.tt2_date : null,
+        // tt3_date : updateMaternalClientStore.maternal_client?.tt3_date ? updateMaternalClientStore.maternal_client?.tt3_date : null,
+        // tt4_date : updateMaternalClientStore.maternal_client?.tt4_date ? updateMaternalClientStore.maternal_client?.tt4_date : null,
+        // tt5_date : updateMaternalClientStore.maternal_client?.tt5_date ? updateMaternalClientStore.maternal_client?.tt5_date : null,
+        // iodine_capsule_date_given : updateMaternalClientStore.maternal_client?.iodine_capsule_date_given ? updateMaternalClientStore.maternal_client?.iodine_capsule_date_given : null,
+        // first_tri_bmi : updateMaternalClientStore.maternal_client?.first_tri_bmi ? updateMaternalClientStore.maternal_client?.first_tri_bmi : null,
+        // deworming_tablet_date_given : updateMaternalClientStore.maternal_client?.deworming_tablet_date_given ? updateMaternalClientStore.maternal_client?.deworming_tablet_date_given : null,
+        // gestational_diabetes_screening_date : updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date ? updateMaternalClientStore.maternal_client?.gestational_diabetes_screening_date : null,
+        // is_gestational_diabetes_positive : updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive ? updateMaternalClientStore.maternal_client?.is_gestational_diabetes_positive : null,
+        // cbc_date : updateMaternalClientStore.maternal_client?.cbc_date ? updateMaternalClientStore.maternal_client?.cbc_date : null,
+        // has_anemia : updateMaternalClientStore.maternal_client?.has_anemia ? updateMaternalClientStore.maternal_client?.has_anemia : null,
+        // given_iron : updateMaternalClientStore.maternal_client?.given_iron ? updateMaternalClientStore.maternal_client?.given_iron : null,
+        // remarks : updateMaternalClientStore.maternal_client?.remarks ? updateMaternalClientStore.maternal_client?.remarks : null,
+        // supplemets: [],
+
     }
-    const [form, setForm] = useState<any>(initialForm);
+    const [form, setForm] = useState<any>([]);
     const items : MenuItem[] = [
         { label: "Page 1/2", className: "mr-2" },
         { label: "Page 2/2", className: "mr-2"  },
@@ -69,9 +74,7 @@ const UpdateMaternalClientForm = () => {
         updateMaternalClient : false
     });
     useEffect(() => {
-        setForm({
-            ...initialForm
-        });
+        setForm(updateMaternalClientStore.maternal_client);
     }, [updateMaternalClientStore.maternal_client?.id]);
 
 
@@ -100,7 +103,7 @@ const UpdateMaternalClientForm = () => {
     
     const onHide = () => {
         dispatch(hideUpdateMaternalForm());
-        setForm(initialForm);
+        setForm({});
         setActiveIndex(0);
     }
 
@@ -130,10 +133,289 @@ const UpdateMaternalClientForm = () => {
                         <Chip label={`Name: ${updateMaternalClientStore.maternal_client?.fullname}`} />
                         <Chip label={`Age: `} />
                         <Chip label={`Address: `} />
+                        <Chip label={`Date of Registration: `} />
                     </div>
                     <div className="card mb-4">
                         {activeIndex === 0 && (
                             <div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Serial No. <Required/></label>
+                                    <InputText
+                                        className="w-full"
+                                        value={form.family_serial_no}
+                                        onChange={(e) => setForm({...form, family_serial_no : e})} />
+                                    <ValidationError name="family_serial_no" />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Menstrual Period <Required/></label>
+                                    <Calendar
+                                        className="w-full"
+                                        value={form.lmp}
+                                        onChange={(e) => setForm({...form, lmp : e.value})} />
+                                    <ValidationError name="lmp" />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Gravida <Required/></label>
+                                    <InputText
+                                        type="number"
+                                        className="w-full"
+                                        value={form.gravida}
+                                        onChange={(e) => setForm({...form, gravida : e})} />
+                                    <ValidationError name="gravida" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Parity <Required/></label>
+                                    <InputText
+                                        type="number"
+                                        className="w-full"
+                                        value={form.parity}
+                                        onChange={(e) => setForm({...form, parity : e})} />
+                                    <ValidationError name="parity" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Estimated Date of Confinement <Required/></label>
+                                    <Calendar
+                                        className="w-full"
+                                        value={form.edc}
+                                        onChange={(e) => setForm({...form, edc : e.value})} />
+                                    <ValidationError name="edc" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">There is an available facility 2 hours from the resident of the pregnant women? <Required/></label>
+                                    <Dropdown
+                                        options={yesNoOptions}
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        className="w-full"
+                                        value={form.has_nearby_facility}
+                                        onChange={(e) => setForm({...form, has_nearby_facility : e.value})} />
+                                    <ValidationError name="has_nearby_facility" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">There is an available facility 2 hours from the resident of the pregnant women? <Required/></label>
+                                    <Dropdown
+                                        options={yesNoOptions}
+                                        className="w-full"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        value={form.is_hypertensive}
+                                        onChange={(e) => setForm({...form, is_hypertensive : e.value})} />
+                                    <ValidationError name="is_hypertensive" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Estimated Date of Confinement <Required/></label>
+                                    <Calendar
+                                        className="w-full"
+                                        value={form.edc}
+                                        onChange={(e) => setForm({...form, edc : e.value})} />
+                                    <ValidationError name="edc" />  
+                                </div>
+                                <h6>Dates of Pre-natal Check-ups</h6>
+                                <div className="grid">
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Tri </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.first_tri_checkup_date	}
+                                            onChange={(e) => setForm({...form, first_tri_checkup_date	 : e.value})} />
+                                        <ValidationError name="first_tri_checkup_date	" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd Tri</label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.second_tri_checkup_date	}
+                                            onChange={(e) => setForm({...form, second_tri_checkup_date	 : e.value})} />
+                                        <ValidationError name="second_tri_checkup_date	" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd Tri</label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.third_tri_checkup_date_a	}
+                                            onChange={(e) => setForm({...form, third_tri_checkup_date_a	 : e.value})} />
+                                        <ValidationError name="third_tri_checkup_date_a" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1"></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.third_tri_checkup_date_b}
+                                            onChange={(e) => setForm({...form, third_tri_checkup_date_b : e.value})} />
+                                        <ValidationError name="third_tri_checkup_date_b" />
+                                    </div>
+                                </div>
+                                <h6>Immunization Status</h6>
+                                <p className="text-400">Date Tetanus diptheria (Td) or Tetanus Toxoid (TT) given</p>
+                                <div className="grid">
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Td1/TT1 </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.tt1_date	}
+                                            onChange={(e) => setForm({...form, tt1_date	 : e.value})} />
+                                        <ValidationError name="tt1_date" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Td2/TT2 </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.tt2_date	}
+                                            onChange={(e) => setForm({...form, tt2_date	 : e.value})} />
+                                        <ValidationError name="tt2_date" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Td3/TT3 </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.tt3_date	}
+                                            onChange={(e) => setForm({...form, tt3_date	 : e.value})} />
+                                        <ValidationError name="tt3_date" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Td4/TT4 </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.tt4_date	}
+                                            onChange={(e) => setForm({...form, tt4_date	 : e.value})} />
+                                        <ValidationError name="tt4_date" />
+                                    </div>
+                                    <div className="col-12 md:col-6 mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Td5/TT5 </label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.tt5_date	}
+                                            onChange={(e) => setForm({...form, tt5_date	 : e.value})} />
+                                        <ValidationError name="tt5_date" />
+                                    </div>
+                                </div>
+                                <div className="">
+                                    <h6>Micronutrient Supplementation</h6>
+                                    <div className="">
+                                        <h6>Iron Sulfate with Folic Acid</h6>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4th Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed </label>
+                                            <Calendar
+                                                className=""
+                                                placeholder="Date Completed"
+                                                />
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <h6>Calcium Carbonate</h6>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4th Visit </label>
+                                            <div className="flex gap-1">
+                                                <Calendar
+                                                    className=""
+                                                    placeholder="Date Given"
+                                                    />
+                                                <InputText
+                                                    type="number"
+                                                    placeholder="Amount Given"
+                                                    />
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed </label>
+                                            <Calendar
+                                                className=""
+                                                placeholder="Date Completed"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Household No. <Required/></label>

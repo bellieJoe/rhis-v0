@@ -13,7 +13,7 @@ export const login = async (dispatch  : Dispatch, params : any = {}) : Promise<b
         return true;
     } catch (error : any) {
         console.log(error);
-        dispatchError(dispatch, error.response.data.message);
+        dispatchError(dispatch, error.response?.data?.message);
         return false;
     }
 }
@@ -24,7 +24,7 @@ export const logout = async (dispatch  : Dispatch) : Promise<boolean> => {
         dispatchSuccess(dispatch, "Logged out successfully.");
         return true;
     } catch (error : any) {
-        dispatchError(dispatch, error.response.data.message);
+        dispatchError(dispatch, error.response?.data?.message);
         return false;
     }
 }
@@ -35,7 +35,7 @@ export const getAuth = async (dispatch : Dispatch) => {
         console.log("auth", response.data);
         dispatch(setUser(response.data));
     } catch (error : any) {
-        dispatchError(dispatch, error.response.data.message);
+        dispatchError(dispatch, error.response?.data?.message);
     }
 }
 
@@ -44,7 +44,7 @@ export const isAuth = async (dispatch : Dispatch) : Promise<boolean> => {
         const response = await axios.get('/api/auth/is-auth');
         return response.data;
     } catch (error : any) {
-        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+        dispatchError(dispatch, error.response?.data?.message);
         return false;
     }
 }
