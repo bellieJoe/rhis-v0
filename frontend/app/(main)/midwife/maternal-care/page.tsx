@@ -5,6 +5,7 @@ import RegisterMaternalClientForm from "@/components/RegisterMaternalClientForm"
 import UpdateMaternalClientForm from "@/components/UpdateMaternalClientForm";
 import { showRegisterMaternalForm } from "@/features/forms/registerMaternalClientSlice";
 import { showUpdateMaternalForm } from "@/features/forms/updateMaternalClientRecordSlice";
+import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
@@ -77,10 +78,11 @@ const Registered = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
     const [loading, setLoading] = useState({
-        clients : false
+        clients : false,
+        delete : false
     });
     const registerMaternalClientStore = useSelector((state : any) => state.registerMaternalClient);
-    const updateMaternalClientStore = useSelector((state : any) => state.updateMaternalClient);
+    const updateMaternalClientStore = useSelector((state : any) => state.updateMaternalClientRecord);
     const [paginator, setPaginator] = useState({
             clients: useRef<any>(null)
         });
@@ -95,13 +97,16 @@ const Registered = () => {
         setData(_clients);
         setLoading({...loading, clients : false});
     }
-    const handeleDelete = (event : any) => {
+    const handleDelete = (event : any, data : any) => {
         confirmPopup({
             target: event.currentTarget,
             message: 'Are you sure you want to delete this maternal client record?',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
-                await deleteMaternalClientRecord(dispatch, {id : data.id});
+                setLoading({ ...loading, delete: true });
+                await deleteMaternalClientRecord(dispatch, data.id);
+                init();
+                setLoading({ ...loading, delete: false });
             }
         });
     }
@@ -121,8 +126,8 @@ const Registered = () => {
                     <Column header="Actions" body={(data) => {
                         return (
                             <div className="flex gap-2">
-                                <button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateMaternalForm({maternal_client:data}))}>Update Maternal Record</button>
-                                <button className="p-button p-button-sm p-button-danger" onClick={handeleDelete}>Delete</button>
+                                <Button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateMaternalForm({maternal_client:data}))} label="Update" />
+                                <Button className="p-button p-button-sm p-button-danger" onClick={(event) => handleDelete(event, data)} loading={loading.delete} label="Delete" />
                             </div>
                         )
                     }}></Column>
