@@ -18,7 +18,7 @@ import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
 import Required from "./forms/RequiredIndicator";
-import { hideUpdateMaternalForm, updateMaternalClientRecord } from "@/features/forms/updateMaternalClientRecord";
+import { hideUpdateMaternalForm, maternalClientUpdated, updateMaternalClientRecord } from "@/features/forms/updateMaternalClientRecordSlice";
 import { InputTextarea } from "primereact/inputtextarea";
 import moment from "moment";
 import { get } from "http";
@@ -223,6 +223,7 @@ const UpdateMaternalClientForm = () => {
         // setHouseholdItems(households.data?.map((household: any) => ({ label: `${household.name} - ${household.household_no}`, value: household.id })));
         setLoading({ ...loading, updateMaternalClient : false });
         if(success) {
+            dispatch(maternalClientUpdated());
             onHide();
         }
     }

@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "features/forms/registerMaternalClient.ts"  ],
+, "features/forms/registerMaternalClientSlice.ts"  ],
   "exclude": [
     "node_modules"
   ]

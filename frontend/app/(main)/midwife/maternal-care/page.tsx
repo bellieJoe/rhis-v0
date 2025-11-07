@@ -1,15 +1,16 @@
 "use client"
-import { getCandidates, getMaternalClients } from "@/api/maternalCareApi";
+import { deleteMaternalClientRecord, getCandidates, getMaternalClients } from "@/api/maternalCareApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import RegisterMaternalClientForm from "@/components/RegisterMaternalClientForm";
 import UpdateMaternalClientForm from "@/components/UpdateMaternalClientForm";
-import { showRegisterMaternalForm } from "@/features/forms/registerMaternalClient";
-import { showUpdateMaternalForm } from "@/features/forms/updateMaternalClientRecord";
+import { showRegisterMaternalForm } from "@/features/forms/registerMaternalClientSlice";
+import { showUpdateMaternalForm } from "@/features/forms/updateMaternalClientRecordSlice";
 import { Column } from "primereact/column";
+import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
 import { Paginator } from "primereact/paginator";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Unregistered = () => {
     const [data, setData] = useState<any>({});
@@ -17,6 +18,7 @@ const Unregistered = () => {
     const [loading, setLoading] = useState({
         candidates : false
     });
+    const registerMaternalClientStore = useSelector((state : any) => state.registerMaternalClient);
     const [paginator, setPaginator] = useState({
             candidates: useRef<any>(null)
         });
@@ -33,7 +35,7 @@ const Unregistered = () => {
     }
     useEffect(() => {
         init();
-    }, [dispatch]);
+    }, [dispatch, registerMaternalClientStore.reload]);
     return (
         <>
             <h5>Unregistered Client List</h5>
@@ -77,6 +79,8 @@ const Registered = () => {
     const [loading, setLoading] = useState({
         clients : false
     });
+    const registerMaternalClientStore = useSelector((state : any) => state.registerMaternalClient);
+    const updateMaternalClientStore = useSelector((state : any) => state.updateMaternalClient);
     const [paginator, setPaginator] = useState({
             clients: useRef<any>(null)
         });
@@ -91,9 +95,19 @@ const Registered = () => {
         setData(_clients);
         setLoading({...loading, clients : false});
     }
+    const handeleDelete = (event : any) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Are you sure you want to delete this maternal client record?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                await deleteMaternalClientRecord(dispatch, {id : data.id});
+            }
+        });
+    }
     useEffect(() => {
         init();
-    }, [dispatch]);
+    }, [dispatch, registerMaternalClientStore.reload, updateMaternalClientStore.reload]);
     return (
         <>
             <h5>Registered Client List</h5>
@@ -108,6 +122,7 @@ const Registered = () => {
                         return (
                             <div className="flex gap-2">
                                 <button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateMaternalForm({maternal_client:data}))}>Update Maternal Record</button>
+                                <button className="p-button p-button-sm p-button-danger" onClick={handeleDelete}>Delete</button>
                             </div>
                         )
                     }}></Column>

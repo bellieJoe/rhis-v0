@@ -48,3 +48,13 @@ export async function getMaternalClientById(dispatch : Dispatch, id:any) {
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }
+
+export async function deleteMaternalClientRecord(dispatch : Dispatch, id) {
+    try {
+        await axios.delete('/api/maternal-clients/delete/' + id);
+        dispatch(setToast({severity : "success", summary : "Success", detail : "Maternal client record deleted successfully", life : 3000}));
+        return true;
+    } catch (error:any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+    }
+}

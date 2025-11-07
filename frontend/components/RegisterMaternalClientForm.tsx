@@ -4,7 +4,7 @@ import { Sidebar } from "primereact/sidebar";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { hideAssignMidwife } from "@/features/forms/assignMidwifeSlice";
-import { hideRegisterMaternalForm } from "@/features/forms/registerMaternalClient";
+import { hideRegisterMaternalForm, maternalClientRegistered } from "@/features/forms/registerMaternalClientSlice";
 import { registerMaternalClient } from "@/api/maternalCareApi";
 
 
@@ -28,7 +28,10 @@ const RegisterMaternalClientForm = (props : any) => {
     const handleSubmit = async () => {
         setLoading({...loading, form : true});
         const success = await registerMaternalClient(dispatch, {household_profile_id : registerMaternalClientStore.household_profile?.id});
-        if(success) onHide();
+        if(success) {
+            dispatch(maternalClientRegistered());
+            onHide();
+        }
         setLoading({...loading, form : false});
     }
     return (

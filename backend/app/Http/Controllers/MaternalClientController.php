@@ -159,4 +159,20 @@ class MaternalClientController extends Controller
             ]);
         });
     }
+
+    public function delete($id)
+    {
+        $maternalClient = MaternalClient::find($id);
+        if(!$maternalClient) {
+            return response()->json([
+                'message' => 'Maternal Client not found'
+            ], 404);
+        }
+        $maternalClient->delete();
+        MaternalInfectiousDisease::where('maternal_client_id', $id)->delete();
+        MaternalSupplement::where('maternal_client_id', $id)->delete();
+        return response()->json([
+            'message' => 'Maternal Client deleted successfully'
+        ]);
+    }
 }
