@@ -73,7 +73,7 @@ const AppMenu = () => {
                         icon: 'pi pi-fw pi-list', 
                         items : [
                             { label: 'Maternal Care Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/maternal-care' },
-                            { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/' },
+                            { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/child-care' },
                             { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/' }
                         ]
                     }

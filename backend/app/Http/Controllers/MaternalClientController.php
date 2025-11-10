@@ -26,6 +26,9 @@ class MaternalClientController extends Controller
             ->where('is_pregnant', 1)
             ->where('gender_id', 80);
         })
+        // ->doesntHave('maternalClient', function($q){
+        //     $q->where
+        // })
         ->with(['household.barangay.municipality.province']); 
 
         return response()->json($candidates->paginate(20));

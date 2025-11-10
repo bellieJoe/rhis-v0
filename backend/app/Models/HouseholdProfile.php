@@ -16,6 +16,16 @@ class HouseholdProfile extends Model
         return $this->belongsTo(Household::class, "household_id", "id");
     }
 
+    public function maternalClients()
+    {
+        return $this->hasMany(MaternalClient::class);
+    }
+
+    public function childcareClient()
+    {
+        return $this->hasOne(ChildcareClient::class, "household_profile_id", "id");
+    }
+
     public function householdProfileDetails() {
         return $this->hasMany(HouseholdProfileDetail::class);
     }
