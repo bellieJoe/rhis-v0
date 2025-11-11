@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BhwDesignationController;
 use App\Http\Controllers\BirthController;
+use App\Http\Controllers\ChildcareClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
@@ -161,6 +162,14 @@ Route::prefix("maternal-clients")->group(function(){
         Route::post("register", [MaternalClientController::class, "register"]);
         Route::post("update", [MaternalClientController::class, "update"]);
         Route::delete("delete/{id}", [MaternalClientController::class, "delete"]);
+    });
+});
+
+Route::prefix("childcare-clients")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("get-candidates", [ChildcareClientController::class, "getCandidates"]);
+        Route::post("register", [ChildcareClientController::class, "register"]);
+        Route::post("update", [ChildcareClientController::class, "update"]);
     });
 });
 

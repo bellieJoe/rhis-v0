@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('childcare_clients', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('encoded_by');
             $table->foreignId('household_profile_id');
             $table->date('date_of_registration');
             $table->date('date_of_birth');
