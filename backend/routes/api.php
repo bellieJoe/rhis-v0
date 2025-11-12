@@ -6,6 +6,7 @@ use App\Http\Controllers\BhwDesignationController;
 use App\Http\Controllers\BirthController;
 use App\Http\Controllers\ChildcareClientController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FamilyPlanningClientController;
 use App\Http\Controllers\GenericTypeController;
 use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
@@ -173,6 +174,17 @@ Route::prefix("childcare-clients")->group(function(){
         Route::delete("delete/{id}", [ChildcareClientController::class, "delete"]);
         Route::get("", [ChildcareClientController::class, "getClients"]);
         Route::get("get-by-id/{id}", [ChildcareClientController::class, "getClientById"]);
+    });
+});
+
+Route::prefix("family-planning-clients")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::get("get-candidates", [FamilyPlanningClientController::class, "getCandidates"]);
+        Route::post("register", [FamilyPlanningClientController::class, "register"]);
+        Route::post("update", [FamilyPlanningClientController::class, "update"]);
+        Route::delete("delete/{id}", [FamilyPlanningClientController::class, "delete"]);
+        Route::get("", [FamilyPlanningClientController::class, "getClients"]);
+        Route::get("get-by-id/{id}", [FamilyPlanningClientController::class, "getClientById"]);
     });
 });
 
