@@ -25,6 +25,7 @@ import { get } from "http";
 import { updateMaternalClient } from "@/api/maternalCareApi";
 import { updateChildcareClient } from "@/api/childCareApi";
 import { childcareClientUpdated, hideUpdateChildcareForm } from "@/features/forms/updateChildcareClientRecordSlice";
+import { Checkbox } from "primereact/checkbox";
 
 interface UpdateMaternalClientProps {
     visible: boolean,
@@ -37,7 +38,7 @@ const UpdateChildcareClientForm = () => {
     const { visible } = useSelector((state: any) => state.updateHouseholdProfile);
     const dispatch = useDispatch();
     const [genericOptions, setGenericOptions] = useState<any>([]);
-    const genericTypeStore = useSelector((state: any) => state.genericTypes);
+    const genericTypeStore = useSelector((state: any) => state.genericType);
     const updateChildcareClientStore = useSelector((state: any) => state.updateChildcareClientRecord);
     const yesNoOptions = [
         { label: 'Yes', value: 1 },
@@ -67,7 +68,7 @@ const UpdateChildcareClientForm = () => {
     };
     useEffect(() => {
         setForm(denormalizeDatesFromMySQL(updateChildcareClientStore.childcare_client));
-        _getGenericTypes
+        _getGenericTypes();
     }, [updateChildcareClientStore.childcare_client?.id]);
     const next = () => {
         setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));
@@ -192,8 +193,7 @@ const UpdateChildcareClientForm = () => {
                         </div>
                     </div>
                     <div className="flex  flex-wrap gap-1 mb-4">
-                        <Chip label={`Name: ${updateChildcareClientStore.childcare_client?.fullname}`} />
-                        <Chip label={`Age: ${calculateAge(form.household_profile?.birthdate)}`} />
+                        <Chip label={`Name: ${updateChildcareClientStore.childcare_client?.name_of_child}`} />
                         <Chip label={`Address: ${form.household_profile?.household?.barangay?.barangay_name}, ${form.household_profile?.household?.barangay?.municipality?.municipality_name}, ${form.household_profile?.household?.barangay?.municipality?.province?.province_name}`} />
                         <Chip label={`Date of Registration: ${moment(form.date_of_registration).format('MMM d, Y')}`} />
                     </div>
@@ -211,8 +211,9 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Name of Child <Required/></label>
                                     <InputText
-                                        type="number"
+                                        type="text"
                                         className="w-full"
+                                        readOnly
                                         value={form.name_of_child}
                                         onChange={(e) => setForm({...form, name_of_child: e.target.value})} />
                                     <ValidationError name="name_of_child" />  
@@ -233,11 +234,20 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Complete Name of Mother <Required/></label>
                                     <InputText
-                                        type="number"
+                                        type="text"
                                         className="w-full"
                                         value={form.complete_name_of_mother}
                                         onChange={(e) => setForm({...form, complete_name_of_mother: e.target.value})} />
                                     <ValidationError name="complete_name_of_mother" />  
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Complete Address <Required/></label>
+                                    <InputText
+                                        type="text"
+                                        className="w-full"
+                                        value={form.complete_address}
+                                        onChange={(e) => setForm({...form, complete_address: e.target.value})} />
+                                    <ValidationError name="complete_address" />  
                                 </div>
                                 <div className="mb-3">
                                     <br />
@@ -330,21 +340,43 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
-                                        <InputText
-                                            type="number"
-                                            className="w-full"
-                                            value={form.nsa_length_13}
-                                            onChange={(e) => setForm({...form, nsa_length_13: e.target.value})} />
-                                        <ValidationError name="nsa_length_13" />  
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_length_13}
+                                                    onChange={(e) => setForm({...form, nsa_length_13: e.target.value})} />
+                                                <ValidationError name="nsa_length_13" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_length_date_13}
+                                                    onChange={(e) => setForm({...form, nsa_length_date_13: e.target.value})} />
+                                                <ValidationError name="nsa_length_date_13" />  
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
-                                        <InputText
-                                            type="number"
-                                            className="w-full"
-                                            value={form.nsa_weight_13}
-                                            onChange={(e) => setForm({...form, nsa_weight_13: e.target.value})} />
-                                        <ValidationError name="nsa_weight_13" />  
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_weight_13}
+                                                    onChange={(e) => setForm({...form, nsa_weight_13: e.target.value})} />
+                                                <ValidationError name="nsa_weight_13" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_weight_date_13}
+                                                    onChange={(e) => setForm({...form, nsa_weight_date_13: e.target.value})} />
+                                                <ValidationError name="nsa_weight_date_13" />  
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
@@ -491,21 +523,43 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
-                                        <InputText
-                                            type="number"
-                                            className="w-full"
-                                            value={form.nsa_length_611}
-                                            onChange={(e) => setForm({...form, nsa_length_611: e.target.value})} />
-                                        <ValidationError name="nsa_length_611" />  
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_length_611}
+                                                    onChange={(e) => setForm({...form, nsa_length_611: e.target.value})} />
+                                                <ValidationError name="nsa_length_611" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_length_date_611}
+                                                    onChange={(e) => setForm({...form, nsa_length_date_611: e.target.value})} />
+                                                <ValidationError name="nsa_length_date_611" />  
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
-                                        <InputText
-                                            type="number"
-                                            className="w-full"
-                                            value={form.nsa_weight_611}
-                                            onChange={(e) => setForm({...form, nsa_weight_611: e.target.value})} />
-                                        <ValidationError name="nsa_weight_611" />  
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_weight_611}
+                                                    onChange={(e) => setForm({...form, nsa_weight_611: e.target.value})} />
+                                                <ValidationError name="nsa_weight_611" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_weight_date_611}
+                                                    onChange={(e) => setForm({...form, nsa_weight_date_611: e.value})} />
+                                                <ValidationError name="nsa_weight_date_611" />  
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
@@ -520,129 +574,330 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Exclusively breastfeed fir up to 5 months and 23 days  <Required/></label>
-                                    <Calendar
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Exclusively breastfeed for up to 5 months and 23 days  <Required/></label>
+                                    <div className="grid">
+                                        <div className="col-6">
+                                            <Calendar
+                                                className="w-full"
+                                                value={form.eb_611_date}
+                                                onChange={(e) => setForm({...form, eb_611_date : e.value})} />
+                                            <ValidationError name="eb_611_date" />  
+                                        </div>
+                                        <div className="col-6">
+                                            <InputText
+                                                type="number"
+                                                className="w-full"
+                                                value={form.eb_611}
+                                                onChange={(e) => setForm({...form, eb_611 : e.target.value})} />
+                                            <ValidationError name="eb_611" />  
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <h6>Introduction of Complementary feeding at 6 months old</h6>
+                                    <div className="grid">
+                                        <div className="col-6">
+                                            <div className="mb-3">
+                                                <Dropdown
+                                                    options={yesNoOptions}
+                                                    className="w-full"
+                                                    value={form.icf_1_611}
+                                                    onChange={(e) => setForm({...form, icf_1_611 : e.value})} />
+                                                <ValidationError name="icf_1_611" />
+                                            </div>
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="mb-3">
+                                                <Dropdown
+                                                    options={[
+                                                        {
+                                                            value: 1,
+                                                            label: '1 - With continous breastfeeding'
+                                                        },
+                                                        {
+                                                            value: 2,
+                                                            label: '2 - No longer breastfeeding'
+                                                        },
+                                                    ]}
+                                                    className="w-full"
+                                                    optionLabel="label"
+                                                    optionValue="value"
+                                                    value={form.icf_2_611}
+                                                    onChange={(e) => setForm({...form, icf_2_611 : e.value})} />
+                                                <ValidationError name="icf_2_611" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Vitamin A(date given) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.vit_a_611}
+                                            onChange={(e) => setForm({...form, vit_a_611 : e.value})} />
+                                        <ValidationError name="vit_a_611" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <h6>MNP</h6>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date when 90 sachets was given <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.mnp_90_611}
+                                            onChange={(e) => setForm({...form, mnp_90_611 : e.value})} />
+                                        <ValidationError name="mnp_90_611" />  
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.mnp_completed_611}
+                                            onChange={(e) => setForm({...form, mnp_completed_611 : e.value})} />
+                                        <ValidationError name="mnp_completed_611" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 1 at 9th month(date given) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.mmr_611}
+                                            onChange={(e) => setForm({...form, mmr_611 : e.value})} />
+                                        <ValidationError name="mmr_611" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV dose at 9th month(date given) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.ipv_dose2_611}
+                                            onChange={(e) => setForm({...form, ipv_dose2_611 : e.value})} />
+                                        <ValidationError name="ipv_dose2_611" />  
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {activeIndex === 4 && (
+                            <div className="mb-3">
+                                <h5>12 Months Old</h5>
+                                <div className="mb-3">
+                                    <h6>Nutritional Status Assessment</h6>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months <Required/></label>
+                                        <InputText
+                                            type="number"
+                                            className="w-full"
+                                            value={form.nsa_age_12}
+                                            onChange={(e) => setForm({...form, nsa_age_12: e.target.value})} />
+                                        <ValidationError name="nsa_age_12" />  
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_length_12}
+                                                    onChange={(e) => setForm({...form, nsa_length_12: e.target.value})} />
+                                                <ValidationError name="nsa_length_12" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_length_date_12}
+                                                    onChange={(e) => setForm({...form, nsa_length_date_12: e.target.value})} />
+                                                <ValidationError name="nsa_length_date_12" />  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
+                                        <div className="grid">
+                                            <div className="col-6">
+                                                <InputText
+                                                    type="number"
+                                                    className="w-full"
+                                                    value={form.nsa_weight_12}
+                                                    onChange={(e) => setForm({...form, nsa_weight_12: e.target.value})} />
+                                                <ValidationError name="nsa_weight_12" />  
+                                            </div>
+                                            <div className="col-6">
+                                                <Calendar
+                                                    className="w-full"
+                                                    value={form.nsa_weight_date_12}
+                                                    onChange={(e) => setForm({...form, nsa_weight_date_12: e.value})} />
+                                                <ValidationError name="nsa_weight_date_12" />  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
+                                        <Dropdown
+                                            options={nsaStatusOptions}
+                                            optionLabel="label"
+                                            optionValue="value"
+                                            className="w-full"
+                                            value={form.nsa_status_12}
+                                            onChange={(e) => setForm({...form, nsa_status_12 : e.value})} />
+                                        <ValidationError name="nsa_status_12" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 2 at 12th month(date given) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.mmr_dose2_12}
+                                            onChange={(e) => setForm({...form, mmr_dose2_12 : e.value})} />
+                                        <ValidationError name="mmr_dose2_12" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">FIC***(date) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.fic_12}
+                                            onChange={(e) => setForm({...form, fic_12 : e.value})} />
+                                        <ValidationError name="fic_12" />  
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {activeIndex === 5 && (
+                            <div className="mb-3">
+                                <div className="mb-3">
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">CIC(date) <Required/></label>
+                                        <Calendar
+                                            className="w-full"
+                                            value={form.cic}
+                                            onChange={(e) => setForm({...form, cic : e.value})} />
+                                        <ValidationError name="cic" />  
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <h6>0-11 mos old</h6>
+                                    <div className="mb-3">
+                                        <p>MAM</p>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.mam_admitted_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, mam_admitted_011 : e.checked})}
+                                                    inputId="mam_admitted_011"
+                                                />
+                                                <label htmlFor="mam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in SFP <Required/></label>
+                                            </div>
+                                            <ValidationError name="mam_admitted_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.mam_cured_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, mam_cured_011 : e.checked})}
+                                                    inputId="mam_cured_011"
+                                                />
+                                                <label htmlFor="mam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured <Required/></label>
+                                            </div>
+                                            <ValidationError name="mam_cured_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.mam_defaulted_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, mam_defaulted_011 : e.checked})}
+                                                    inputId="mam_defaulted_011"
+                                                />
+                                                <label htmlFor="mam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted <Required/></label>
+                                            </div>
+                                            <ValidationError name="mam_defaulted_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.mam_died_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, mam_died_011 : e.checked})}
+                                                    inputId="mam_died_011"
+                                                />
+                                                <label htmlFor="mam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died <Required/></label>
+                                            </div>
+                                            <ValidationError name="mam_died_011" />
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <p>SAM</p>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.sam_admitted_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, sam_admitted_011 : e.checked})}
+                                                    inputId="sam_admitted_011"
+                                                />
+                                                <label htmlFor="sam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in OTC <Required/></label>
+                                            </div>
+                                            <ValidationError name="sam_admitted_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.sam_cured_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, sam_cured_011 : e.checked})}
+                                                    inputId="sam_cured_011"
+                                                />
+                                                <label htmlFor="sam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured <Required/></label>
+                                            </div>
+                                            <ValidationError name="sam_cured_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.sam_defaulted_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, sam_defaulted_011 : e.checked})}
+                                                    inputId="sam_defaulted_011"
+                                                />
+                                                <label htmlFor="sam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted <Required/></label>
+                                            </div>
+                                            <ValidationError name="sam_defaulted_011" />
+                                        </div>
+                                        <div className="mb-3">
+                                            <div className="flex align-items-center gap-2">
+                                                <Checkbox
+                                                    checked={form.sam_died_011 == 1 ? true : false}
+                                                    onChange={(e) => setForm({...form, sam_died_011 : e.checked})}
+                                                    inputId="sam_died_011"
+                                                />
+                                                <label htmlFor="sam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died <Required/></label>
+                                            </div>
+                                            <ValidationError name="sam_died_011" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <hr />
+                                    <label  className="block text-sm font-medium text-gray-900 mb-1">Remarks <Required/></label>
+                                    <InputTextarea
+                                        rows={3}
                                         className="w-full"
-                                        value={form.eb_611}
-                                        onChange={(e) => setForm({...form, eb_611 : e.value})} />
-                                    <ValidationError name="eb_611" />  
+                                        value={form.remarks}
+                                        onChange={(e) => setForm({...form, remarks : e.target.value})}                                        
+                                    />
+                                    <ValidationError name="remarks" />
                                 </div>
-                                <div className="mb-3">
-                                    <hr />
-                                    <h6>Low birth weight given iron</h6>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1 mos <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.lbwgi_1month_13}
-                                            onChange={(e) => setForm({...form, lbwgi_1month_13 : e.value})} />
-                                        <ValidationError name="lbwgi_1month_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2 mos <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.lbwgi_2month_13}
-                                            onChange={(e) => setForm({...form, lbwgi_2month_13 : e.value})} />
-                                        <ValidationError name="lbwgi_2month_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3 mos <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.lbwgi_3month_13}
-                                            onChange={(e) => setForm({...form, lbwgi_3month_13 : e.value})} />
-                                        <ValidationError name="lbwgi_3month_13" />  
-                                    </div>
+                                <div className="flex justify-content-end">
+                                    <Button label="Submit" icon="pi pi-check" className="p-button-success" onClick={handleSubmit} />
                                 </div>
-                                <div className="mb-3">
-                                    <hr />
-                                    <h6>Immunization</h6>
-                                    <p>DPT-Hi-B-HepB</p>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.dhh_1st_dose_13}
-                                            onChange={(e) => setForm({...form, dhh_1st_dose_13 : e.value})} />
-                                        <ValidationError name="dhh_1st_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.dhh_2nd_dose_13}
-                                            onChange={(e) => setForm({...form, dhh_2nd_dose_13 : e.value})} />
-                                        <ValidationError name="dhh_2nd_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.dhh_3rd_dose_13}
-                                            onChange={(e) => setForm({...form, dhh_3rd_dose_13 : e.value})} />
-                                        <ValidationError name="dhh_3rd_dose_13" />  
-                                    </div>
-                                    <p>OPV</p>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.opv_1st_dose_13}
-                                            onChange={(e) => setForm({...form, opv_1st_dose_13 : e.value})} />
-                                        <ValidationError name="opv_1st_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.opv_2nd_dose_13}
-                                            onChange={(e) => setForm({...form, opv_2nd_dose_13 : e.value})} />
-                                        <ValidationError name="opv_2nd_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.opv_3rd_dose_13}
-                                            onChange={(e) => setForm({...form, opv_3rd_dose_13 : e.value})} />
-                                        <ValidationError name="opv_3rd_dose_13" />  
-                                    </div>
-                                    <p>PCV</p>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.pcv_1st_dose_13}
-                                            onChange={(e) => setForm({...form, pcv_1st_dose_13 : e.value})} />
-                                        <ValidationError name="pcv_1st_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.pcv_2nd_dose_13}
-                                            onChange={(e) => setForm({...form, pcv_2nd_dose_13 : e.value})} />
-                                        <ValidationError name="pcv_2nd_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.pcv_3rd_dose_13}
-                                            onChange={(e) => setForm({...form, pcv_3rd_dose_13 : e.value})} />
-                                        <ValidationError name="pcv_3rd_dose_13" />  
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV 1st dose 1 1/2 months <Required/></label>
-                                        <Calendar
-                                            className="w-full"
-                                            value={form.ipv_1st_dose_13}
-                                            onChange={(e) => setForm({...form, ipv_1st_dose_13 : e.value})} />
-                                        <ValidationError name="ipv_1st_dose_13" />  
-                                    </div>
-                                </div>
-                                
                             </div>
                         )}
                     </div>

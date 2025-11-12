@@ -15,7 +15,7 @@ export const updateChildcareClientRecord = createSlice({
             console.log(action);
             state.childcare_client = action.payload.childcare_client;
         },
-        hideUpdateChildcareForm : (state : any) => { state.visible = false; },
+        hideUpdateChildcareForm : (state : any) => { state.visible = false; state.childcare_client = {}; },
         childcareClientUpdated : (state : any) => { state.reload = !state.reload; },
     },
 });

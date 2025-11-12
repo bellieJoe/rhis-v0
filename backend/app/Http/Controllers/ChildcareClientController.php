@@ -65,10 +65,20 @@ class ChildcareClientController extends Controller
 
     public function update(Request $request)
     {
+        // add validation later
+        $request->validate([
+            'id' => 'required',
+            'complete_name_of_mother' => 'required',
+        ]);
         return DB::transaction(function () use ($request) {
             $clientId = $request->input('id');
             $client = ChildcareClient::find($clientId);
             $client->update($request->only([
+                'id',
+                'encoded_by',
+                'household_profile_id',
+                'date_of_registration',
+                'date_of_birth',
                 'family_serial_number',
                 'name_of_child',
                 'sex',
@@ -83,7 +93,9 @@ class ChildcareClientController extends Controller
                 'immunization_hepa_b',
                 'nsa_age_13',
                 'nsa_length_13',
+                'nsa_length_date_13',
                 'nsa_weight_13',
+                'nsa_weight_date_13',
                 'nsa_status_13',
                 'lbwgi_1month_13',
                 'lbwgi_2month_13',
@@ -98,10 +110,14 @@ class ChildcareClientController extends Controller
                 'pcv_2nd_dose_13',
                 'pcv_3rd_dose_13',
                 'ipv_1st_dose_13',
+
                 'nsa_age_611',
                 'nsa_length_611',
+                'nsa_length_date_611',
                 'nsa_weight_611',
+                'nsa_weight_date_611',
                 'nsa_status_611',
+                'eb_611_date',
                 'eb_611',
                 'icf_1_611',
                 'icf_2_611',
@@ -110,13 +126,18 @@ class ChildcareClientController extends Controller
                 'mnp_completed_611',
                 'mmr_611',
                 'ipv_dose2_611',
+
                 'nsa_age_12',
                 'nsa_length_12',
+                'nsa_length_date_12',
                 'nsa_weight_12',
+                'nsa_weight_date_12',
                 'nsa_status_12',
                 'mmr_dose2_12',
                 'fic_12',
+
                 'cic',
+
                 'mam_admitted_011',
                 'mam_cured_011',
                 'mam_defaulted_011',
@@ -125,6 +146,7 @@ class ChildcareClientController extends Controller
                 'sam_cured_011',
                 'sam_defaulted_011',
                 'sam_died_011',
+
                 'remarks',
             ]));
 

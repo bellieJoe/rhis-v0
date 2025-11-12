@@ -1,6 +1,7 @@
 import { setToast } from "@/features/toastSlice"
 import axios from "./axios";
 import { Dispatch } from "@reduxjs/toolkit";
+import { setErrors } from "@/features/errorSlice";
 
 
 export const getCandidates = async (dispatch : any, params : any = {}) => {
@@ -14,7 +15,7 @@ export const getCandidates = async (dispatch : any, params : any = {}) => {
 
 export async function getChildcareClients(dispatch : Dispatch, params : any = {}) {
     try {
-        const response = await axios.get('/api/maternal-clients', { params });
+        const response = await axios.get('/api/childcare-clients', { params });
         return response.data;
     } catch (error:any) {
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
@@ -47,6 +48,10 @@ export async function updateChildcareClient(dispatch : Dispatch, params : any) {
         dispatch(setToast({severity : "success", summary : "Success", detail : "Childcare client updated successfully", life : 3000}));
         return true;
     } catch (error:any) {
+        if(error.response.status === 422) {
+            dispatch(setErrors(error.response.data.errors));
+        }
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }
+

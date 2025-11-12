@@ -2,6 +2,9 @@
 
 import { deleteChildcareClientRecord, getCandidates, getChildcareClients } from "@/api/childCareApi";
 import { AuthMiddleware } from "@/components/middlewares";
+import RegisterChildcareClientForm from "@/components/RegisterChildcareClientForm";
+import UpdateChildcareClientForm from "@/components/UpdateChildcareClientForm";
+import { childcareClientRegistered, showRegisterChildcareClient } from "@/features/forms/registerChildcareClientSlice";
 import { showUpdateChildcareForm } from "@/features/forms/updateChildcareClientRecordSlice";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
@@ -51,7 +54,7 @@ const Unregistered = () => {
                                 <button 
                                 className="p-button p-button-sm p-button-success" 
                                 onClick={() => {
-                                    // dispatch(showRegisterMaternalForm({household_profile:data}))
+                                    dispatch(showRegisterChildcareClient({household_profile:data}))
                                 }}>
                                     Register
                                 </button>
@@ -67,7 +70,7 @@ const Unregistered = () => {
                     onPageChange={onPageChange}
                 />
             </div>
-            {/* <RegisterMaternalClientForm /> */}
+            <RegisterChildcareClientForm />
         </>
     );
 }
@@ -103,6 +106,7 @@ const Registered = () => {
             accept: async () => {
                 setLoading({ ...loading, delete: true });
                 await deleteChildcareClientRecord(dispatch, data.id);
+                dispatch(childcareClientRegistered());
                 init();
                 setLoading({ ...loading, delete: false });
             }
@@ -116,7 +120,7 @@ const Registered = () => {
             <h5>Registered Client List</h5>
             <div className="card">
                 <DataTable value={data.data} loading={loading.clients}>
-                    <Column field="fullname" header="Name"></Column>
+                    <Column field="name_of_child" header="Name"></Column>
                     <Column 
                         header="Address" 
                         body={(data) => `${data.household_profile?.household?.barangay?.barangay_name} ${data.household_profile?.household?.barangay?.municipality?.municipality_name} ${data.household_profile?.household?.barangay?.municipality?.province?.province_name}`}
@@ -124,7 +128,7 @@ const Registered = () => {
                     <Column header="Actions" body={(data) => {
                         return (
                             <div className="flex gap-2">
-                                <Button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateChildcareForm({maternal_client:data}))} label="Update" />
+                                <Button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateChildcareForm({childcare_client:data}))} label="Update" />
                                 <Button className="p-button p-button-sm p-button-danger" onClick={(event : any) => handleDelete(event, data)} loading={loading.delete} label="Delete" />
                             </div>
                         )
@@ -138,7 +142,7 @@ const Registered = () => {
                     onPageChange={onPageChange}
                 />
             </div>
-            {/* <UpdateMaternalClientForm /> */}
+            <UpdateChildcareClientForm />
         </>
     );
 }

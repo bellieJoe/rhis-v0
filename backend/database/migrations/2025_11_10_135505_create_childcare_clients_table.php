@@ -67,7 +67,9 @@ return new class extends Migration
 
             $table->integer('nsa_age_12')->nullable();
             $table->double('nsa_length_12')->nullable();
+            $table->date('nsa_length_date_12')->nullable();
             $table->double('nsa_weight_12')->nullable();
+            $table->date('nsa_weight_date_12')->nullable();
             $table->string('nsa_status_12')->nullable();
             $table->date('mmr_dose2_12')->nullable();
             $table->date('fic_12')->nullable();
