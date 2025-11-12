@@ -31,7 +31,9 @@ return new class extends Migration
             $table->date('immunization_hepa_b')->nullable();
             $table->integer('nsa_age_13')->nullable();
             $table->double('nsa_length_13')->nullable();
+            $table->date('nsa_length_date_13')->nullable();
             $table->double('nsa_weight_13')->nullable();
+            $table->date('nsa_weight_date_13')->nullable();
             $table->string('nsa_status_13')->nullable();
             $table->date('lbwgi_1month_13')->nullable();
             $table->date('lbwgi_2month_13')->nullable();
@@ -49,9 +51,12 @@ return new class extends Migration
 
             $table->integer('nsa_age_611')->nullable();
             $table->double('nsa_length_611')->nullable();
+            $table->date('nsa_length_date_611')->nullable();
             $table->double('nsa_weight_611')->nullable();
+            $table->date('nsa_weight_date_611')->nullable();
             $table->string('nsa_status_611')->nullable();
-            $table->date('eb_611')->nullable();
+            $table->date('eb_611_date')->nullable();
+            $table->boolean('eb_611')->nullable();
             $table->boolean('icf_1_611')->nullable();
             $table->integer('icf_2_611')->nullable();
             $table->date('vit_a_611')->nullable();

@@ -54,8 +54,8 @@ class ChildcareClientController extends Controller
             'sex' => $householdProfile->updated_details->gender_id,
             'complete_name_of_mother' => '',
             'complete_address' => '',
-            'length' => $request->length,
-            'weight' => $request->input('weight')
+            'length' => 0,
+            'weight' => 0
         ]);
 
         return response()->json([
@@ -133,4 +133,33 @@ class ChildcareClientController extends Controller
             ], 200);
         });
     }
+
+    public function delete($id)
+    {
+        $client = ChildcareClient::find($id);
+        if (!$client) {
+            return response()->json([
+                'message' => 'Childcare Client not found'
+            ], 404);
+        }
+
+        $client->delete();
+
+        return response()->json([
+            'message' => 'Childcare Client deleted successfully'
+        ], 200);
+    }
+
+    public function getClientById($id)
+    {
+        $client = ChildcareClient::with(['householdProfile.household.barangay.municipality.province'])->find($id);
+        if (!$client) {
+            return response()->json([
+                'message' => 'Childcare Client not found'
+            ], 404);
+        }
+
+        return response()->json($client);
+    }
+
 }

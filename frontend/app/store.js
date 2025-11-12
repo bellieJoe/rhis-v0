@@ -19,6 +19,8 @@ import sitioReducer from '@/features/sitioSlice';
 import assignMidwifeReducer from '@/features/forms/assignMidwifeSlice';
 import registerMaternalClientReducer from '@/features/forms/registerMaternalClientSlice';
 import updateMaternalClientRecordReducer from '@/features/forms/updateMaternalClientRecordSlice';
+import updateChildcareClientRecordReducer from '@/features/forms/updateChildcareClientRecordSlice';
+import registerChildcareClientReducer from '@/features/forms/registerChildcareClientSlice';
 
 export default configureStore({
   reducer: {
@@ -41,6 +43,8 @@ export default configureStore({
     updateSitioForm : updateSitioFormReducer,
     sitio : sitioReducer,
     registerMaternalClient : registerMaternalClientReducer,
-    updateMaternalClientRecord : updateMaternalClientRecordReducer
+    registerChildcareClient : registerChildcareClientReducer,
+    updateMaternalClientRecord : updateMaternalClientRecordReducer,
+    updateChildcareClientRecord : updateChildcareClientRecordReducer
   }
 });

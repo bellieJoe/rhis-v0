@@ -170,6 +170,9 @@ Route::prefix("childcare-clients")->group(function(){
         Route::get("get-candidates", [ChildcareClientController::class, "getCandidates"]);
         Route::post("register", [ChildcareClientController::class, "register"]);
         Route::post("update", [ChildcareClientController::class, "update"]);
+        Route::delete("delete/{id}", [ChildcareClientController::class, "delete"]);
+        Route::get("", [ChildcareClientController::class, "getClients"]);
+        Route::get("get-by-id/{id}", [ChildcareClientController::class, "getClientById"]);
     });
 });
 
