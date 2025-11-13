@@ -1,11 +1,14 @@
 "use client";
 
-import { deleteChildcareClientRecord, getCandidates, getChildcareClients } from "@/api/childCareApi";
+import { deleteFamilyPlanningClientRecord, getCandidates, getFamilyPlanningClients } from "@/api/familyPlanningTargetApi";
 import { AuthMiddleware } from "@/components/middlewares";
 import RegisterChildcareClientForm from "@/components/RegisterChildcareClientForm";
+import RegisterFamilyPlanningClientForm from "@/components/RegisterFamilyPlanningClientForm";
 import UpdateChildcareClientForm from "@/components/UpdateChildcareClientForm";
-import { childcareClientRegistered, showRegisterChildcareClient } from "@/features/forms/registerChildcareClientSlice";
+import UpdateFamilyPlanningClientForm from "@/components/UpdateFamilyPlanningClientForm";
+import { familyPlanningClientRegistered, showRegisterFamilyPlanningClient } from "@/features/forms/registerFamilyPlanningClientSlice";
 import { showUpdateChildcareForm } from "@/features/forms/updateChildcareClientRecordSlice";
+import { showUpdateFamilyPlanningForm } from "@/features/forms/updateFamilyPlanningClientRecordSlice";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { confirmPopup } from "primereact/confirmpopup";
@@ -20,16 +23,17 @@ const Unregistered = () => {
     const [loading, setLoading] = useState({
         candidates : false
     });
-    const registerChildcareClientStore = useSelector((state : any) => state.registerChildcareClient);
+    const registerFamilyPlanningClientStore = useSelector((state : any) => state.registerFamilyPlanningClient);
     const [paginator, setPaginator] = useState({
             candidates: useRef<any>(null)
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, candidates: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _candidates = await getCandidates(dispatch, { page: e.page + 1 });
+            setData(_candidates);
             setLoading({ ...loading, candidates: false });
         }
-    const init = async () => {
+    const init = async () => {  
         setLoading({...loading, candidates : true});
         const _candidates = await getCandidates(dispatch);
         setData(_candidates);
@@ -37,7 +41,7 @@ const Unregistered = () => {
     }
     useEffect(() => {
         init();
-    }, [dispatch, registerChildcareClientStore.reload]);
+    }, [dispatch, registerFamilyPlanningClientStore.reload]);
     return (
         <>
             <h5>Unregistered Client List</h5>
@@ -54,7 +58,7 @@ const Unregistered = () => {
                                 <button 
                                 className="p-button p-button-sm p-button-success" 
                                 onClick={() => {
-                                    dispatch(showRegisterChildcareClient({household_profile:data}))
+                                    dispatch(showRegisterFamilyPlanningClient({household_profile:data}))
                                 }}>
                                     Register
                                 </button>
@@ -70,7 +74,7 @@ const Unregistered = () => {
                     onPageChange={onPageChange}
                 />
             </div>
-            <RegisterChildcareClientForm />
+            <RegisterFamilyPlanningClientForm />
         </>
     );
 }
@@ -82,31 +86,32 @@ const Registered = () => {
         clients : false,
         delete : false
     });
-    const registerChildcareClientStore = useSelector((state : any) => state.registerChildcareClient);
-    const updateChildcareClientStore = useSelector((state : any) => state.updateChildcareClientRecord);
+    const registerFamilyPlanningClientStore = useSelector((state : any) => state.registerFamilyPlanningClient);
+    const updateFamilyPlanningClientStore = useSelector((state : any) => state.updateFamilyPlanningClientRecord);
     const [paginator, setPaginator] = useState({
             clients: useRef<any>(null)
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, clients: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _clients = await getFamilyPlanningClients(dispatch, { page: e.page + 1 });
+            setData(_clients);
             setLoading({ ...loading, clients: false });
         }
     const init = async () => {
         setLoading({...loading, clients : true});
-        const _clients = await getChildcareClients(dispatch);
+        const _clients = await getFamilyPlanningClients(dispatch);
         setData(_clients);
         setLoading({...loading, clients : false});
     }
     const handleDelete = (event : any, data : any) => {
         confirmPopup({
             target: event.currentTarget,
-            message: 'Are you sure you want to delete this maternal client record?',
+            message: 'Are you sure you want to delete this childcare client record?',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
                 setLoading({ ...loading, delete: true });
-                await deleteChildcareClientRecord(dispatch, data.id);
-                dispatch(childcareClientRegistered());
+                await deleteFamilyPlanningClientRecord(dispatch, data.id);
+                dispatch(familyPlanningClientRegistered());
                 init();
                 setLoading({ ...loading, delete: false });
             }
@@ -114,13 +119,13 @@ const Registered = () => {
     }
     useEffect(() => {
         init();
-    }, [dispatch, registerChildcareClientStore.reload, updateChildcareClientStore.reload]);
+    }, [dispatch, registerFamilyPlanningClientStore.reload, updateFamilyPlanningClientStore.reload]);
     return (
         <>
             <h5>Registered Client List</h5>
             <div className="card">
                 <DataTable value={data.data} loading={loading.clients}>
-                    <Column field="name_of_child" header="Name"></Column>
+                    <Column field="complete_name" header="Name"></Column>
                     <Column 
                         header="Address" 
                         body={(data) => `${data.household_profile?.household?.barangay?.barangay_name} ${data.household_profile?.household?.barangay?.municipality?.municipality_name} ${data.household_profile?.household?.barangay?.municipality?.province?.province_name}`}
@@ -128,7 +133,7 @@ const Registered = () => {
                     <Column header="Actions" body={(data) => {
                         return (
                             <div className="flex gap-2">
-                                <Button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateChildcareForm({childcare_client:data}))} label="Update" />
+                                <Button className="p-button p-button-sm p-button-success" onClick={() => dispatch(showUpdateFamilyPlanningForm({family_planning_client:data}))} label="Update" />
                                 <Button className="p-button p-button-sm p-button-danger" onClick={(event : any) => handleDelete(event, data)} loading={loading.delete} label="Delete" />
                             </div>
                         )
@@ -142,7 +147,7 @@ const Registered = () => {
                     onPageChange={onPageChange}
                 />
             </div>
-            <UpdateChildcareClientForm />
+            <UpdateFamilyPlanningClientForm />
         </>
     );
 }

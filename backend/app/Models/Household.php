@@ -47,4 +47,9 @@ class Household extends Model
     {
         return $this->belongsTo(Sitio::class);
     }
+
+    public function familyPlanningClient()
+    {
+        return $this->hasMany(FamilyPlanningClient::class);
+    }
 }

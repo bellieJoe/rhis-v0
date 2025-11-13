@@ -21,11 +21,17 @@ class FamilyPlanningClientController extends Controller
         $candidates = HouseholdProfile::whereHas('household', function($q) use ($barangays) {
             $q->whereIn('barangay_id', $barangays);
         })
-        ->where('gender_id', 80)
+        ->whereHas('householdProfileDetails', function($q) {
+            $q->whereRaw($this->latesDetailQueryString)
+            ->where('gender_id', 80);
+        })
         ->whereBetween('birthdate', [
             Carbon::now()->subYears(49)->toDateString(), // 49 years old (oldest)
             Carbon::now()->subYears(15)->toDateString()  // 15 years old (youngest)
         ])
+        ->whereDoesntHave('familyPlanningClients', function($q){
+            $q->whereYear('date_of_registration', Carbon::now()->year);
+        })
         ->with(['household.barangay.municipality.province']); 
 
         return response()->json($candidates->paginate(20));
@@ -53,7 +59,7 @@ class FamilyPlanningClientController extends Controller
             'date_of_birth' => $householdProfile->birthdate,
             'family_serial_no' => $householdProfile->family_serial_no,
             'complete_name' => $householdProfile->updated_details->firstname . ' ' . $householdProfile->updated_details->lastname,
-            'complete_address' => $householdProfile->updated_details->barangay->name . ', ' . $householdProfile->updated_details->municipality->name . ', ' . $householdProfile->updated_details->province->name,
+            'complete_address' => $householdProfile->household->barangay->name . ', ' . $householdProfile->household->barangay->municipality->name . ', ' . $householdProfile->household->barangay->municipality->province->name,
             'age' => now()->diffInYears($householdProfile->birthdate)
         ]);
 

@@ -26,7 +26,8 @@ const Unregistered = () => {
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, candidates: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _candidates = await getCandidates(dispatch, { page: e.page + 1 });
+            setData(_candidates);
             setLoading({ ...loading, candidates: false });
         }
     const init = async () => {
@@ -89,7 +90,8 @@ const Registered = () => {
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, clients: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _clients = await getChildcareClients(dispatch, { page: e.page + 1 });
+            setData(_clients);
             setLoading({ ...loading, clients: false });
         }
     const init = async () => {

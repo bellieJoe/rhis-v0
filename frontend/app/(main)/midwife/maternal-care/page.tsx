@@ -25,7 +25,8 @@ const Unregistered = () => {
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, candidates: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _candidates = await getCandidates(dispatch, { page: e.page + 1 });
+            setData(_candidates);
             setLoading({ ...loading, candidates: false });
         }
     const init = async () => {
@@ -88,7 +89,8 @@ const Registered = () => {
         });
     const onPageChange = async (e: any) => {
             setLoading({ ...loading, clients: true });
-            await getCandidates(dispatch, { page: e.page + 1 });
+            const _clients = await getMaternalClients(dispatch, { page: e.page + 1 });
+            setData(_clients);
             setLoading({ ...loading, clients: false });
         }
     const init = async () => {
@@ -105,8 +107,8 @@ const Registered = () => {
             accept: async () => {
                 setLoading({ ...loading, delete: true });
                 await deleteMaternalClientRecord(dispatch, data.id);
-                init();
                 setLoading({ ...loading, delete: false });
+                init();
             }
         });
     }

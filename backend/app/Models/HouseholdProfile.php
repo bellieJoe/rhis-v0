@@ -83,4 +83,9 @@ class HouseholdProfile extends Model
         return $this->hasMany(MedicationMaintenance::class);
     }
 
+    public function familyPlanningClients()
+    {
+        return $this->hasMany(FamilyPlanningClient::class);
+    }
+
 }

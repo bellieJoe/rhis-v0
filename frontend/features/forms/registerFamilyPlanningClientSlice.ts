@@ -12,7 +12,7 @@ export const registerFamilyPlanningClient = createSlice({
     reducers: {
         showRegisterFamilyPlanningClient : (state : any, action) => { 
             state.visible = true;
-            console.log(action);
+            console.log("action");
             state.household_profile = action.payload.household_profile;
         },
         hideRegisterFamilyPlanningForm : (state : any) => { state.visible = false; },
