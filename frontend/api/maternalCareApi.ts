@@ -1,6 +1,7 @@
 import { Dispatch } from "@reduxjs/toolkit"
 import axios from "./axios"
 import { setToast } from "@/features/toastSlice";
+import { setErrors } from "@/features/errorSlice";
 
 export async function getCandidates(dispatch : Dispatch, params : any = {}) {
     try {
@@ -27,6 +28,9 @@ export async function updateMaternalClient(dispatch : Dispatch, params : any) {
         dispatch(setToast({severity : "success", summary : "Success", detail : "Maternal client updated successfully", life : 3000}));
         return true;
     } catch (error:any) {
+        if(error.response.status === 422) {
+            dispatch(setErrors(error.response.data.errors));
+        }
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }

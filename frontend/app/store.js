@@ -21,6 +21,8 @@ import registerMaternalClientReducer from '@/features/forms/registerMaternalClie
 import updateMaternalClientRecordReducer from '@/features/forms/updateMaternalClientRecordSlice';
 import updateChildcareClientRecordReducer from '@/features/forms/updateChildcareClientRecordSlice';
 import registerChildcareClientReducer from '@/features/forms/registerChildcareClientSlice';
+import updateFamilyPlanningClientRecordReducer from '@/features/forms/updateFamilyPlanningClientRecordSlice';
+import registerFamilyPlanningClientReducer from '@/features/forms/registerFamilyPlanningClientSlice';
 
 export default configureStore({
   reducer: {
@@ -44,7 +46,9 @@ export default configureStore({
     sitio : sitioReducer,
     registerMaternalClient : registerMaternalClientReducer,
     registerChildcareClient : registerChildcareClientReducer,
+    registerFamilyPlanningClient : registerFamilyPlanningClientReducer,
     updateMaternalClientRecord : updateMaternalClientRecordReducer,
-    updateChildcareClientRecord : updateChildcareClientRecordReducer
+    updateChildcareClientRecord : updateChildcareClientRecordReducer,
+    updateFamilyPlanningClientRecord : updateFamilyPlanningClientRecordReducer
   }
 });
