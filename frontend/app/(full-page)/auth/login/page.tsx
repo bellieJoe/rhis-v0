@@ -10,6 +10,8 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { getAuth, login } from '@/api/authApi';
 import { useDispatch, useSelector } from 'react-redux';
+import logo from '../../../../assets/images/logo.png';
+import Image from 'next/image';
 
 const LoginPage = () => {
     const [password, setPassword] = useState('');
@@ -54,7 +56,7 @@ const LoginPage = () => {
     return (
         <div className={containerClassName}>
             <div className="flex flex-column align-items-center justify-content-center">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
+                <Image src={logo} alt="Sakai logo" className="mb-5 " />
                 <div
                     style={{
                         borderRadius: '56px',

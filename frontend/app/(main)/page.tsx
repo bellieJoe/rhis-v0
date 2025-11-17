@@ -127,7 +127,7 @@ const Dashboard = () => {
 
     return (
         <AuthMiddleware>
-            <div className="grid">
+            {/* <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="card mb-0">
                         <div className="flex justify-content-between mb-3">
@@ -388,7 +388,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </AuthMiddleware>
     );
 };
