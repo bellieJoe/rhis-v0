@@ -78,12 +78,14 @@ const AppMenu = () => {
                         ]
                     },
                     { 
-                        label: 'Reports', 
+                        label: 'Summary Tables', 
                         icon: 'pi pi-fw pi-list', 
                         items : [
                             { label: 'Maternal Care Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/maternal-care' },
                             { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/childcare' },
-                            { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/family-planning' }
+                            { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/family-planning' },
+                            { label: 'Non-communicable Diseases', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/ncd' },
+                            { label: 'Environmental', icon: 'pi pi-fw pi-angle-right', to: '/midwife/reports/environmental' }
                         ]
                     }
                 ]
