@@ -56,7 +56,9 @@ const LoginPage = () => {
     return (
         <div className={containerClassName}>
             <div className="flex flex-column align-items-center justify-content-center">
-                <Image src={logo} alt="Sakai logo" className="mb-5 " />
+                <div className="p-3 m-0">
+                    <Image src={logo} alt="Sakai logo" width={200} className="mb-5 " />
+                </div>
                 <div
                     style={{
                         borderRadius: '56px',
