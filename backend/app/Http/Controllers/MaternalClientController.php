@@ -178,4 +178,184 @@ class MaternalClientController extends Controller
             'message' => 'Maternal Client deleted successfully'
         ]);
     }
+
+    public function getSummaryTable(Request $request)
+    {
+        $barangayIds = $request->input('barangay_ids', []);
+        $table = [
+            [
+                [
+
+                    "label" => "1. No. of pregnant women with at least 4 prenatal check-ups - Total",
+                ],
+                [
+                    "label" => "2. No. of pregnant women assessed of their nutritional status during the 1st trimester - Total",
+                ],
+                [
+                    "label" => "a. Number of pregnant women seen in the first trimester who have normal BMI -Total",
+                ],
+                [
+                    "label" => "b. No. of pregnant women seen in the first trimester who have low BMI - Total",
+                ],
+                [
+                    "label" => "c. No. of pregnant women seen in the first trimester who have high BMI - Total",
+                ],
+                [
+                    "label" => "3. No. of pregnant women for the first time given at least 2 doses of Td vaccination - Total",
+                ],
+                [
+                    "label" => "4. No. of pregnant women for the 2nd or more times given at least 3 doses of Td vaccination (Td2 Plus) - Total",
+                ],
+                [
+                    "label" => "5. No. of pregnant women who completed the dose of iron with folic acid supplementation - Total",
+                ],
+                [
+                    "label" => "6. No. of pregnant women who completed doses of calcium carbonate supplementation - Total",
+                ],
+                [
+                    "label" => "7. No. of pregnant women given iodine capsules – Total",
+                ],
+            ],
+            [
+                [
+                    "label" => "8. No. of pregnant women given one dose of deworming tablet - Total",
+                ],
+                [
+                    "label" => "9. No. of pregnant women screened for syphilis - Total",
+                ],
+                [
+                    "label" => "10. No. of pregnant women tested positive for syphilis - Total",
+                ],
+                [
+                    "label" => "11. No. of pregnant women screened for Hepatitis B - Total",
+                ],
+                [
+                    "label" => "12. No. of pregnant women tested positive for Hepatitis B - Total",
+                ],
+                [
+                    "label" => "13. No. of pregnant women screened for HIV - Total",
+                ],
+                [
+                    "label" => "14. No. of pregnant women tested for CBC or Hgb&Hct count-Total",
+                ],
+                [
+                    "label" => "15.No. of pregnant women tested for CBC or Hgb & Hct count diagnosed with anemia - Total",
+                ],
+                [
+                    "label" => "16. No. of pregnant women screened for gestational diabetes – Total",
+                ],
+                [
+                    "label" => "17. No. of pregnant women tested positive for gestational diabetes – Total",
+                ],
+            ],
+            [
+                [
+                    "label" => "18. No. of deliveries -Total",
+                ],
+                [
+                    "label" => "19. No. of live births -Total",
+                ],
+                [
+                    "label" => "20. No. of live births by birth weight - Total",
+                ],
+                [
+                    "label" => "a. No. of live births with normal birth weight-Tot.",
+                ],
+            ],
+            [
+                [
+                    "label" => "b1. No. of live births with low birth weight - Male",
+                ],
+                [
+                    "label" => "b2. No. of live births with low birth weight - Female",
+                ],
+                [
+                    "label" => "c. No. of live births with unknown birth weight- Total",
+                ],
+                [
+                    "label" => "21. No. of deliveries attended by skilled health professionals - Total",
+                ],
+                [
+                    "label" => "a. No. of deliveries attended by a physician",
+                ],
+                [
+                    "label" => "b. No. of deliveries attended by a nurse",
+                ],
+                [
+                    "label" => "c. No. of deliveries attended by midwives",
+                ],
+                [
+                    "label" => "22. No. of health facility-based deliveries - Total",
+                ],
+                [
+                    "label" => "23. No. of deliveries by health facility ownership - Total",
+                ],
+                [
+                    "label" => "a. No. of deliveries in public health facility - Total",
+                ],
+                [
+                    "label" => "b. No. of deliveries in private health facility - Total",
+                ],
+                [
+                    "label" => "24. No. of non-facility-based deliveries - Total",
+                ],
+                
+                
+            ],
+            [
+                [
+                    "label" => "a. No. of vaginal deliveries – Total",
+                ],
+                [
+                    "label" => "b. No. of deliveries by CS – Total",
+                ],
+            ],
+            [
+                [
+                    "label" => "a. No. of full-term births",
+                ],
+                [
+                    "label" => "b. No. of pre-term births",
+                ],
+                [
+                    "label" => "c. No. of fetal deaths",
+                ],
+                [
+                    "label" => "d. No. of abortion/ miscarriage",
+                ],
+            ],
+            [
+                [
+                    "label" => "27. No. of postpartum women together with their newborn who completed at least 2 postpartum check-ups - Total",
+                ],
+                [
+                    "label" => "28. No. of postpartum women who completed iron with folic acid supplementation-Total",
+                ],
+                [
+                    "label" => "29. No. of postpartum women with Vitamin A supplementation - Total",
+                ],
+            ],
+            [
+                [
+                    "label" => "28. No. of pregnant women who were diagnosed with hypertension - Total",
+                ],
+                [
+                    "label" => "29. No. of women who gave birth who has access the closest birthing facility within 2 hours - Total",
+                ],
+                [
+                    "label" => "30a. No. of deliveries with 4ANC – Total",
+                ],
+                [
+                    "label" => "30b. No. of deliveries with 1ANC during 1st trimester – Total",
+                ],
+                [
+                    "label" => "31. No. of women who gave birth for the 1st time - Total",
+                ],
+                [
+                    "label" => "32. No. of women who gave birth who are Grand Multigravida (G5 and above) - Total",
+                ],
+            ]
+        ];
+        return $table;
+    }
 }

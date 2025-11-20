@@ -163,6 +163,7 @@ Route::prefix("maternal-clients")->group(function(){
         Route::post("register", [MaternalClientController::class, "register"]);
         Route::post("update", [MaternalClientController::class, "update"]);
         Route::delete("delete/{id}", [MaternalClientController::class, "delete"]);
+        Route::get('summary-table', [MaternalClientController::class, 'getSummaryTable']);
     });
 });
 

@@ -455,7 +455,4 @@ class ReportController extends Controller
             ->count();
     }
 
-
-
-
 }
