@@ -182,11 +182,19 @@ class MaternalClientController extends Controller
     public function getSummaryTable(Request $request)
     {
         $barangayIds = $request->input('barangay_ids', []);
+        // $ageGroupQueries = [
+        //     [
+                
+        //     ]
+        //     ];
         $table = [
             [
                 [
 
                     "label" => "1. No. of pregnant women with at least 4 prenatal check-ups - Total",
+                    // "data" => [
+
+                    // ]
                 ],
                 [
                     "label" => "2. No. of pregnant women assessed of their nutritional status during the 1st trimester - Total",
