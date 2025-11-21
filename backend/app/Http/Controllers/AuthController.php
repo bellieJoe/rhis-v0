@@ -27,6 +27,10 @@ class AuthController extends Controller
     }
 
     public function user(){
+        // return auth()->user();
+        if(!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         return response()->json(User::with('roles', 'roles.roleType', 'bhwDesignations.barangay', 'midwifeDesignations.barangay')->find(Auth::user()->id));
     }
 
