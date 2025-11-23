@@ -12,6 +12,7 @@ use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\HouseholdProfileController;
 use App\Http\Controllers\MaternalClientController;
+use App\Http\Controllers\MidwifeDashboardController;
 use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
@@ -161,6 +162,7 @@ Route::prefix("sitios")->group(function(){
 Route::prefix("dashboard")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("bhw", [DashboardController::class, "getBhwDashboard"]);
+        Route::get("midwife", [MidwifeDashboardController::class, "getMidwifeDashboard"]);
     });
 });
 
@@ -199,6 +201,7 @@ Route::prefix("family-planning-clients")->group(function(){
 
 Route::prefix('summary-tables')->group(function(){
     Route::get("environmental", [SummaryTableController::class, "getEnvnironmentalSummaryTable"]);
+    Route::get("family-planning", [SummaryTableController::class, "getFamilyPlanningSummaryTable"]);
 });
 
 

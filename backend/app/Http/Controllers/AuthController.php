@@ -18,7 +18,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
  
-            return response()->json(User::with('roles', 'roles.roleType', 'bhwDesignations.barangay', 'midwifeDesignations.barangay')->find(Auth::user()->id));
+            return response()->json(User::with('roles', 'roles.roleType', 'bhwDesignations.barangay', 'midwifeDesignations.barangay', 'rhuDesignation.office.barangay')->find(Auth::user()->id));
         }
  
         return response([
@@ -31,7 +31,7 @@ class AuthController extends Controller
         if(!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        return response()->json(User::with('roles', 'roles.roleType', 'bhwDesignations.barangay', 'midwifeDesignations.barangay')->find(Auth::user()->id));
+        return response()->json(User::with('roles', 'roles.roleType', 'bhwDesignations.barangay', 'midwifeDesignations.barangay', 'rhuDesignation.office.offices')->find(Auth::user()->id));
     }
 
     public function isAuth() {

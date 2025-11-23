@@ -15,6 +15,10 @@ class Office extends Model
         return $this->belongsTo(Barangay::class, 'address_barangay_id', 'id');
     }
 
+    public function barangay () {
+        return $this->belongsTo(Barangay::class, 'barangay_id', 'id');
+    }
+
     public function municipality () {
         return $this->belongsTo(Municipality::class);
     }
@@ -38,5 +42,10 @@ class Office extends Model
     public function getParentOfficeNameAttribute()
     {
         return $this->parent ? $this->parent->name : null;
+    }
+
+    public function offices()
+    {
+        return $this->hasMany(Office::class, 'parent_id', 'id');
     }
 }

@@ -10,3 +10,12 @@ export async function getEnvironmentalSummary(dispatch: Dispatch, params : any =
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }
+
+export async function getFamilyPlanningSummary(dispatch: Dispatch, params : any = {}) {
+    try {
+        const response = await axios.get('/api/summary-tables/family-planning', { params });
+        return response.data;
+    } catch (error:any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+    }
+}

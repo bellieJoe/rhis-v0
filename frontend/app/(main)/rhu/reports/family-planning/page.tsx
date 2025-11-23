@@ -29,7 +29,7 @@ const MaternalCareReport = () => {
             setLoading({ ...loading, records: true });
             console.log(authStore.user?.bhw_designations[0]);
             const _report = await getFamilyPlanningSummary(dispatch, { 
-                barangayIds : authStore.user?.midwife_designations.map((d: any) => d.barangay_id), 
+                barangayIds : authStore.user?.rhu_designation.office.offices.map((d: any) => d.barangay_id), 
                 year: year 
             });
             console.log(_report);
@@ -345,20 +345,102 @@ const MaternalCareReport = () => {
                                 <tr>
                                     <td colSpan={50} className="bg-gray-200 font-bold border-bottom-1">6. Total Current Users End</td>
                                 </tr>
-                                {
-                                    (report && report[4]) && report[4].map((d: any, i: number) => (
-                                        <tr key={d}>
-                                            <td className="border-bottom-1 border-right-1">{d.label}</td>
-                                            {
-                                                d.data?.map((m: any, i: number) => (
-                                                    m.map((v: any, i: number) => (
-                                                        <td key={`${v}-${i}`} className="border-bottom-1 border-right-1 text-center">{v}</td>
-                                                    ))
-                                                ))
-                                            }
-                                        </tr>
-                                    ))
-                                }
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">a. Bilateral Tubal Ligation (BTL) - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">b. No-Scalpel Vasectomy (NSV) - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">c. Condom – Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">d. Pills (POP & COC)- Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">d.1. Pills-POP - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">d.2. Pills-COC - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">e. Injectables (DMPA/CIC) - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">f. Implant - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">g. IUD (I & PP)- Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">g.1. IUD-I - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">g.2. IUD-PP - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">h. NFP-LAM - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">i. NFP-BBT – Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">j. NFP-CMM - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">k. NFP-STM – Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td className="border-bottom-1 border-right-1">l. NFP-SDM - Total</td>
+                                    {Array.from({ length: 48 }).map((_, i) => (
+                                    <td key={i} className="border-bottom-1 border-right-1 text-center"></td>
+                                    ))}
+                                </tr>
                                
                             </tbody>
                         </table>
