@@ -18,6 +18,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RhuDesignationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleTypeController;
 use App\Http\Controllers\SitioController;
@@ -138,6 +139,13 @@ Route::prefix("midwife-designations")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [MidwifeDesignationController::class, "store"]);
         Route::get("get-by-user-id", [MidwifeDesignationController::class, "getDesignationsByUserId"]);
+    });
+});
+
+Route::prefix("rhu-designations")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [RhuDesignationController::class, "store"]);
+        Route::get("get-by-user-id", [RhuDesignationController::class, "getDesignationByUserId"]);
     });
 });
 
