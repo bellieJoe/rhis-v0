@@ -6,7 +6,7 @@ const axios = axiosLib.create({
     },
     withCredentials: true,
     withXSRFToken : true,
-    baseURL : "http://172.28.96.1:8000",
+    baseURL : "http://localhost:8000",
 });
 
 export default axios;
