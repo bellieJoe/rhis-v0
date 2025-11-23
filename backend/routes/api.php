@@ -21,6 +21,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleTypeController;
 use App\Http\Controllers\SitioController;
+use App\Http\Controllers\SummaryTableController;
 use App\Http\Controllers\UserController;
 use App\Models\Pregnancy;
 use Illuminate\Http\Request;
@@ -163,7 +164,6 @@ Route::prefix("maternal-clients")->group(function(){
         Route::post("register", [MaternalClientController::class, "register"]);
         Route::post("update", [MaternalClientController::class, "update"]);
         Route::delete("delete/{id}", [MaternalClientController::class, "delete"]);
-        Route::get('summary-table', [MaternalClientController::class, 'getSummaryTable']);
     });
 });
 
@@ -187,6 +187,10 @@ Route::prefix("family-planning-clients")->group(function(){
         Route::get("", [FamilyPlanningClientController::class, "getClients"]);
         Route::get("get-by-id/{id}", [FamilyPlanningClientController::class, "getClientById"]);
     });
+});
+
+Route::prefix('summary-tables')->group(function(){
+    Route::get("environmental", [SummaryTableController::class, "getEnvnironmentalSummaryTable"]);
 });
 
 
