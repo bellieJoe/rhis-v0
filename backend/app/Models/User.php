@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->hasMany(MidwifeDesignation::class);
     }
 
+    public function rhuDesignation()
+    {
+        return $this->hasOne(RhuDesignation::class, 'user_id', 'id');
+    }
+
     public function getMidwifeBarangaysAttribute() {
         $barangays = MidwifeDesignation::where('user_id', $this->id)->with(['barangay'])->get()->map(function ($midwifeDesignation) {
             return $midwifeDesignation->barangay;

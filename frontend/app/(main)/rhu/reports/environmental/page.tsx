@@ -24,11 +24,11 @@ const MaternalCareReport = () => {
 
     useEffect(() => {
         if(!authStore.user?.midwife_designations) return;
-        setBarangays(authStore.user?.midwife_designations.map((d: any) => d.barangay_id));
+        setBarangays(authStore.user?.rhu_designation.office.offices.map((d: any) => d.barangay_id));
         (async () => {
             setLoading({ ...loading, records: true });
             const _report = await getEnvironmentalSummary(dispatch, { 
-                barangayIds: authStore.user?.midwife_designations.map((d: any) => d.barangay_id), 
+                barangayIds: authStore.user?.rhu_designation.office.offices.map((d: any) => d.barangay_id), 
                 year : year 
             });
             console.log(_report);

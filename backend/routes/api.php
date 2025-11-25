@@ -12,15 +12,18 @@ use App\Http\Controllers\HealthcareServiceController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\HouseholdProfileController;
 use App\Http\Controllers\MaternalClientController;
+use App\Http\Controllers\MidwifeDashboardController;
 use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RhuDesignationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleTypeController;
 use App\Http\Controllers\SitioController;
+use App\Http\Controllers\SummaryTableController;
 use App\Http\Controllers\UserController;
 use App\Models\Pregnancy;
 use Illuminate\Http\Request;
@@ -140,6 +143,13 @@ Route::prefix("midwife-designations")->group(function(){
     });
 });
 
+Route::prefix("rhu-designations")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [RhuDesignationController::class, "store"]);
+        Route::get("get-by-user-id", [RhuDesignationController::class, "getDesignationByUserId"]);
+    });
+});
+
 Route::prefix("sitios")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [SitioController::class, "store"]);
@@ -152,7 +162,7 @@ Route::prefix("sitios")->group(function(){
 Route::prefix("dashboard")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("bhw", [DashboardController::class, "getBhwDashboard"]);
-        Route::get("midwife", [DashboardController::class, "getMidwifeDashboard"]);
+        Route::get("midwife", [MidwifeDashboardController::class, "getMidwifeDashboard"]);
     });
 });
 
@@ -164,7 +174,6 @@ Route::prefix("maternal-clients")->group(function(){
         Route::post("register", [MaternalClientController::class, "register"]);
         Route::post("update", [MaternalClientController::class, "update"]);
         Route::delete("delete/{id}", [MaternalClientController::class, "delete"]);
-        Route::get('summary-table', [MaternalClientController::class, 'getSummaryTable']);
     });
 });
 
@@ -188,6 +197,11 @@ Route::prefix("family-planning-clients")->group(function(){
         Route::get("", [FamilyPlanningClientController::class, "getClients"]);
         Route::get("get-by-id/{id}", [FamilyPlanningClientController::class, "getClientById"]);
     });
+});
+
+Route::prefix('summary-tables')->group(function(){
+    Route::get("environmental", [SummaryTableController::class, "getEnvnironmentalSummaryTable"]);
+    Route::get("family-planning", [SummaryTableController::class, "getFamilyPlanningSummaryTable"]);
 });
 
 
