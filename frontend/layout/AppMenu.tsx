@@ -67,7 +67,7 @@ const AppMenu = () => {
             return [{
                 label: 'Midwife Interface',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/' },
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/midwife/dashboard' },
                     { 
                         label: 'Target Client List', 
                         icon: 'pi pi-fw pi-list', 

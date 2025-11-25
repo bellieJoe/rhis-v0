@@ -10,3 +10,12 @@ export const getBhwDashboard = async (dispatch : Dispatch, params : any = {}) =>
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }
+
+export const getMidwifeDashboard = async (dispatch : Dispatch, params : any = {}) => {
+    try {   
+        const response = await axios.get('/api/dashboard/midwife', { params });
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+    }
+}

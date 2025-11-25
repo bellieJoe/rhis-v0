@@ -818,5 +818,27 @@ class DashboardController extends Controller
         ");
     }
 
+    public function getMidwifeDashboard(Request $request)
+    {
+        $barangayIds = $request->input('barangayIds', []);
+        $name = $request->has('name') ? $request->name : null;
+        $start = $request->has('start') ? $request->start : null;
+        $end = $request->has('end') ? $request->end : null;
+
+        switch($name) {
+            case 'all':
+                return $this->getMidwifeDashboardData($request);
+                break;
+            default:
+                return $this->getMidwifeDashboardData($request);
+                break;
+        }
+    }
+
+    private function getMidwifeDashboardData(Request $request)
+    {
+
+    }
+
 
 }

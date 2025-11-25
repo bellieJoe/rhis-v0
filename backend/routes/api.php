@@ -152,6 +152,7 @@ Route::prefix("sitios")->group(function(){
 Route::prefix("dashboard")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("bhw", [DashboardController::class, "getBhwDashboard"]);
+        Route::get("midwife", [DashboardController::class, "getMidwifeDashboard"]);
     });
 });
 
