@@ -9,7 +9,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { DataView } from 'primereact/dataview';
 import { Dropdown } from 'primereact/dropdown';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';    
 import { FaPersonPregnant } from 'react-icons/fa6';
 import { MdOutlineVaccines } from 'react-icons/md';
 import { TbCoffin } from 'react-icons/tb';
@@ -27,13 +27,15 @@ const MidwifeDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const init = async () => {
-        console.log(authStore.user);
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
         const _data = await getMidwifeDashboard(dispatch, {
             barangayIds : sitios
         });
+        console.log(_data);
         setData(_data);
     };
 
@@ -44,6 +46,7 @@ const MidwifeDashboard = () => {
     return (
         <AuthMiddleware>
             <h2>Dashboard</h2>
+            <Calendar value={startDate} onChange={(e) => setStartDate(e.value)} dateFormat="mm/dd/yy" placeholder="Start Date" mask="99/99/9999" />
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="card mb-0">
