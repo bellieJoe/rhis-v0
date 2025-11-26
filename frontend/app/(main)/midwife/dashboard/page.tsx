@@ -46,7 +46,7 @@ const MidwifeDashboard = () => {
     return (
         <AuthMiddleware>
             <h2>Dashboard</h2>
-            <Calendar value={startDate} onChange={(e) => setStartDate(e.value)} dateFormat="mm/dd/yy" placeholder="Start Date" mask="99/99/9999" />
+            {/* <Calendar value={startDate} onChange={(e) => setStartDate(e.value)} dateFormat="mm/dd/yy" placeholder="Start Date" mask="99/99/9999" /> */}
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="card mb-0">
