@@ -25,6 +25,9 @@ class MidwifeDashboardController extends Controller
             case 'CHILD_CARE_WEIGHT_STATUS_CHART':
                 return $this->getChildcareStatusChartData($request);
                 break;
+            case 'CHILD_CARE_NEWBORN_CHART':
+                return $this->getChildcareNewbornChartData($request);
+                break;
             case 'ALL':
                 return $this->getMidwifeDashboardData($request, $barangayIds, $start, $end);
                 break;
@@ -180,71 +183,41 @@ class MidwifeDashboardController extends Controller
             ];
         });
     }
-// private function getChildcareStatusChartData(Request $request)
-// {
-//     $barangayIds = $request->input('barangayIds', []);
-//     $end = $request->input('end', Carbon::now()->toDateString());
-//     $ageGroup = $request->input('ageGroup');
 
-//     // Validate ageGroup
-//     if (!in_array($ageGroup, [1, 2, 3])) {
-//         return response()->json([
-//             'error' => 'Invalid or missing ageGroup. Must be 1, 2, or 3.'
-//         ], 400);
-//     }
+    private function getChildcareNewbornChartData(Request $request)
+    {
+        $barangayIds = $request->input('barangayIds', null);
+        $end = $request->input('end', now()->toDateString());
 
-//     $mapping = [
-//         [
-//             "label" => "S – stunted",
-//             "ageGroup1" => [0, 1.9],
-//             "ageGroup2" => [0, 6],
-//             "ageGroup3" => [0, 7],
-//         ],
-//         [
-//             "label" => "W-MAM – Wasted MAM",
-//             "ageGroup1" => [3.01, 3.9],
-//             "ageGroup2" => [6.01, 6.74],
-//             "ageGroup3" => [7.01, 8.9],
-//         ],
-//         [
-//             "label" => "W-SAM – Wasted SAM",
-//             "ageGroup1" => [2.0, 3.0],
-//             "ageGroup2" => [5.0, 6.0],
-//             "ageGroup3" => [6.0, 7.0],
-//         ],
-//         [
-//             "label" => "O – obese/overweight",
-//             "ageGroup1" => [5.01, INF],
-//             "ageGroup2" => [10.01, INF],
-//             "ageGroup3" => [12.01, INF],
-//         ],
-//         [
-//             "label" => "N – normal",
-//             "ageGroup1" => [4.0, 5.0],
-//             "ageGroup2" => [7.5, 10.0],
-//             "ageGroup3" => [9.0, 12.0],
-//         ],
-//     ];
+        $endDate = Carbon::parse($end)->format('Y-m-d');
 
-//     $key = 'ageGroup' . $ageGroup;
+        $mapping = [
+            [
+                "label" => "Low",
+                "value" => [0, 2], 
+            ],
+            [
+                "label" => "Normal",
+                "value" => [2.01, INF],
+            ],
+            [
+                "label" => "Unknown",
+                "value" => [null, null],
+            ]
+        ];
 
-//     return collect($mapping)->map(function ($item) use ($barangayIds, $end, $key) {
-//         $weightRange = $item[$key];
-
-//         return [
-//             'Name' => $item['label'],
-//             'Total' => $this->getHouseholdProfileQuery($barangayIds)
-//                 ->whereHas('childcareClient', function ($q) use ($weightRange) {
-//                     $q->whereBetween('nsa_weight_' . $weightRange[0] . '_' . $weightRange[1], $weightRange);
-//                 })
-//                 ->whereRaw("TIMESTAMPDIFF(MONTH, birthdate, ?) BETWEEN ?", [
-//                     $end,
-//                     $ageGroup == 1 ? '0 AND 3' : ($ageGroup == 2 ? '6 AND 11' : '12 AND 12')
-//                 ])
-//                 ->count()
-//         ];
-//     });
-// }
+        return collect($mapping)->map(function ($item) use ($barangayIds, $endDate) {
+            return (object)[
+                'Name' => $item['label'],
+                'Total' => $this->getHouseholdProfileQuery($barangayIds)
+                    ->whereHas('childcareClient', function ($q) use ($item) {
+                        $q->whereBetween('weight', $item['value']);
+                    })
+                    ->whereRaw("TIMESTAMPDIFF(DAY, birthdate, ?) BETWEEN 0 AND 28", [$endDate])
+                    ->count()
+                ];
+        });
+    }
 
 
 

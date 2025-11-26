@@ -125,6 +125,54 @@ const ChildcareWeightStatusChart = ({ startDate, endDate , barangayIds} : { star
     );
 };
 
+const ChildcareNewbornChart  = ({ startDate, endDate , barangayIds} : { startDate: any, endDate: any, barangayIds: any[] }) => {
+    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
+    const [data, setData] = useState<any>([]);
+    const dispatch = useDispatch();
+    const authStore = useSelector((state: any) => state.auth);
+
+    const getData = async () => {
+        if (!barangayIds || barangayIds.length === 0) return;
+        console.log('test');
+        const _data = await getMidwifeDashboard(dispatch, { 
+            name: 'CHILD_CARE_NEWBORN_CHART', 
+            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
+            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null,
+            barangayIds : barangayIds,
+        });
+        console.log(_data);
+        setData(_data);
+    };
+    useEffect(() => {
+        getData();
+    }, [authStore.user, ageBracketFilter, startDate, endDate]);
+
+    return (
+        <div className="card mb-0 h-full">
+            <h3 className="text-lg font-semibold mb-2 text-center">Newborn Weight Status</h3>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                    data={data}
+                    layout="horizontal"
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="category" dataKey="Name"  />
+                    <YAxis type="number"  />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="Total" fill="#8884d8" />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+};
+
 const MidwifeDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
@@ -217,6 +265,7 @@ const MidwifeDashboard = () => {
                     </div>
                 </div>
             </div>
+            
             <h5>Maternal Care and Services</h5>
             <div className="grid">
                 <div className="col-12 lg:col-6">
@@ -228,6 +277,9 @@ const MidwifeDashboard = () => {
             <div className="grid">
                 <div className="col-12">
                     <ChildcareWeightStatusChart startDate={startDate} endDate={endDate} barangayIds={barangayIds} />
+                </div>
+                <div className="col-12">
+                    <ChildcareNewbornChart startDate={startDate} endDate={endDate} barangayIds={barangayIds} />
                 </div>
             </div>
 
