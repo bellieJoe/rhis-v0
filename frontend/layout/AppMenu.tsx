@@ -99,7 +99,7 @@ const AppMenu = () => {
             return [{
                 label: 'RHU Interface',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/' },
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/rhu/dashboard' },
                     { label: 'Maternal Care Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/maternal-care' },
                     { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/childcare' },
                     { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/family-planning' },
