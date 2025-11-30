@@ -494,17 +494,48 @@ class ReportController extends Controller
 
     public function resubmit(Request $request, $id)
     {
-
+        Report::find($id)->update([
+            "status" => Report::STATUS_PENDING
+        ]);
     }
 
     public function reject(Request $request, $id)
     {
-
+        $request->validate([
+            "remarks" => "required"
+        ]);
+        return DB::transaction(function () use ($request, $id) {
+            $report = Report::find($id);
+            $report->status = Report::STATUS_REJECTED;
+            $report->save();
+    
+            ReportLog::create([
+                "report_id" => $report->id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_REJECTED,
+                "remarks" => $request->remarks,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " rejected the report",
+            ]);
+        });
     }
 
     public function approve(Request $request, $id)
     {
-
+        return DB::transaction(function () use ($request, $id) {
+            $report = Report::find($id);
+            $report->status = Report::STATUS_APPROVED;
+            $report->approved_at = now();
+            $report->approved_by = auth()->user()->id;
+            $report->save();
+    
+            ReportLog::create([
+                "report_id" => $report->id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_APPROVED,
+                "remarks" => $request->remarks ? $request->remarks : null,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " approved the report",
+            ]);
+        });
     }
 
     public function delete(Request $request, $id)

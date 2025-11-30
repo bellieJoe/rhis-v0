@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteReport, getSubmittedReports } from "@/api/reportApi";
+import { deleteReport, getSubmittedReports, resubmitReport } from "@/api/reportApi";
 import { identifyReportType } from "@/utils/helpers";
 import moment from "moment";
 import { Badge } from "primereact/badge";
@@ -31,6 +31,16 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
             }
         })
     }
+    const handleResubmit = (e) => {
+        confirmPopup({
+            target: e.target,
+            message: 'Are you sure you want to resubmit this report?',
+            accept: async () => {
+                await resubmitReport(dispatch, report.id);
+                handleRefresh();
+            }
+        })
+    }
     const handleRefresh = () => {
         if(onRefresh) {
             onRefresh();
@@ -40,6 +50,9 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
         <div className="">
             <div className="flex gap-2">
                 <Button label="Delete" severity="danger" size="small" onClick={handleDelete} />
+                {
+                    report.status == "rejected" && <Button label="Resubmit" severity="success" size="small" onClick={handleResubmit}  />
+                }
                 <Button label="View" size="small"  />
             </div> 
         </div>

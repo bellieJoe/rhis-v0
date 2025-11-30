@@ -1,6 +1,7 @@
 "use client";
 
-import { deleteReport, getForApprovalReports, getSForApprovalReports, getSubmittedReports } from "@/api/reportApi";
+import { approveReport, deleteReport, getForApprovalReports, getSForApprovalReports, getSubmittedReports, rejectReport } from "@/api/reportApi";
+import ValidationError from "@/components/forms/ValidationError";
 import { identifyReportType } from "@/utils/helpers";
 import moment from "moment";
 import { Badge } from "primereact/badge";
@@ -8,7 +9,9 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
+import { InputTextarea } from "primereact/inputtextarea";
 import { Paginator } from "primereact/paginator";
+import { Sidebar } from "primereact/sidebar";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,15 +24,50 @@ const ReportStatus = ({ status }: any) => {
 
 const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => void }) => {
     const dispatch = useDispatch();
-    const handleDelete = (e) => {
-        confirmPopup({
-            target: e.target,
-            message: 'Are you sure you want to delete this report?',
-            accept: async () => {
-                await deleteReport(dispatch, report.id);
-                handleRefresh();
-            }
-        })
+    const [openSidebar, setOpenSidebar] = useState({
+        approve: false,
+        reject : false
+    });
+    const [remarks, setRemarks] = useState({
+        approve: "",
+        reject : ""
+    });
+    const [loading, setLoading] = useState({
+        approve: false,
+        reject : false
+    });
+
+    const handleReject = async () => {
+        setLoading({...loading, reject: true});
+        const res = await rejectReport(dispatch, {
+            remarks: remarks.reject
+        }, report.id);
+        if(!res) {
+            setLoading({...loading, reject: false});
+            return;
+        }
+        handleRefresh();
+        setOpenSidebar({...openSidebar, reject: false});
+        setLoading({...loading, reject: false});
+    }
+    const handleApprove = async () => {
+        setLoading({...loading, approve: true});
+        const res = await approveReport(dispatch, {
+            remarks: remarks.approve
+        }, report.id);
+        if(!res) {
+            setLoading({...loading, approve: false});
+            return;
+        }
+        handleRefresh();
+        setOpenSidebar({...openSidebar, approve: false});
+        setLoading({...loading, approve: false});
+    }
+    const approve = () => {
+        setOpenSidebar({...openSidebar, approve: true});
+    }
+    const reject = () => {
+        setOpenSidebar({...openSidebar, reject: true});
     }
     const handleRefresh = () => {
         if(onRefresh) {
@@ -39,9 +77,30 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
     return (
         <div className="">
             <div className="flex gap-2">
-                <Button label="Delete" severity="danger" size="small" onClick={handleDelete} />
-                <Button label="View" size="small"  />
+                <Button label="Reject" severity="danger" size="small" onClick={reject} />
+                <Button label="Approve" size="small" onClick={approve}  />
             </div> 
+            <Sidebar style={{ width: "500px", maxWidth: "100%" }} visible={openSidebar.approve} onHide={() => setOpenSidebar({...openSidebar, approve: false})} position="right" >
+                <div className="mb-3">
+                    <label htmlFor="" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Remarks</label>
+                    <InputTextarea className="w-full" value={remarks.approve} onChange={(e) => setRemarks({...remarks, approve: e.target.value})} />
+                    <ValidationError name="remarks" />
+                </div>
+                
+                <div className="flex flex-column gap-2">
+                    <Button label="Approve" size="small" onClick={handleApprove} loading={loading.approve}  />
+                </div> 
+            </Sidebar>
+            <Sidebar style={{ width: "500px", maxWidth: "100%" }} visible={openSidebar.reject} onHide={() => setOpenSidebar({...openSidebar, reject: false})} position="right" >
+                <div className="mb-3">
+                    <label htmlFor="" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Remarks</label>
+                    <InputTextarea className="w-full" value={remarks.reject} onChange={(e) => setRemarks({...remarks, reject: e.target.value})} />
+                    <ValidationError name="remarks" />
+                </div>
+                <div className="flex flex-column gap-2">
+                    <Button label="Reject" severity="danger" size="small" onClick={handleReject} loading={loading.reject}  />
+                </div> 
+            </Sidebar>
         </div>
     );
 }
