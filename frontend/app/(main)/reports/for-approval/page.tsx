@@ -14,6 +14,7 @@ import { Paginator } from "primereact/paginator";
 import { Sidebar } from "primereact/sidebar";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ReportLogs } from "../submitted/page";
 
 const ReportStatus = ({ status }: any) => {
     return (
@@ -36,7 +37,7 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
         approve: false,
         reject : false
     });
-
+    const [openLogs, setOpenLogs] = useState(false);
     const handleReject = async () => {
         setLoading({...loading, reject: true});
         const res = await rejectReport(dispatch, {
@@ -80,6 +81,7 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                 <Button label="Reject" severity="danger" size="small" onClick={reject} />
                 <Button label="Approve" size="small" onClick={approve}  />
             </div> 
+            <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />
             <Sidebar style={{ width: "500px", maxWidth: "100%" }} visible={openSidebar.approve} onHide={() => setOpenSidebar({...openSidebar, approve: false})} position="right" >
                 <div className="mb-3">
                     <label htmlFor="" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Remarks</label>

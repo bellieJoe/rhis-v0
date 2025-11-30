@@ -9,8 +9,39 @@ import { Column } from "primereact/column";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataTable } from "primereact/datatable";
 import { Paginator } from "primereact/paginator";
-import { useEffect, useRef, useState } from "react";
+import { Panel } from "primereact/panel";
+import { Sidebar } from "primereact/sidebar";
+import { Timeline } from "primereact/timeline";
+import { use, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+export const ReportLogs = ({ report, visible, hide }: { report: any, visible: boolean, hide: () => void }) => {
+    return (
+        <>
+            <Sidebar visible={visible} position="right" onHide={() => hide()} style={{ width: "800px", maxWidth: "100%"}} >
+                <Timeline 
+                align="left"
+                value={report.report_logs} 
+                content={(e) => (
+                    <div className="mb-3">
+                        <small>{moment(e.created_at).fromNow()}</small>
+                        <p >{e.description}</p>
+                        {
+                            e.remarks && (
+                                <Panel header="Remarks" toggleable>
+                                    <p className="m-0">
+                                        {e.remarks}
+                                    </p>
+                                </Panel>
+                            )
+                        }
+                    </div>
+                )}
+                opposite={(e) => (<ReportStatus status={e.status} />)} />
+            </Sidebar>
+        </>
+    )
+}
 
 const ReportStatus = ({ status }: any) => {
     return (
@@ -21,6 +52,7 @@ const ReportStatus = ({ status }: any) => {
 
 const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => void }) => {
     const dispatch = useDispatch();
+    const [openLogs, setOpenLogs] = useState(false);
     const handleDelete = (e) => {
         confirmPopup({
             target: e.target,
@@ -53,8 +85,9 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                 {
                     report.status == "rejected" && <Button label="Resubmit" severity="success" size="small" onClick={handleResubmit}  />
                 }
-                <Button label="View" size="small"  />
+                <Button label="View" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
+            <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />
         </div>
     );
 }

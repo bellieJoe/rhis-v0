@@ -545,7 +545,9 @@ class ReportController extends Controller
 
     public function submitted()
     {
-        return Report::where([
+        return Report::query()
+        ->with(['reportType','reportLogs' => function($q) { $q->orderBy('created_at', 'desc'); }])
+        ->where([
             "submitted_by" => auth()->user()->id
         ])
         ->orderBy('submitted_at', 'desc')
@@ -557,7 +559,9 @@ class ReportController extends Controller
         $user = auth()->user();
         $roleType = $user->roles->first()->role_type_id;
 
-        $reports = Report::where('status', Report::STATUS_PENDING)
+        $reports = Report::querr()
+            ->with('reportType', 'reportLogs')
+            ->where('status', Report::STATUS_PENDING)
             ->where('submitted_by', '!=', $user->id) // ← EXCLUDE OWN REPORTS
             ->when($roleType == 2, function ($q) use ($user) {
                 // Midwife approving BHW reports
