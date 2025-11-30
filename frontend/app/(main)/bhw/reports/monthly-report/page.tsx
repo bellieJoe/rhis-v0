@@ -2,11 +2,14 @@
 
 import { getBhwDesignationsByUserId } from "@/api/bhwDesignationApi";
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
+import { submit, submitReport } from "@/api/reportApi";
 import { BarangayPicker, MonthPicker, MONTHS, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
+import { setToast } from "@/features/toastSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
+import { confirmPopup } from "primereact/confirmpopup";
 import { Dropdown } from "primereact/dropdown";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { use, useEffect, useRef, useState } from "react";
@@ -1014,11 +1017,28 @@ const BHWMonthlyReportPage = () => {
     });
     const authStore = useSelector((state: any) => state.auth);
     const [loading, setLoading] = useState({
-        records: false
+        records: false,
+        submit : false
     });
     const dispatch = useDispatch();
     const [sitios, setSitios] = useState<any[]>([]);
     const [records, setRecords] = useState<any>([]);
+
+    const handleSubmit = (e) => {
+        confirmPopup({
+            target: e.target,
+            message: 'Are you sure you want to submit the report?',
+            accept: async () => {
+                if(!filter.sitio || !filter.month || !filter.year) {
+                    dispatch(setToast({severity: 'error', summary: 'Error', detail: 'Please select sitio, month and year'}));
+                    return;
+                }
+                setLoading({ ...loading, submit: true });
+                await submitReport(dispatch, {sitio: filter.sitio, month: filter.month, year: filter.year}, 1);
+                setLoading({ ...loading, submit: false });
+            }
+        })
+    }
 
     useEffect(() => {
         if(filter.sitio && filter.month && filter.year) {
@@ -1055,7 +1075,10 @@ const BHWMonthlyReportPage = () => {
                     <MonthPicker value={filter.month} onChange={(e: any) => setFilter({ ...filter, month: e.value })} />
                     <YearPicker value={filter.year} onChange={(e: any) => setFilter({ ...filter, year: e.value })} />
                 </div>
-                <Button label="Print" size="small" icon="pi pi-print" onClick={reactToPrintFn}/>
+                <div className="flex gap-2">
+                    <Button label="Print" size="small" icon="pi pi-print"  onClick={reactToPrintFn}/>
+                    <Button label="Submit" severity="success" size="small" icon="pi pi-send" onClick={handleSubmit} />
+                </div>
             </div>
             <div className="card overflow-x-scroll">
                 {

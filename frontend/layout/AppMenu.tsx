@@ -116,7 +116,15 @@ const AppMenu = () => {
             ...setAdminMenu(), 
             ...setBhwMenu(),
             ...setMidwifeMenu(),
-            ...setRhuMenu()
+            ...setRhuMenu(),
+            {
+                label: 'Report Submissions',
+                icon: 'pi pi-fw pi-file',
+                items: [
+                    { label: 'Submitted', icon: 'pi pi-fw pi-angle-right', to: '/reports/submitted' },
+                    { label: 'For Approval', icon: 'pi pi-fw pi-angle-right', to: '/reports/for-approval' }
+                ]
+            }
         ]);
     }, [authUser]);
 
