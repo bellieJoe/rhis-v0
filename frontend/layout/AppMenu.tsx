@@ -111,12 +111,26 @@ const AppMenu = () => {
         return [];
     }
 
+    const setPhoMenu  = () => {
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 4)) {
+            return [{
+                label: 'PHO Interface',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/pho/dashboard' },
+                    { label: 'Environmental', icon: 'pi pi-fw pi-angle-right', to: '/pho/environmental' },
+                ]
+            }];
+        }
+        return [];
+    }
+
     useEffect(() => {
         setModel([
             ...setAdminMenu(), 
             ...setBhwMenu(),
             ...setMidwifeMenu(),
             ...setRhuMenu(),
+            ...setPhoMenu(),
             {
                 label: 'Report Submissions',
                 icon: 'pi pi-fw pi-file',

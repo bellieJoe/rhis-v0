@@ -494,9 +494,17 @@ class ReportController extends Controller
 
     public function resubmit(Request $request, $id)
     {
-        Report::find($id)->update([
-            "status" => Report::STATUS_PENDING
-        ]);
+        return DB::transaction(function () use ($request, $id) {
+            Report::find($id)->update([
+                "status" => Report::STATUS_PENDING
+            ]);
+            ReportLog::create([
+                "report_id" => $id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_PENDING,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " resubmitted a report",
+            ]);
+        });
     }
 
     public function reject(Request $request, $id)
@@ -559,7 +567,7 @@ class ReportController extends Controller
         $user = auth()->user();
         $roleType = $user->roles->first()->role_type_id;
 
-        $reports = Report::querr()
+        $reports = Report::query()
             ->with('reportType', 'reportLogs')
             ->where('status', Report::STATUS_PENDING)
             ->where('submitted_by', '!=', $user->id) // ← EXCLUDE OWN REPORTS

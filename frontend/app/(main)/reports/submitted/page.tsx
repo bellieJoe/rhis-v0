@@ -85,7 +85,8 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                 {
                     report.status == "rejected" && <Button label="Resubmit" severity="success" size="small" onClick={handleResubmit}  />
                 }
-                <Button label="View" size="small" onClick={() => setOpenLogs(true)}  />
+                <Button label="View" size="small"  />
+                <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />
         </div>

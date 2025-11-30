@@ -1,10 +1,12 @@
 "use client";
 
-import { getSummaryReport } from "@/api/reportApi";
+import { getSummaryReport, submitReport } from "@/api/reportApi";
 import { getFamilyPlanningSummary } from "@/api/summaryTableApi";
 import { YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
+import { setToast } from "@/features/toastSlice";
 import { Button } from "primereact/button";
+import { confirmPopup } from "primereact/confirmpopup";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,12 +17,31 @@ const MaternalCareReport = () => {
     const [year, setYear] = useState(new Date().getFullYear());
     const [barangay, setBarangay] = useState(null);
     const [barangayName, setBarangayName] = useState(null);
-    const [ loading, setLoading ] = useState({ records: false });
+    const [ loading, setLoading ] = useState({ records: false, submit: false });
     const [municipality, setMunicipality] = useState(null);
     const authStore = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
      const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+
+    const handleSubmit = (e) => {
+        confirmPopup({
+            target: e.target,
+            message: 'Are you sure you want to submit the report?',
+            accept: async () => {
+                if(!year) {
+                    dispatch(setToast({severity: 'error', summary: 'Error', detail: 'Please select year'}));
+                    return;
+                }
+                setLoading({ ...loading, submit: true });
+                await submitReport(dispatch, {
+                    barangayIds: authStore.user?.midwife_designations.map((d: any) => d.barangay_id), 
+                    year : year 
+                }, 5);
+                setLoading({ ...loading, submit: false });
+            }
+        })
+    }
 
     useEffect(() => {
         if(!authStore.user?.midwife_designations) return;
@@ -42,6 +63,7 @@ const MaternalCareReport = () => {
             <div className="flex justify-content-end gap-1 mb-3">
                 <YearPicker value={year} onChange={(e) => setYear(e.value)} />
                 <Button label="Print" icon="pi pi-print" onClick={reactToPrintFn} />
+                <Button label="Submit" severity="success" size="small" icon="pi pi-send" onClick={handleSubmit} />
             </div>
             <div className="card" style={{
                 overflowX: "scroll"

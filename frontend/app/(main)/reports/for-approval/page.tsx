@@ -80,6 +80,7 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
             <div className="flex gap-2">
                 <Button label="Reject" severity="danger" size="small" onClick={reject} />
                 <Button label="Approve" size="small" onClick={approve}  />
+                <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />
             <Sidebar style={{ width: "500px", maxWidth: "100%" }} visible={openSidebar.approve} onHide={() => setOpenSidebar({...openSidebar, approve: false})} position="right" >
