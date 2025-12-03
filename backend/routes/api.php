@@ -16,6 +16,7 @@ use App\Http\Controllers\MidwifeDashboardController;
 use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\PhoReportController;
 use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
@@ -211,4 +212,8 @@ Route::prefix('summary-tables')->group(function(){
     Route::get("family-planning", [SummaryTableController::class, "getFamilyPlanningSummaryTable"]);
 });
 
+
+Route::prefix('pho-reports')->group(function(){
+    Route::get("environmental", [PhoReportController::class, "environmental"]);
+});
 

@@ -15,7 +15,7 @@ class Office extends Model
         return $this->belongsTo(Barangay::class, 'address_barangay_id', 'id');
     }
 
-    public function barangay () {
+    public function barangay() {
         return $this->belongsTo(Barangay::class, 'barangay_id', 'id');
     }
 
