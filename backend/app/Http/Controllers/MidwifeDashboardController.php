@@ -215,10 +215,9 @@ class MidwifeDashboardController extends Controller
                     })
                     ->whereRaw("TIMESTAMPDIFF(DAY, birthdate, ?) BETWEEN 0 AND 28", [$endDate])
                     ->count()
-                ];
+            ];
         });
     }
-
 
 
 }
