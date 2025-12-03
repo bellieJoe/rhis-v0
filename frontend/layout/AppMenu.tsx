@@ -19,7 +19,7 @@ const AppMenu = () => {
             return [{
                 label: 'Admin Interface',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                    // { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
                     { label: 'Users', icon: 'pi pi-fw pi-users', to: '/admin/users' },
                     { label: 'Offices', icon: 'pi pi-fw pi-building', to: '/admin/offices' },
                     { 
@@ -57,6 +57,14 @@ const AppMenu = () => {
                         ]
                     }
                 ]
+            },
+        {
+                label: 'Report Submissions',
+                icon: 'pi pi-fw pi-file',
+                items: [
+                    { label: 'Submitted', icon: 'pi pi-fw pi-angle-right', to: '/reports/submitted' },
+                    // { label: 'For Approval', icon: 'pi pi-fw pi-angle-right', to: '/reports/for-approval' }
+                ]
             }];
         }
         return [];
@@ -89,6 +97,14 @@ const AppMenu = () => {
                         ]
                     }
                 ]
+            },
+        {
+                label: 'Report Submissions',
+                icon: 'pi pi-fw pi-file',
+                items: [
+                    { label: 'Submitted', icon: 'pi pi-fw pi-angle-right', to: '/reports/submitted' },
+                    { label: 'For Approval', icon: 'pi pi-fw pi-angle-right', to: '/reports/for-approval' }
+                ]
             }];
         }
         return [];
@@ -99,13 +115,42 @@ const AppMenu = () => {
             return [{
                 label: 'RHU Interface',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/' },
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/rhu/dashboard' },
                     { label: 'Maternal Care Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/maternal-care' },
                     { label: 'Child Care Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/childcare' },
                     { label: 'Family Planning Services', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/family-planning' },
                     { label: 'Non-communicable Diseases', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/ncd' },
                     { label: 'Environmental', icon: 'pi pi-fw pi-angle-right', to: '/rhu/reports/environmental' }
                 ]
+            },
+        {
+                label: 'Report Submissions',
+                icon: 'pi pi-fw pi-file',
+                items: [
+                    { label: 'Submitted', icon: 'pi pi-fw pi-angle-right', to: '/reports/submitted' },
+                    { label: 'For Approval', icon: 'pi pi-fw pi-angle-right', to: '/reports/for-approval' }
+                ]
+            }];
+        }
+        return [];
+    }
+
+    const setPhoMenu  = () => {
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 4)) {
+            return [{
+                label: 'PHO Interface',
+                items: [
+                    { label: 'Dashboard', icon: 'pi pi-fw pi-th-large', to: '/pho/dashboard' },
+                    { label: 'Environmental', icon: 'pi pi-fw pi-angle-right', to: '/pho/environmental' },
+                ]
+            },
+            {
+                    label: 'Report Submissions',
+                    icon: 'pi pi-fw pi-file',
+                    items: [
+                        { label: 'Submitted', icon: 'pi pi-fw pi-angle-right', to: '/reports/submitted' },
+                        { label: 'For Approval', icon: 'pi pi-fw pi-angle-right', to: '/reports/for-approval' }
+                    ]
             }];
         }
         return [];
@@ -116,7 +161,9 @@ const AppMenu = () => {
             ...setAdminMenu(), 
             ...setBhwMenu(),
             ...setMidwifeMenu(),
-            ...setRhuMenu()
+            ...setRhuMenu(),
+            ...setPhoMenu(),
+
         ]);
     }, [authUser]);
 

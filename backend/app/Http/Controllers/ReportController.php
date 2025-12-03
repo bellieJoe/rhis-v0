@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\HouseholdProfile;
+use App\Models\Report;
+use App\Models\ReportLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -454,5 +457,146 @@ class ReportController extends Controller
             })
             ->count();
     }
+
+    public function submit(Request $request)
+    {
+        $request->validate([
+            "filters" => "required",
+            "type" => "required|exists:report_types,id"
+        ]);
+
+        return DB::transaction(function () use ($request) {
+            if(Report::where([
+                'report_type_id'=> $request->type,
+                "filters" => json_encode($request->filters),
+                "submitted_by" => auth()->user()->id
+            ])->exists()) {
+                return response()->json([
+                    "message" => "Report already submitted"
+                ], 400);
+            }
+            $report = Report::create([
+                "submitted_by" => auth()->user()->id,
+                "filters" => json_encode($request->filters),
+                "report_type_id" => $request->type,
+                "status" => Report::STATUS_PENDING,
+                "submitted_at" => now(),
+            ]);
+
+            ReportLog::create([
+                "report_id" => $report->id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_PENDING,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " submitted a report",
+            ]);
+        });
+    }
+
+    public function resubmit(Request $request, $id)
+    {
+        return DB::transaction(function () use ($request, $id) {
+            Report::find($id)->update([
+                "status" => Report::STATUS_PENDING
+            ]);
+            ReportLog::create([
+                "report_id" => $id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_PENDING,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " resubmitted a report",
+            ]);
+        });
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $request->validate([
+            "remarks" => "required"
+        ]);
+        return DB::transaction(function () use ($request, $id) {
+            $report = Report::find($id);
+            $report->status = Report::STATUS_REJECTED;
+            $report->save();
+    
+            ReportLog::create([
+                "report_id" => $report->id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_REJECTED,
+                "remarks" => $request->remarks,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " rejected the report",
+            ]);
+        });
+    }
+
+    public function approve(Request $request, $id)
+    {
+        return DB::transaction(function () use ($request, $id) {
+            $report = Report::find($id);
+            $report->status = Report::STATUS_APPROVED;
+            $report->approved_at = now();
+            $report->approved_by = auth()->user()->id;
+            $report->save();
+    
+            ReportLog::create([
+                "report_id" => $report->id,
+                "acted_by" => auth()->user()->id,
+                "status" => Report::STATUS_APPROVED,
+                "remarks" => $request->remarks ? $request->remarks : null,
+                "description" => auth()->user()->personalInformation->first_name . " " . auth()->user()->personalInformation->middle_name . " " . auth()->user()->personalInformation->last_name . " approved the report",
+            ]);
+        });
+    }
+
+    public function delete(Request $request, $id)
+    {
+        Report::find($id)->delete();
+    }
+
+    public function submitted()
+    {
+        return Report::query()
+        ->with(['reportType','reportLogs' => function($q) { $q->orderBy('created_at', 'desc'); }])
+        ->where([
+            "submitted_by" => auth()->user()->id
+        ])
+        ->orderBy('submitted_at', 'desc')
+        ->paginate(10);
+    }
+
+    public function forApproval()
+    {
+        $user = auth()->user();
+        $roleType = $user->roles->first()->role_type_id;
+
+        $reports = Report::query()
+            ->with('reportType', 'reportLogs')
+            ->where('status', Report::STATUS_PENDING)
+            ->where('submitted_by', '!=', $user->id) // ← EXCLUDE OWN REPORTS
+            ->when($roleType == 2, function ($q) use ($user) {
+                // Midwife approving BHW reports
+                $q->whereHas('submittor', function($q) use ($user) {
+                    $q->whereHas('roles', fn($q) => $q->where('role_type_id', 1))
+                    ->whereHas('bhwDesignations', fn($q) => 
+                            $q->whereIn('barangay_id', $user->midwifeDesignations->pluck('barangay_id'))
+                    );
+                });
+            })
+            ->when($roleType == 3, function ($q) use ($user) {
+                // RHU approving Midwife reports
+                $q->whereHas('submittor', function($q) use ($user) {
+                    $q->whereHas('roles', fn($q) => $q->where('role_type_id', 2))
+                    ->whereHas('midwifeDesignations', fn($q) => 
+                            $q->whereIn('barangay_id', $user->rhuDesignation->office->offices->pluck('barangay_id'))
+                    );
+                });
+            })
+            ->when($roleType == 4, function ($q) {
+                // MHO approving RHU reports
+                $q->whereHas('submittor.roles', fn($q) => $q->where('role_type_id', 3));
+            })
+            ->paginate(10);
+
+        return $reports;
+    }
+
 
 }

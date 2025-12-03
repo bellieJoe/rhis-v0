@@ -806,98 +806,98 @@ export const UpdateHealthServiceForm = () => {
             value : "PREGNANT",
             form : <PregnantForm onSubmit={(data) => submitForm(services.find(s => s.value == "PREGNANT"), data)} />,
             handler : storePregnant,
-            visible : householdProfile?.updated_details?.gender_id == 80
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
             form : <GaveBirthForm onSubmit={(data) => submitForm(services.find(s => s.value == "GAVE_BIRTH"), data)} />,
             handler : storeGaveBirth,
-            visible : householdProfile?.updated_details?.gender_id == 80
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
             value: "NEW_BORN_CHILD",
             form : <NewBornChildForm onSubmit={(data) => submitForm(services.find(s => s.value == "NEW_BORN_CHILD"), data)} />,
             handler : storeNewBorn,
-            visible : calculateAge(householdProfile?.birthdate) < 2
+            visible : calculateAge(householdProfile?.birthdate) < 2 && !householdProfile.is_dead
         },
         {
             label: "4. Vaccinated(Binakunahan)",
             value: "VACCINATED",
             form : <VaccinatedForm onSubmit={(data) => submitForm(services.find(s => s.value == "VACCINATED"), data)} />,
             handler : storeVaccinated,
-            visible : true
+            visible : !householdProfile.is_dead
         }, 
         {
             label: "5. Family Plannning(Nagpalano ng Pamilya)",
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm onSubmit={(data) => submitForm(services.find(s => s.value == "FAMILY_PLANNING"), data)} />,
-            handler : storeFamilyPlanning,
-            visible : householdProfile?.updated_details?.gender_id == 80
+            handler : storeFamilyPlanning, 
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
         },
         {
             label: "6. Death(Namatay)",
             value: "DEATH",
             form : <DeathForm onSubmit={(data) => submitForm(services.find(s => s.value == "DEATH"), data)}/>,
             handler : storeDeath,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "7. Sick(Mga nagkasakit/may sakit)",
             value: "SICK",
             form : <SickForm onSubmit={(data) => submitForm(services.find(s => s.value == "SICK"), data)}/>,
             handler : storeSick,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "8. Has Highblood(May sakit na Highblood)",
             value: "HAS_HIGHBLOOD",
             form : <HasHighbloodForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_HIGHBLOOD"), data)}/>,
             handler : storeHasHighblood,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
             form : <HasDiabetesForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_DIABETES"), data)}/>,
             handler : storeHasDiabetes,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
             value: "URINALYSIS_RESULT",
             form : <UrinalysisResultForm onSubmit={(data) => submitForm(services.find(s => s.value == "URINALYSIS_RESULT"), data)}/>,
             handler : storeUrinalysis,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "11. Has Cancer(May sakit na Cancer)",
             value: "HAS_CANCER",
             form : <HasCancerForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_CANCER"), data)}/>,
             handler : storeHasCancer,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
             value: "HAS_EPILEPSY",
             form : <HasEpilepsyForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_EPILEPSY"), data)}/>,
             handler : storeHasEpilepsy,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",
             form : <AnimalBitesForm onSubmit={(data) => submitForm(services.find(s => s.value == "ANIMAL_BITE"), data)}/>,
             handler : storeAnimalBites,
-            visible : true
+            visible : !householdProfile.is_dead
         },
         {
             label: "Drug Maintenance",
             value: "MEDICATION",
             form : <MedicationForm onSubmit={(data) => submitForm(services.find(s => s.value == "MEDICATION"), data)}/>,
             handler : storeMedication,
-            visible : true
+            visible : !householdProfile.is_dead
         }
     ]
     const next = () => {

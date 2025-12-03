@@ -16,6 +16,7 @@ use App\Http\Controllers\MidwifeDashboardController;
 use App\Http\Controllers\MidwifeDesignationController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\PhoReportController;
 use App\Http\Controllers\PregnancyController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\ReportController;
@@ -122,6 +123,13 @@ Route::prefix("healthcare-services")->group(function () {
 Route::prefix("reports")->group(function () {
     Route::middleware("auth:sanctum")->group(function () {
         Route::get("summary-report", [ReportController::class, "getSummaryReport"]);
+        Route::get("submitted", [ReportController::class, "submitted"]);
+        Route::get("for-approval", [ReportController::class, "forApproval"]);
+        Route::post("submit", [ReportController::class, "submit"]);
+        Route::post("resubmit/{id}", [ReportController::class, "resubmit"]);
+        Route::post("reject/{id}", [ReportController::class, "reject"]);
+        Route::post("approve/{id}", [ReportController::class, "approve"]);
+        Route::delete("delete/{id}", [ReportController::class, "delete"]);
     });
 });
 
@@ -204,4 +212,8 @@ Route::prefix('summary-tables')->group(function(){
     Route::get("family-planning", [SummaryTableController::class, "getFamilyPlanningSummaryTable"]);
 });
 
+
+Route::prefix('pho-reports')->group(function(){
+    Route::get("environmental", [PhoReportController::class, "environmental"]);
+});
 

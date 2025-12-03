@@ -1,9 +1,11 @@
 "use client";
 
-import { getSummaryReport } from "@/api/reportApi";
+import { getSummaryReport, submitReport } from "@/api/reportApi";
 import { YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
+import { setToast } from "@/features/toastSlice";
 import { Button } from "primereact/button";
+import { confirmPopup } from "primereact/confirmpopup";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,12 +16,30 @@ const SummaryReport = () => {
     const [year, setYear] = useState(new Date().getFullYear());
     const [barangay, setBarangay] = useState(null);
     const [barangayName, setBarangayName] = useState(null);
-    const [ loading, setLoading ] = useState({ records: false });
-    const [municipality, setMunicipality] = useState(null);
+    const [ loading, setLoading ] = useState({ 
+        records: false,
+        submit : false
+    });
     const authStore = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
      const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+
+    const handleSubmit = (e) => {
+        confirmPopup({
+            target: e.target,
+            message: 'Are you sure you want to submit the report?',
+            accept: async () => {
+                if(!barangay || !year) {
+                    dispatch(setToast({severity: 'error', summary: 'Error', detail: 'Please select year'}));
+                    return;
+                }
+                setLoading({ ...loading, submit: true });
+                await submitReport(dispatch, {barangay: barangay, year: year}, 2);
+                setLoading({ ...loading, submit: false });
+            }
+        })
+    }
 
     useEffect(() => {
         setBarangay(authStore.user?.bhw_designations[0]?.barangay_id);
@@ -39,6 +59,7 @@ const SummaryReport = () => {
             <div className="flex justify-content-end gap-1 mb-3">
                 <YearPicker value={year} onChange={(e) => setYear(e.value)} />
                 <Button label="Print" icon="pi pi-print" onClick={reactToPrintFn} />
+                <Button label="Submit" severity="success" size="small" icon="pi pi-send" onClick={handleSubmit} />
             </div>
             <div className="card">
                 {

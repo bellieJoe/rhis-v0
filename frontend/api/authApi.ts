@@ -34,6 +34,7 @@ export const getAuth = async (dispatch : Dispatch) => {
         const response = await axios.get('/api/auth/user');
         console.log("auth", response.data);
         dispatch(setUser(response.data));
+        return response.data;
     } catch (error : any) {
         dispatchError(dispatch, error.response?.data?.message);
     }

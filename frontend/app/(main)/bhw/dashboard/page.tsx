@@ -79,9 +79,9 @@ const GenderDistribution = () => {
         getGenderDistribution();
     }, [authStore.user, ageBracketFilter, startDate, endDate]);
     return (
-        <div className="card mb-0 px-0">
+        <div className="card mb-0 px-0" >
             <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
-            <div className="flex justify-content-end p-3 gap-1">
+            <div className="flex flex-wrap justify-content-end p-3 gap-1">
                 <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
@@ -91,17 +91,26 @@ const GenderDistribution = () => {
                     setAgeBracketFilter(null);
                 }} />
             </div>
-            <ResponsiveContainer  height={400}>
-                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <Pie data={data} cx="50%" cy="50%" innerRadius="40%" outerRadius="60%" fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
-                        {data.map((entry: any, index: number) => (
-                            <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                </PieChart>
-            </ResponsiveContainer>
+            <div className="" style={{
+                    overflowX: "scroll"
+                }}>
+                <div className="" style={{
+                    minWidth: "500px",
+                    
+                }}>
+                    <ResponsiveContainer  height={400}>
+                        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                            <Pie data={data} cx="50%" cy="50%" innerRadius="40%" outerRadius="60%" fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
+                                {data.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
         </div>
     );
 };
@@ -166,7 +175,7 @@ const CivilStatus = () => {
     return (
         <div className="card mb-0 h-full">
             <h3 className="text-lg font-semibold mb-2 text-center">Civil Status</h3>
-            <div className="flex justify-content-end p-3 gap-1">
+            <div className="flex flex-wrap justify-content-end p-3 gap-1">
                 <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
@@ -176,29 +185,38 @@ const CivilStatus = () => {
                     setAgeBracketFilter(null);
                 }} />
             </div>
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                    data={data}
-                    layout="vertical"
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" />
-                    <Tooltip />
-                    <Bar dataKey="single" fill="#8884d8" />
-                    <Bar dataKey="married" fill="#82ca9d" />
-                    <Bar dataKey="widowed" fill="#ffc658" />
-                    <Bar dataKey="separated" fill="#36a2eb" />
-                    <Bar dataKey="cohabitation" fill="#ffce56" />
-                    <Legend />
-                </BarChart>
-            </ResponsiveContainer>
+            <div className="" style={{
+                    overflowX: "scroll"
+                }}>
+                <div className="" style={{
+                    minWidth: "500px",
+                    
+                }}>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart
+                            data={data}
+                            layout="vertical"
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis type="number" />
+                            <YAxis dataKey="name" type="category" />
+                            <Tooltip />
+                            <Bar dataKey="single" fill="#8884d8" />
+                            <Bar dataKey="married" fill="#82ca9d" />
+                            <Bar dataKey="widowed" fill="#ffc658" />
+                            <Bar dataKey="separated" fill="#36a2eb" />
+                            <Bar dataKey="cohabitation" fill="#ffce56" />
+                            <Legend />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
         </div>
     );
 };
@@ -226,8 +244,8 @@ const WRA = ({ civilStatus }: { civilStatus: any }) => {
     }, [authStore.user, startDate, endDate]);
     return (
         <div className="card mb-0 px-0">
-            <h3 className="text-lg font-semibold mb-2 text-center">{civilStatus == 75 ? 'SWRA' : 'MWRA'}</h3>
-            <div className="flex justify-content-end p-3 gap-1">
+            <h3 className="text-lg font-semibold mb-2 text-center">{civilStatus == 75 ? 'Single Women with Reproductive Age' : 'Married Women with Reproductive Age'}</h3>
+            <div className="flex flex-wrap justify-content-end p-3 gap-1">
                 <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
@@ -235,17 +253,26 @@ const WRA = ({ civilStatus }: { civilStatus: any }) => {
                     setEndDate(null);
                 }} />
             </div>
-            <ResponsiveContainer width="100%" height={400}>
-                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <Pie data={data} cx="50%" cy="50%" innerRadius="40%" outerRadius="60%" fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
-                        {data.map((entry: any, index: number) => (
-                            <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                </PieChart>
-            </ResponsiveContainer>
+            <div className="" style={{
+                    overflowX: "scroll"
+                }}>
+                <div className="" style={{
+                    minWidth: "500px",
+                    
+                }}>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                            <Pie data={data} cx="50%" cy="50%" innerRadius="40%" outerRadius="60%" fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
+                                {data.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
         </div>
     );
 };
@@ -389,7 +416,7 @@ const EducationalAttainmentChart = () => {
     return (
         <div className="card mb-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
-            <div className="flex justify-content-end p-2 gap-1">
+            <div className="flex flex-wrap justify-content-end p-2 gap-1">
                 <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
                 <Dropdown
@@ -406,25 +433,34 @@ const EducationalAttainmentChart = () => {
                     setMemberFilter(null);
                 }} />
             </div>
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                    data={data}
-                    layout="vertical"
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" />
-                    <Tooltip />
-                    <Bar dataKey="total" fill="#8884d8" />
-                    <Legend />
-                </BarChart>
-            </ResponsiveContainer>
+            <div className="" style={{
+                    overflowX: "scroll"
+                }}>
+                <div className="" style={{
+                    minWidth: "500px",
+                    
+                }}>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart
+                            data={data}
+                            layout="vertical"
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis type="number" />
+                            <YAxis dataKey="name" type="category" />
+                            <Tooltip />
+                            <Bar dataKey="total" fill="#8884d8" />
+                            <Legend />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
         </div>
     );
 }
@@ -577,16 +613,25 @@ const BhwDashboard = () => {
                 <div className="col-12">
                     <div className="card mb-0 h-full">
                         <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated Babies FY {moment(new Date()).format('YYYY')}</h3>
-                        <ResponsiveContainer width="100%" height={400}>
-                            <LineChart data={data.vaccinationPermonthData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="value" stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
+                        <div className="" style={{
+                            overflowX: "scroll"
+                        }}>
+                        <div className="" style={{
+                            minWidth: "1000px",
+                            
+                        }}>
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <LineChart data={data.vaccinationPermonthData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="col-12">

@@ -36,21 +36,38 @@ const LoginPage = () => {
             password : password
         });
         
+        if(!loginSuccess) {
+            setLoading({
+                login : false
+            });
+            return;
+        }
+        const auth = await getAuth(dispatch);
+
         setLoading({
             login : false
         });
-        if(!loginSuccess) return;
-        await getAuth(dispatch);
         
-        if(authStore.user?.roles.some((role : any) => role.role_type_id == 5)){
+        if(auth.roles.some((role : any) => role.role_type_id == 5)){
             router.push('/');
         }
-        if(authStore.user?.roles.some((role : any) => role.role_type_id == 1)){
+        if(auth.roles.some((role : any) => role.role_type_id == 1)){
+            console.log("BHW");
             router.push('/bhw/dashboard');
         }
-        else {
-            router.push('/');
+        if(auth.roles.some((role : any) => role.role_type_id == 2)){
+            console.log("Midwife");
+            router.push('/midwife/dashboard');
         }
+        if(auth.roles.some((role : any) => role.role_type_id == 3)){
+            console.log("RHU");
+            router.push('/rhu/dashboard');
+        }
+        if(auth.roles.some((role : any) => role.role_type_id == 4)){
+            console.log("RHU");
+            router.push('/pho/dashboard');
+        }
+
     }
     
     return (

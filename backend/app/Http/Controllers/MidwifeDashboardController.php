@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Barangay;
 use App\Models\HouseholdProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -14,7 +15,7 @@ class MidwifeDashboardController extends Controller
     public function getMidwifeDashboard(Request $request) 
     {
         $name = $request->has('name') ? $request->name : null;
-        $barangayIds = $request->has('barangayIds') ? $request->barangayIds : null;
+        $barangayIds = auth()->user()->roles->first()->role_type_id == 4 ? (Barangay::query()->pluck('id')) : ($request->has('barangayIds') ? $request->barangayIds : null);
         $start = $request->has('start') ? $request->start : Carbon::parse(date('Y').'-01-01')->toDateString();
         $end = $request->has('end') ? $request->end : Carbon::parse(date('Y').'-12-31')->toDateString();
 
@@ -87,7 +88,7 @@ class MidwifeDashboardController extends Controller
     private function getPregnantWomanChartData(Request $request)
     {
         $name = $request->has('name') ? $request->name : null;
-        $barangayIds = $request->has('barangayIds') ? $request->barangayIds : null;
+        $barangayIds = auth()->user()->roles->first()->role_type_id == 4 ? (Barangay::query()->pluck('id')) : ($request->has('barangayIds') ? $request->barangayIds : null);
         $start = $request->has('start') ? $request->start : null;
         $end = $request->has('end') ? $request->end : null;
         $mapping = [
@@ -119,7 +120,7 @@ class MidwifeDashboardController extends Controller
 
     private function getChildcareStatusChartData(Request $request)
     {
-        $barangayIds = $request->input('barangayIds', null);
+        $barangayIds = auth()->user()->roles->first()->role_type_id == 4 ? (Barangay::query()->pluck('id')) : ($request->has('barangayIds') ? $request->barangayIds : null);
         $end = $request->input('end', now()->toDateString());
         $ageGroup = $request->input('ageGroup', 1);
 
@@ -186,7 +187,7 @@ class MidwifeDashboardController extends Controller
 
     private function getChildcareNewbornChartData(Request $request)
     {
-        $barangayIds = $request->input('barangayIds', null);
+        $barangayIds = auth()->user()->roles->first()->role_type_id == 4 ? (Barangay::query()->pluck('id')) : ($request->has('barangayIds') ? $request->barangayIds : null);
         $end = $request->input('end', now()->toDateString());
 
         $endDate = Carbon::parse($end)->format('Y-m-d');

@@ -21,4 +21,8 @@ class Barangay extends Model
     public function getFullAddressAttribute() {
         return $this->barangay_name . ', ' . $this->municipality->municipality_name . ', ' . $this->municipality->province->province_name;
     }
+
+    public function households() {
+        return $this->hasMany(Household::class);
+    }
 }

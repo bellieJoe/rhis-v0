@@ -71,4 +71,9 @@ class User extends Authenticatable
         });
         return $barangays;
     }
+
+    public function personalInformation()
+    {
+        return $this->hasOne(PersonalInformation::class);
+    }
 }
