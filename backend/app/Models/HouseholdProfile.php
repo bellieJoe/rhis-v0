@@ -9,7 +9,7 @@ class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details", "fullname"];
+    protected $appends = ["updated_details", "fullname", "is_dead"];
 
     public function household()
     {
@@ -86,6 +86,10 @@ class HouseholdProfile extends Model
     public function familyPlanningClients()
     {
         return $this->hasMany(FamilyPlanningClient::class);
+    }
+
+    public function getIsDeadAttribute() {
+        return $this->deaths()->count() > 0;
     }
 
 }

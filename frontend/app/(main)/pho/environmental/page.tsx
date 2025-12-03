@@ -10,6 +10,9 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { createRef, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useReactToPrint } from "react-to-print";
+import dohLogo from "../../../../assets/images/doh-logo.png";
+import dilgLogo from "../../../../assets/images/dilg-logo.png";
+import Image from "next/image";
 
 const Page = () => {
     const dispatch = useDispatch();
@@ -77,10 +80,19 @@ const Page = () => {
                     <div className="" ref={contentRef} style={{
                          minWidth: "1500px"
                     }}>
-                        <h5 className="text-center mb-0">ENVIRONMENTAL</h5>
-                        <p className="text-center mb-0">Households with access to basic safe and managed water supply and sanitaion services</p>
-                        <p className="text-center mb-0">{filters.office_name?.toUpperCase()}, MARINDUQUE</p>
-                        <p className="text-center mb-0">From {moment(filters.start).format('MMMM DD, YYYY')} &nbsp;&nbsp;&nbsp;&nbsp; To {moment(filters.end).format('MMMM DD, YYYY')} </p>
+                        <div className="flex justify-content-center gap-4">
+                            <div className="">
+                                <div className="flex gap-1 "></div>
+                                <Image src={dohLogo} alt="DOH logo" width={100} className="mb-5 " />
+                                <Image src={dilgLogo} alt="DILG logo" width={100} className="mb-5 " />
+                            </div>
+                            <div className="align-self-center justify-self-center">
+                                <h5 className="text-center mb-0">ENVIRONMENTAL</h5>
+                                <p className="text-center mb-0">Households with access to basic safe and managed water supply and sanitaion services</p>
+                                <p className="text-center mb-0">{filters.office_name?.toUpperCase()}, MARINDUQUE</p>
+                                <p className="text-center mb-0">From {moment(filters.start).format('MMMM DD, YYYY')} &nbsp;&nbsp;&nbsp;&nbsp; To {moment(filters.end).format('MMMM DD, YYYY')} </p>
+                            </div>
+                        </div>
                         <br />
                         <table className="w-full border-1" style={{ borderCollapse: 'collapse' }} >
                             <thead>
