@@ -1,321 +1,129 @@
-'use client';
+"use client";
+import { getOffices } from "@/api/officeApi";
+import { getEnvironmental } from "@/api/phoReportApi";
+import { OfficePicker } from "@/components/forms/CustomPickers";
+import { setToast } from "@/features/toastSlice";
+import moment from "moment";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { createRef, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useReactToPrint } from "react-to-print";
 
-import { getBhwDashboard, getMidwifeDashboard } from '@/api/dashboardApi';
-import { AuthMiddleware } from '@/components/middlewares';
-import { COLORS, getFirstDate, getLastDate } from '@/utils/helpers';
-import { get } from 'http';
-import moment from 'moment';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import { DataView } from 'primereact/dataview';
-import { Dropdown } from 'primereact/dropdown';
-import { useEffect, useState } from 'react';    
-import { FaPersonPregnant } from 'react-icons/fa6';
-import { MdChildFriendly, MdOutlineVaccines } from 'react-icons/md';
-import { TbCoffin } from 'react-icons/tb';
-import { useDispatch, useSelector } from 'react-redux';
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { IoIosPeople } from "react-icons/io";
-import { RiSurveyLine } from "react-icons/ri";
-import { getGenericTypes } from '@/api/genericTypeApi';
-import { Calendar } from 'primereact/calendar';
-import { Button } from 'primereact/button';
-
-const PregnantWomenChart = ({ startDate, endDate , barangayIds} : { startDate: any, endDate: any, barangayIds: any[] }) => {
-    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [data, setData] = useState<any>([]);
+const Page = () => {
     const dispatch = useDispatch();
-    const authStore = useSelector((state: any) => state.auth);
-    const getData = async () => {
-        const _data = await getMidwifeDashboard(dispatch, { 
-            name: 'PREGNANT_WOMEN_CHART', 
-            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
-            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null,
-        });
-        console.log(_data);
-        setData(_data);
-    };
+    const [data, setData] = useState([]);
+    const [filters, setFilters] = useState({
+        office: null,
+        start: moment().startOf('month').toDate(),
+        end: moment().endOf('month').toDate(),
+        office_name: null
+    });
+    const [loading, setLoading] = useState<any>({
+        data : false
+    });
+
     useEffect(() => {
-        getData();
-    }, [authStore.user, ageBracketFilter, startDate, endDate]);
+        (async() => {
+            const _offices = await getOffices(dispatch, { full: true });
+            setFilters({ ...filters, office_name: _offices.find((o : any) => o.id === filters.office)?.municipality.municipality_name });
+        })()
+    }, [filters.office]);
+    
+    const getData = async () => {
+        if(!filters.office || !filters.start || !filters.end){ 
+            setToast({severity : "error", summary : "Error", detail : "Please select all fields", life : 3000});
+            return;
+        }
+        setLoading({ ...loading, data: true });
+        const _data = await getEnvironmental(dispatch, {
+            start: moment(filters.start).format('YYYY-MM-DD'),
+            end: moment(filters.end).format('YYYY-MM-DD'),
+            office: filters.office
+        });
+        setData(_data);
+        setLoading({ ...loading, data: false });
+    }
+
+    const contentRef = createRef<HTMLDivElement>();
+    const reactToPrintFn = useReactToPrint({ contentRef });
+
+    // useEffect(() => {
+    //     console.log(filters);
+    // }, [dispatch]);
 
     return (
-        <div className="card mb-0 h-full">
-            <h3 className="text-lg font-semibold mb-2 text-center">Pregnant Women</h3>
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                    data={data}
-                    layout="horizontal"
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="category" dataKey="Name"  />
-                    <YAxis type="number"  />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Total" fill="#8884d8" />
-                </BarChart>
-            </ResponsiveContainer>
+        <div className="">
+            <div className="flex justify-content-end gap-2 mb-2">
+                <OfficePicker placeholder="Select Municipality" onChange={(e) => setFilters({ ...filters, office: e })} office_type="rhu" office={filters.office} />
+                <Calendar value={filters.start} onChange={(e) => setFilters({ ...filters, start: e.value })} placeholder="From" />
+                <Calendar value={filters.end} onChange={(e) => setFilters({ ...filters, end: e.value })}  placeholder="To" />
+                <Button label="Filter" onClick={getData} />
+                <Button label="Print" icon="pi pi-print" onClick={reactToPrintFn} />
+            </div>
+            <div className="card">
+                <div className="" style={{
+                    overflowX: "scroll"
+                }}>
+                    {
+                        loading.data && (
+                            <div className="flex gap-2">
+                                <ProgressSpinner className="flex-none" style={{width: '20px', height: '20px'}} strokeWidth="8" aria-label="Loading"  /> 
+                                <span className="flex-grow-1">Loading</span>
+                            </div>
+                        )
+                    }
+                    <div className="" ref={contentRef} style={{
+                         minWidth: "1500px"
+                    }}>
+                        <h5 className="text-center mb-0">ENVIRONMENTAL</h5>
+                        <p className="text-center mb-0">Households with access to basic safe and managed water supply and sanitaion services</p>
+                        <p className="text-center mb-0">{filters.office_name?.toUpperCase()}, MARINDUQUE</p>
+                        <p className="text-center mb-0">From {moment(filters.start).format('MMMM DD, YYYY')} &nbsp;&nbsp;&nbsp;&nbsp; To {moment(filters.end).format('MMMM DD, YYYY')} </p>
+                        <br />
+                        <table className="w-full border-1" style={{ borderCollapse: 'collapse' }} >
+                            <thead>
+                                <tr>
+                                    <th width="200px" className="border-bottom-1 border-right-1 text-center font-bold " >Area</th>
+                                    <th width="120px" className="border-bottom-1 border-right-1 text-center font-bold" >Number of HH (Projected)</th>
+                                    <th width="300px" className="border-bottom-1 border-right-1 text-center font-bold" >HH with access to basic safe water supply</th>
+                                    <th width="120px" className="border-bottom-1 border-right-1 text-center font-bold" >% HH with access to basic save water supply</th>
+                                    <th width="120px"  className="border-bottom-1 border-right-1 text-center font-bold" >HHs using safely managed drinking water</th>
+                                    <th width="120px"  className="border-bottom-1 border-right-1 text-center font-bold" >% HHs using safely managed drinking water</th>
+                                    <th className="border-bottom-1 border-right-1 text-center font-bold" >HH with basic sanitation facility</th>
+                                    <th width="120px"  className="border-bottom-1 border-right-1 text-center font-bold" >% HH with basic sanitation facility</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data.map((d, i) => (
+                                        <tr key={i}>
+                                            <td className="border-bottom-1 border-right-1">{d.barangay?.full_address}</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c1}</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c2}</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c1 > 0 ? ((d.c2 / d.c1) * 100).toFixed(2) : 0}%</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c3}</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c1 > 0 ? ((d.c3 / d.c1) * 100).toFixed(2) : 0}%</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c4}</td>
+                                            <td className="border-bottom-1 border-right-1 text-center">{d.c1 > 0 ? ((d.c4 / d.c1) * 100).toFixed(2) : 0}%</td>
+                                        </tr>
+                                    ))
+                                }
+                                {
+                                    data.length === 0 && (
+                                        <tr>
+                                            <td colSpan={8} className="border-bottom-1 border-right-1 text-center">No data</td>
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-};
+}
 
-const ChildcareWeightStatusChart = ({ startDate, endDate , barangayIds} : { startDate: any, endDate: any, barangayIds: any[] }) => {
-    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [data, setData] = useState<any>([]);
-    const dispatch = useDispatch();
-    const authStore = useSelector((state: any) => state.auth);
-    const [ageGroup, setAgeGroup] = useState<any>(1);
-    const ageGroupOptions = [
-        { label: '1-3 months', value: 1 },
-        { label: '6-11 months', value: 2 },
-        { label: '12 months', value: 3 },
-    ]
-    const getData = async () => {
-        const _data = await getMidwifeDashboard(dispatch, { 
-            name: 'CHILD_CARE_WEIGHT_STATUS_CHART', 
-            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
-            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null,
-            ageGroup : ageGroup
-        });
-        console.log(_data);
-        setData(_data);
-    };
-    useEffect(() => {
-        getData();
-    }, [authStore.user, ageBracketFilter, startDate, endDate, ageGroup]);
-
-    return (
-        <div className="card mb-0 h-full">
-            <h3 className="text-lg font-semibold mb-2 text-center">Childcare Weight Status</h3>
-            <div className="flex justify-content-end p-3 gap-1">
-                <Dropdown options={ageGroupOptions} value={ageGroup} onChange={(e) => setAgeGroup(e.value)} placeholder="Select Age Group" />
-            </div>
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                    data={data}
-                    layout="horizontal"
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="category" dataKey="Name"  />
-                    <YAxis type="number"  />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Total" fill="#8884d8" />
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
-    );
-};
-
-const ChildcareNewbornChart  = ({ startDate, endDate , barangayIds} : { startDate: any, endDate: any, barangayIds: any[] }) => {
-    const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [data, setData] = useState<any>([]);
-    const dispatch = useDispatch();
-    const authStore = useSelector((state: any) => state.auth);
-
-    const getData = async () => {
-        const _data = await getMidwifeDashboard(dispatch, { 
-            name: 'CHILD_CARE_NEWBORN_CHART', 
-            start : startDate ? moment(startDate).format('YYYY-MM-DD') : null,
-            end : endDate ? moment(endDate).format('YYYY-MM-DD') : null,
-        });
-        console.log(_data);
-        setData(_data);
-    };
-    useEffect(() => {
-        getData();
-    }, [authStore.user, ageBracketFilter, startDate, endDate]);
-
-    return (
-        <div className="card mb-0 h-full">
-            <h3 className="text-lg font-semibold mb-2 text-center">Newborn Weight Status</h3>
-            <ResponsiveContainer width="100%" height={400}>
-                <BarChart
-                    data={data}
-                    layout="horizontal"
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="category" dataKey="Name"  />
-                    <YAxis type="number"  />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="Total" fill="#8884d8" />
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
-    );
-};
-
-const MidwifeDashboard = () => {
-    const [data, setData] = useState<any>({});
-    const dispatch = useDispatch();
-    const authStore = useSelector((state: any) => state.auth);
-    const [startDate, setStartDate] = useState<any>(getFirstDate());
-    const [endDate, setEndDate] = useState<any>(getLastDate());
-    const [barangayIds, setBarangayIds] = useState<any>([]);
-
-    const init = async () => {
-        const _data = await getMidwifeDashboard(dispatch, {
-            start: startDate,
-            end: endDate
-        });
-        console.log(_data);
-        setData(_data);
-    };
-
-    useEffect(() => {
-        init();
-    }, [authStore.user?.id, authStore.user?.midwife_designations, startDate, endDate]);
-
-    return (
-        <AuthMiddleware>
-            <h2>Dashboard</h2>
-            <div className="flex mb-4 justify-content-center gap-3">
-                <div className="">
-                    <label htmlFor="">From</label>&nbsp;&nbsp;
-                    <Calendar value={startDate} onChange={(e) => setStartDate(e.value)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />
-                </div>
-                <div className="">
-                    <label htmlFor="">To</label>&nbsp;&nbsp;
-                    <Calendar value={endDate} onChange={(e) => setEndDate(e.value)} dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" mask="99/99/9999" />
-                </div>
-            </div>
-            <div className="grid">
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Total Population</span>
-                                <div className="text-900 font-medium text-xl">{data.totalPopulation}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <IoIosPeople  className="text-purple-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Total Pregnants</span>
-                                <div className="text-900 font-medium text-xl">{data.totalPregnants}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <FaPersonPregnant className="text-orange-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Total Family Planners</span>
-                                <div className="text-900 font-medium text-xl">{data.totalFamilyPlanning}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-bluegray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <RiSurveyLine  className="text-bluegray-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Total Children</span>
-                                <div className="text-900 font-medium text-xl">{data.totalChildren}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <MdChildFriendly  className="text-purple-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <h5>Maternal Care and Services</h5>
-            <div className="grid">
-                <div className="col-12 lg:col-6">
-                    <PregnantWomenChart startDate={startDate} endDate={endDate} barangayIds={barangayIds} />
-                </div>
-            </div>
-
-            <h5>Child Care and Services</h5>
-            <div className="grid">
-                <div className="col-12">
-                    <ChildcareWeightStatusChart startDate={startDate} endDate={endDate} barangayIds={barangayIds} />
-                </div>
-                <div className="col-12">
-                    <ChildcareNewbornChart startDate={startDate} endDate={endDate} barangayIds={barangayIds} />
-                </div>
-            </div>
-
-            <h5>Environmental Health</h5>
-            <div className="grid">
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div className="flex gap-2 align-items-center">
-                                <h2 className="text-900 font-medium mb-0">{data.hhWithBasicWaterSupply}</h2>
-                                <span className="block text-500 font-medium mb-0">HHs with access to basic safe water supply</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div className="flex gap-2 align-items-center">
-                                <h2 className="text-900 font-medium mb-0">{data.hhWithSafelyManagedwaterSupply}</h2>
-                                <span className="block text-500 font-medium mb-0">HHs using safely managed drinking-water services </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div className="flex gap-2 align-items-center">
-                                <h2 className="text-900 font-medium mb-0">{data.hhWithBasicSanitation}</h2>
-                                <span className="block text-500 font-medium mb-0">HHs with basic sanitation facility </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div className="flex gap-2 align-items-center">
-                                <h2 className="text-900 font-medium mb-0">{data.hhWithSafelyManagedSanitation}</h2>
-                                <span className="block text-500 font-medium mb-0">HHs using safely managed sanitation services </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </AuthMiddleware>
-    );
-};
-
-export default MidwifeDashboard;
+export default Page;
