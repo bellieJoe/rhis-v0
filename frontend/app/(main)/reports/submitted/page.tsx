@@ -3,6 +3,7 @@
 import { deleteReport, getSubmittedReports, resubmitReport } from "@/api/reportApi";
 import { identifyReportType } from "@/utils/helpers";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 import { Badge } from "primereact/badge";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
@@ -53,6 +54,7 @@ const ReportStatus = ({ status }: any) => {
 const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => void }) => {
     const dispatch = useDispatch();
     const [openLogs, setOpenLogs] = useState(false);
+    const router = useRouter();
     const handleDelete = (e) => {
         confirmPopup({
             target: e.target,
@@ -78,6 +80,9 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
             onRefresh();
         }
     }
+    const query = new URLSearchParams({
+        data: JSON.stringify(report),
+    }).toString();
     return (
         <div className="">
             <div className="flex gap-2">
@@ -86,6 +91,7 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                     report.status == "rejected" && <Button label="Resubmit" severity="success" size="small" onClick={handleResubmit}  />
                 }
                 <Button label="View" size="small"  />
+                {/* <Button label="View" size="small" onClick={() => router.push(`${identifyReportType(report.report_type_id)}?${query}`)}  /> */}
                 <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />

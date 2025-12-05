@@ -41,12 +41,13 @@ export function identifyReportType(reportTypeId : any){
       {
           id: 1,
           name: "bhw-monthly-report",
-          reportType: "Monthly Report"
+          reportType: "Monthly Report",
+          url : "/reports/view/monthly-report"
       },
       {
           id: 2,
           name: "bhw-summary-report",
-          reportType: "Summary Report"
+          url : "/reports/view/summary-report"
       },
       {
           id: 3,

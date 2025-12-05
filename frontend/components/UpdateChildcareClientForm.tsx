@@ -201,7 +201,7 @@ const UpdateChildcareClientForm = () => {
                         {activeIndex === 0 && (
                             <div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Serial No. <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Family Serial No. </label>
                                     <InputText
                                         className="w-full"
                                         value={form.family_serial_number}
