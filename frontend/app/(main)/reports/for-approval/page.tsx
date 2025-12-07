@@ -15,6 +15,7 @@ import { Sidebar } from "primereact/sidebar";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ReportLogs } from "../submitted/page";
+import { useRouter } from "next/router";
 
 const ReportStatus = ({ status }: any) => {
     return (
@@ -25,6 +26,7 @@ const ReportStatus = ({ status }: any) => {
 
 const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => void }) => {
     const dispatch = useDispatch();
+    const router = useRouter();
     const [openSidebar, setOpenSidebar] = useState({
         approve: false,
         reject : false
@@ -75,11 +77,19 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
             onRefresh();
         }
     }
+    const query = new URLSearchParams({
+        data: JSON.stringify(report),
+    }).toString();
+
     return (
         <div className="">
             <div className="flex gap-2">
                 <Button label="Reject" severity="danger" size="small" onClick={reject} />
                 <Button label="Approve" size="small" onClick={approve}  />
+                <Button label="View" size="small" onClick={() => {
+                    console.log(`${identifyReportType(report.report_type_id)}?${query}`)
+                    router.push(`${identifyReportType(report.report_type_id)}?${query}`)
+                    }}  />
                 <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />

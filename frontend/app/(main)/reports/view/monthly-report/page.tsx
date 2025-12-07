@@ -2,12 +2,13 @@
 
 import { getBhwDesignationsByUserId } from "@/api/bhwDesignationApi";
 import { getMonthlyRecords } from "@/api/healthcareServicesApi";
-import { submit, submitReport } from "@/api/reportApi";
+import { getReportById, submitReport } from "@/api/reportApi";
 import { BarangayPicker, MonthPicker, MONTHS, MunicipalityPicker, YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
 import { setToast } from "@/features/toastSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
+import { useSearchParams } from "next/navigation";
 import { Button } from "primereact/button";
 import { confirmPopup } from "primereact/confirmpopup";
 import { Dropdown } from "primereact/dropdown";
@@ -1005,7 +1006,10 @@ const AnimalBiteTable = ({records} : {records: any}) => {
     )
 }
 
-const BHWMonthlyReportView = ({report} : {report: any}) => {
+const BHWMonthlyReportView = () => {
+    const searchParams = useSearchParams();
+    const [report, setReport] = useState<any>({});
+    const report_id = searchParams.get('report_id');
     const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
     const [filter, setFilter] = useState<any>({ 
@@ -1024,22 +1028,6 @@ const BHWMonthlyReportView = ({report} : {report: any}) => {
     const [sitios, setSitios] = useState<any[]>([]);
     const [records, setRecords] = useState<any>([]);
 
-    const handleSubmit = (e) => {
-        confirmPopup({
-            target: e.target,
-            message: 'Are you sure you want to submit the report?',
-            accept: async () => {
-                if(!filter.sitio || !filter.month || !filter.year) {
-                    dispatch(setToast({severity: 'error', summary: 'Error', detail: 'Please select sitio, month and year'}));
-                    return;
-                }
-                setLoading({ ...loading, submit: true });
-                await submitReport(dispatch, {sitio: filter.sitio, month: filter.month, year: filter.year}, 1);
-                setLoading({ ...loading, submit: false });
-            }
-        })
-    }
-
     useEffect(() => {
         if(filter.sitio && filter.month && filter.year) {
             (async() => {
@@ -1050,7 +1038,7 @@ const BHWMonthlyReportView = ({report} : {report: any}) => {
                     year: filter.year
                 });
                 setRecords(_records);
-                console.log(_records)
+                console.log('records', _records)
                 setLoading({ ...loading, records: false });
             })();
         }
@@ -1066,15 +1054,25 @@ const BHWMonthlyReportView = ({report} : {report: any}) => {
     // }, [authStore.user?.id]);
 
     useEffect(() => {
-        if(report.filters) {
+        const _filters = JSON.parse(report.filters);
+        if(_filters) {
             setFilter({
                 ...filter,
-                sitio: report.filters.sitio,
-                month: report.filters.month,
-                year: report.filters.year,
+                sitio: _filters.sitio,
+                month: _filters.month,
+                year: _filters.year,
             });
         }
     }, [report.filters]);
+
+    useEffect(() => {
+        if(report_id) {
+            (async() => {
+                const _report = await getReportById(dispatch, report_id);
+                setReport(_report);
+            })();
+        }
+    }, [report_id]);
 
     return (
         <AuthMiddleware>

@@ -598,5 +598,10 @@ class ReportController extends Controller
         return $reports;
     }
 
+    public function getReportById($id)
+    {
+        return Report::with(['reportType', 'reportLogs'])->find($id);
+    }
+
 
 }

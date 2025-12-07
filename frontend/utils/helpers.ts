@@ -90,4 +90,58 @@ export function identifyReportType(reportTypeId : any){
 
 }
 
+export function identifyReportTypeUrl(reportTypeId : any){
+  const reports = [
+      {
+          id: 1,
+          name: "bhw-monthly-report",
+          reportType: "Monthly Report",
+          url : "/reports/view/monthly-report"
+      },
+      {
+          id: 2,
+          name: "bhw-summary-report",
+          url : "/reports/view/summary-report"
+      },
+      {
+          id: 3,
+          name: "midwife-env-st",
+          reportType: "Environmental Summary Table"
+      },
+      {
+          id: 4,
+          name: "midwife-fp-st",
+          reportType: "Family Planning Summary Table"
+      },
+      {
+          id: 5,
+          name: "midwife-fp-st",
+          reportType: "Family Planning Summary Table"
+      },
+      {
+          id: 6,
+          name: "midwife-cc-st",
+          reportType: "Child Care Summary Table"
+      },
+      {
+          id: 7,
+          name: "midwife-mc-st",
+          reportType: "Maternal Care Summary Table"
+      },
+      {
+          id: 8,
+          name: "midwife-ncd-st",
+          reportType: "Non-communicable Diseases Summary Table"
+      },
+      {
+          id: 9,
+          name: "rhu-m1",
+          reportType: "M1 Report"
+      },
+  ];
+
+  return reports.find((report) => report.id === reportTypeId)?.url;
+
+}
+
 

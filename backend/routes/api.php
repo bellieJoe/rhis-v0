@@ -130,6 +130,7 @@ Route::prefix("reports")->group(function () {
         Route::post("reject/{id}", [ReportController::class, "reject"]);
         Route::post("approve/{id}", [ReportController::class, "approve"]);
         Route::delete("delete/{id}", [ReportController::class, "delete"]);
+        Route::get("get/{id}", [ReportController::class, "getReportById"]);
     });
 });
 

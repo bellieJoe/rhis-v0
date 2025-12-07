@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteReport, getSubmittedReports, resubmitReport } from "@/api/reportApi";
-import { identifyReportType } from "@/utils/helpers";
+import { identifyReportType, identifyReportTypeUrl } from "@/utils/helpers";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { Badge } from "primereact/badge";
@@ -90,8 +90,10 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                 {
                     report.status == "rejected" && <Button label="Resubmit" severity="success" size="small" onClick={handleResubmit}  />
                 }
-                <Button label="View" size="small"  />
-                {/* <Button label="View" size="small" onClick={() => router.push(`${identifyReportType(report.report_type_id)}?${query}`)}  /> */}
+                <Button label="View" size="small" onClick={() => {
+                    window.open(`${identifyReportTypeUrl(report.report_type_id)}?report_id=${report.id}`, "_blank");
+                }}  />
+                
                 <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />

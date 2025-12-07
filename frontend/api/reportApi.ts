@@ -127,3 +127,17 @@ export const getForApprovalReports = async (dispatch : Dispatch, params : any = 
         }));
     }
 }
+
+export const getReportById = async (dispatch : Dispatch, id : any) => {
+    try {
+        const response = await axios.get(`/api/reports/get/${id}`);
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
