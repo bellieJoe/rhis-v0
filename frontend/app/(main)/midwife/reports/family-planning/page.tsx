@@ -2,7 +2,7 @@
 
 import { getSummaryReport, submitReport } from "@/api/reportApi";
 import { getFamilyPlanningSummary } from "@/api/summaryTableApi";
-import { YearPicker } from "@/components/forms/CustomPickers";
+import { MonthPicker, YearPicker } from "@/components/forms/CustomPickers";
 import { AuthMiddleware } from "@/components/middlewares";
 import { setToast } from "@/features/toastSlice";
 import { Button } from "primereact/button";
@@ -15,6 +15,7 @@ import { useReactToPrint } from "react-to-print";
 const MaternalCareReport = () => {
     const [report, setReport] = useState<any>({});
     const [year, setYear] = useState(new Date().getFullYear());
+    const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [barangay, setBarangay] = useState(null);
     const [barangayName, setBarangayName] = useState(null);
     const [ loading, setLoading ] = useState({ records: false, submit: false });
@@ -36,7 +37,8 @@ const MaternalCareReport = () => {
                 setLoading({ ...loading, submit: true });
                 await submitReport(dispatch, {
                     barangayIds: authStore.user?.midwife_designations.map((d: any) => d.barangay_id), 
-                    year : year 
+                    year : year,
+                    month: month
                 }, 5);
                 setLoading({ ...loading, submit: false });
             }
@@ -51,16 +53,18 @@ const MaternalCareReport = () => {
             console.log(authStore.user?.bhw_designations[0]);
             const _report = await getFamilyPlanningSummary(dispatch, { 
                 barangayIds : authStore.user?.midwife_designations.map((d: any) => d.barangay_id), 
-                year: year 
+                year: year,
+                month: month
             });
-            console.log(_report);
             setReport(_report);
             setLoading({ ...loading, records: false });
         })();
     }, [authStore.user?.id, year]);
+
     return (
         <AuthMiddleware>
             <div className="flex justify-content-end gap-1 mb-3">
+                <MonthPicker value={month} onChange={(e) => setMonth(e.value)} />
                 <YearPicker value={year} onChange={(e) => setYear(e.value)} />
                 <Button label="Print" icon="pi pi-print" onClick={reactToPrintFn} />
                 <Button label="Submit" severity="success" size="small" icon="pi pi-send" onClick={handleSubmit} />

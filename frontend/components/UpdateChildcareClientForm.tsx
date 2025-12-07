@@ -253,7 +253,7 @@ const UpdateChildcareClientForm = () => {
                                     <br />
                                     <h5>Child Protected at Birth</h5>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">TT1/Td2 given <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">TT1/Td2 given </label>
                                         <InputText
                                             type="number"
                                             className="w-full"
@@ -262,7 +262,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="cpab_a" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">TT2/Td2-TT5/Td5 given <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">TT2/Td2-TT5/Td5 given </label>
                                         <InputText
                                             type="number"
                                             className="w-full"
@@ -277,7 +277,7 @@ const UpdateChildcareClientForm = () => {
                             <div className="mb-3">
                                 <h5>New Born (0-11 months old)</h5>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length </label>
                                     <InputText
                                         type="number"
                                         className="w-full"
@@ -286,7 +286,7 @@ const UpdateChildcareClientForm = () => {
                                     <ValidationError name="length" />  
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight </label>
                                     <InputText
                                         type="number"
                                         className="w-full"
@@ -295,7 +295,7 @@ const UpdateChildcareClientForm = () => {
                                     <ValidationError name="weight" />  
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Initiated breastfeeding immediately after birth lasting for 90 minutes <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Initiated breastfeeding immediately after birth lasting for 90 minutes </label>
                                     <Calendar
                                         className="w-full"
                                         value={form.initial_breastfeeding_duration}
@@ -306,7 +306,7 @@ const UpdateChildcareClientForm = () => {
                                     <hr />
                                     <h6>Immunization</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">BCG <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">BCG </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.immunization_bcg}
@@ -314,7 +314,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="immunization_bcg" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Hepa B-BD <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Hepa B-BD </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.immunization_hepa_b}
@@ -330,7 +330,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <h6>Nutritional Status Assessment</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months </label>
                                         <InputText
                                             type="number"
                                             className="w-full"
@@ -339,7 +339,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="nsa_age_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -359,7 +359,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -379,7 +379,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status </label>
                                         <Dropdown
                                             options={nsaStatusOptions}
                                             optionLabel="label"
@@ -394,7 +394,7 @@ const UpdateChildcareClientForm = () => {
                                     <hr />
                                     <h6>Low birth weight given iron</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1 mos <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1 mos </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.lbwgi_1month_13}
@@ -402,7 +402,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="lbwgi_1month_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2 mos <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2 mos </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.lbwgi_2month_13}
@@ -410,7 +410,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="lbwgi_2month_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3 mos <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3 mos </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.lbwgi_3month_13}
@@ -423,7 +423,7 @@ const UpdateChildcareClientForm = () => {
                                     <h6>Immunization</h6>
                                     <p>DPT-Hi-B-HepB</p>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.dhh_1st_dose_13}
@@ -431,7 +431,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="dhh_1st_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.dhh_2nd_dose_13}
@@ -439,7 +439,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="dhh_2nd_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.dhh_3rd_dose_13}
@@ -448,7 +448,7 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                     <p>OPV</p>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.opv_1st_dose_13}
@@ -456,7 +456,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="opv_1st_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.opv_2nd_dose_13}
@@ -464,7 +464,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="opv_2nd_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.opv_3rd_dose_13}
@@ -473,7 +473,7 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                     <p>PCV</p>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">1st dose 1 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.pcv_1st_dose_13}
@@ -481,7 +481,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="pcv_1st_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">2nd dose 2 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.pcv_2nd_dose_13}
@@ -489,7 +489,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="pcv_2nd_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">3rd dose 3 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.pcv_3rd_dose_13}
@@ -497,7 +497,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="pcv_3rd_dose_13" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV 1st dose 1 1/2 months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV 1st dose 1 1/2 months </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.ipv_1st_dose_13}
@@ -513,7 +513,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <h6>Nutritional Status Assessment</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months </label>
                                         <InputText
                                             type="number"
                                             className="w-full"
@@ -522,7 +522,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="nsa_age_611" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -542,7 +542,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -562,7 +562,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status </label>
                                         <Dropdown
                                             options={nsaStatusOptions}
                                             optionLabel="label"
@@ -574,7 +574,7 @@ const UpdateChildcareClientForm = () => {
                                     </div>
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Exclusively breastfeed for up to 5 months and 23 days  <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Exclusively breastfeed for up to 5 months and 23 days  </label>
                                     <div className="grid">
                                         <div className="col-6">
                                             <Calendar
@@ -633,7 +633,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <hr />
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Vitamin A(date given) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Vitamin A(date given) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.vit_a_611}
@@ -645,7 +645,7 @@ const UpdateChildcareClientForm = () => {
                                     <hr />
                                     <h6>MNP</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date when 90 sachets was given <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date when 90 sachets was given </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.mnp_90_611}
@@ -653,7 +653,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="mnp_90_611" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Date Completed </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.mnp_completed_611}
@@ -664,7 +664,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <hr />
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 1 at 9th month(date given) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 1 at 9th month(date given) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.mmr_611}
@@ -675,7 +675,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <hr />
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV dose at 9th month(date given) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">IPV dose at 9th month(date given) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.ipv_dose2_611}
@@ -691,7 +691,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <h6>Nutritional Status Assessment</h6>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Age in Months </label>
                                         <InputText
                                             type="number"
                                             className="w-full"
@@ -700,7 +700,7 @@ const UpdateChildcareClientForm = () => {
                                         <ValidationError name="nsa_age_12" />  
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Length </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -720,7 +720,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Weight </label>
                                         <div className="grid">
                                             <div className="col-6">
                                                 <InputText
@@ -740,7 +740,7 @@ const UpdateChildcareClientForm = () => {
                                         </div>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Status </label>
                                         <Dropdown
                                             options={nsaStatusOptions}
                                             optionLabel="label"
@@ -754,7 +754,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <hr />
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 2 at 12th month(date given) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">MMR dose 2 at 12th month(date given) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.mmr_dose2_12}
@@ -765,7 +765,7 @@ const UpdateChildcareClientForm = () => {
                                 <div className="mb-3">
                                     <hr />
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">FIC***(date) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">FIC***(date) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.fic_12}
@@ -779,7 +779,7 @@ const UpdateChildcareClientForm = () => {
                             <div className="mb-3">
                                 <div className="mb-3">
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">CIC(date) <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">CIC(date) </label>
                                         <Calendar
                                             className="w-full"
                                             value={form.cic}
@@ -798,7 +798,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, mam_admitted_011 : e.checked})}
                                                     inputId="mam_admitted_011"
                                                 />
-                                                <label htmlFor="mam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in SFP <Required/></label>
+                                                <label htmlFor="mam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in SFP </label>
                                             </div>
                                             <ValidationError name="mam_admitted_011" />
                                         </div>
@@ -809,7 +809,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, mam_cured_011 : e.checked})}
                                                     inputId="mam_cured_011"
                                                 />
-                                                <label htmlFor="mam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured <Required/></label>
+                                                <label htmlFor="mam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured </label>
                                             </div>
                                             <ValidationError name="mam_cured_011" />
                                         </div>
@@ -820,7 +820,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, mam_defaulted_011 : e.checked})}
                                                     inputId="mam_defaulted_011"
                                                 />
-                                                <label htmlFor="mam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted <Required/></label>
+                                                <label htmlFor="mam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted </label>
                                             </div>
                                             <ValidationError name="mam_defaulted_011" />
                                         </div>
@@ -831,7 +831,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, mam_died_011 : e.checked})}
                                                     inputId="mam_died_011"
                                                 />
-                                                <label htmlFor="mam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died <Required/></label>
+                                                <label htmlFor="mam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died </label>
                                             </div>
                                             <ValidationError name="mam_died_011" />
                                         </div>
@@ -845,7 +845,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, sam_admitted_011 : e.checked})}
                                                     inputId="sam_admitted_011"
                                                 />
-                                                <label htmlFor="sam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in OTC <Required/></label>
+                                                <label htmlFor="sam_admitted_011" className=" text-sm font-medium text-gray-900 mb-1">Admitted in OTC </label>
                                             </div>
                                             <ValidationError name="sam_admitted_011" />
                                         </div>
@@ -856,7 +856,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, sam_cured_011 : e.checked})}
                                                     inputId="sam_cured_011"
                                                 />
-                                                <label htmlFor="sam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured <Required/></label>
+                                                <label htmlFor="sam_cured_011" className=" text-sm font-medium text-gray-900 mb-1">Cured </label>
                                             </div>
                                             <ValidationError name="sam_cured_011" />
                                         </div>
@@ -867,7 +867,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, sam_defaulted_011 : e.checked})}
                                                     inputId="sam_defaulted_011"
                                                 />
-                                                <label htmlFor="sam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted <Required/></label>
+                                                <label htmlFor="sam_defaulted_011" className=" text-sm font-medium text-gray-900 mb-1">Defaulted </label>
                                             </div>
                                             <ValidationError name="sam_defaulted_011" />
                                         </div>
@@ -878,7 +878,7 @@ const UpdateChildcareClientForm = () => {
                                                     onChange={(e) => setForm({...form, sam_died_011 : e.checked})}
                                                     inputId="sam_died_011"
                                                 />
-                                                <label htmlFor="sam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died <Required/></label>
+                                                <label htmlFor="sam_died_011" className=" text-sm font-medium text-gray-900 mb-1">Died </label>
                                             </div>
                                             <ValidationError name="sam_died_011" />
                                         </div>
@@ -886,7 +886,7 @@ const UpdateChildcareClientForm = () => {
                                 </div>
                                 <div className="mb-3">
                                     <hr />
-                                    <label  className="block text-sm font-medium text-gray-900 mb-1">Remarks <Required/></label>
+                                    <label  className="block text-sm font-medium text-gray-900 mb-1">Remarks </label>
                                     <InputTextarea
                                         rows={3}
                                         className="w-full"

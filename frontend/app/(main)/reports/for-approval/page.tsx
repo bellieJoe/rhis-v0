@@ -26,7 +26,6 @@ const ReportStatus = ({ status }: any) => {
 
 const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => void }) => {
     const dispatch = useDispatch();
-    const router = useRouter();
     const [openSidebar, setOpenSidebar] = useState({
         approve: false,
         reject : false

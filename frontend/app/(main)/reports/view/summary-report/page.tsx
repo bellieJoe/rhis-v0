@@ -28,25 +28,9 @@ const SummaryReport = () => {
      const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
 
-    const handleSubmit = (e) => {
-        confirmPopup({
-            target: e.target,
-            message: 'Are you sure you want to submit the report?',
-            accept: async () => {
-                if(!barangay || !year) {
-                    dispatch(setToast({severity: 'error', summary: 'Error', detail: 'Please select year'}));
-                    return;
-                }
-                setLoading({ ...loading, submit: true });
-                await submitReport(dispatch, {barangay: barangay, year: year}, 2);
-                setLoading({ ...loading, submit: false });
-            }
-        })
-    }
-
     useEffect(() => {
-        setBarangay(authStore.user?.bhw_designations[0]?.barangay_id);
-        setBarangayName(authStore.user?.bhw_designations[0]?.barangay?.full_address);
+        // setBarangay(authStore.user?.bhw_designations[0]?.barangay_id);
+        // setBarangayName(authStore.user?.bhw_designations[0]?.barangay?.full_address);
         (async () => {
             setLoading({ ...loading, records: true });
             console.log(authStore.user?.bhw_designations[0]);
@@ -68,11 +52,11 @@ const SummaryReport = () => {
 
     return (
         <AuthMiddleware>
-            <div className="flex justify-content-end gap-1 mb-3">
+            {/* <div className="flex justify-content-end gap-1 mb-3">
                 <YearPicker value={year} onChange={(e) => setYear(e.value)} />
                 <Button label="Print" icon="pi pi-print" onClick={reactToPrintFn} />
                 <Button label="Submit" severity="success" size="small" icon="pi pi-send" onClick={handleSubmit} />
-            </div>
+            </div> */}
             <div className="card">
                 {
                     loading.records && (

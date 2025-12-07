@@ -266,7 +266,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                 <h6>Follow Up Visits</h6>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jan <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jan </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_jan}
@@ -276,7 +276,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Feb <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Feb </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_feb}
@@ -286,7 +286,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Mar <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Mar </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_mar}
@@ -296,7 +296,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Apr <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Apr </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_apr}
@@ -306,7 +306,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">May <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">May </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_may}
@@ -316,7 +316,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jun <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jun </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_jun}
@@ -326,7 +326,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jul <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Jul </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_jul}
@@ -336,7 +336,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Aug <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Aug </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_aug}
@@ -346,7 +346,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Sep <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Sep </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_sep}
@@ -356,7 +356,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Oct <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Oct </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_oct}
@@ -366,7 +366,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Nov <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Nov </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_nov}
@@ -376,7 +376,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Dec <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Dec </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.ff_dec}
@@ -389,7 +389,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                     <hr />
                                     <h6>Drop-Out</h6>
                                     <div className="mb-3">
-                                        <label className="block text-sm font-medium text-gray-900 mb-1">Date <Required/></label>
+                                        <label className="block text-sm font-medium text-gray-900 mb-1">Date </label>
                                         <Calendar
                                         className="w-full"
                                         value={form.dr_date}
@@ -398,7 +398,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                         <ValidationError name="dr_date" />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Reason <Required/></label>
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Reason </label>
                                         <InputTextarea
                                             className="w-full"
                                             value={form.dr_reason}
@@ -408,7 +408,7 @@ const UpdateFamilyPlanningClientForm = () => {
                                 </div>
                                 <hr />
                                 <div className="mb-3">
-                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Remarks <Required/></label>
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Remarks </label>
                                     <InputTextarea
                                         className="w-full"
                                         value={form.remarks}

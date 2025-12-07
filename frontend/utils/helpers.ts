@@ -108,17 +108,19 @@ export function identifyReportTypeUrl(reportTypeId : any){
           id: 3,
           name: "midwife-env-st",
           reportType: "Environmental Summary Table",
-          // url : "/reports/view/summary-report"
+          url : "/reports/view/environmental-st"
       },
       {
           id: 4,
           name: "midwife-fp-st",
-          reportType: "Family Planning Summary Table"
+          reportType: "Family Planning Summary Table",
+          url : "/reports/view/family-planning-st"
       },
       {
           id: 5,
           name: "midwife-fp-st",
-          reportType: "Family Planning Summary Table"
+          reportType: "Family Planning Summary Table",
+          url : "/reports/view/family-planning-st"
       },
       {
           id: 6,
