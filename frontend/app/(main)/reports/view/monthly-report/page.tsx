@@ -1054,6 +1054,7 @@ const BHWMonthlyReportView = () => {
     // }, [authStore.user?.id]);
 
     useEffect(() => {
+        if(!report.filters) return;
         const _filters = JSON.parse(report.filters);
         if(_filters) {
             setFilter({

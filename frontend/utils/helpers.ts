@@ -47,6 +47,7 @@ export function identifyReportType(reportTypeId : any){
       {
           id: 2,
           name: "bhw-summary-report",
+          reportType: "Summary Report",
           url : "/reports/view/summary-report"
       },
       {
@@ -106,7 +107,8 @@ export function identifyReportTypeUrl(reportTypeId : any){
       {
           id: 3,
           name: "midwife-env-st",
-          reportType: "Environmental Summary Table"
+          reportType: "Environmental Summary Table",
+          // url : "/reports/view/summary-report"
       },
       {
           id: 4,

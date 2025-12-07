@@ -2,7 +2,7 @@
 
 import { approveReport, deleteReport, getForApprovalReports, getSForApprovalReports, getSubmittedReports, rejectReport } from "@/api/reportApi";
 import ValidationError from "@/components/forms/ValidationError";
-import { identifyReportType } from "@/utils/helpers";
+import { identifyReportType, identifyReportTypeUrl } from "@/utils/helpers";
 import moment from "moment";
 import { Badge } from "primereact/badge";
 import { Button } from "primereact/button";
@@ -87,9 +87,8 @@ const ReportActions = ({ report, onRefresh }: { report: any, onRefresh?: () => v
                 <Button label="Reject" severity="danger" size="small" onClick={reject} />
                 <Button label="Approve" size="small" onClick={approve}  />
                 <Button label="View" size="small" onClick={() => {
-                    console.log(`${identifyReportType(report.report_type_id)}?${query}`)
-                    router.push(`${identifyReportType(report.report_type_id)}?${query}`)
-                    }}  />
+                                    window.open(`${identifyReportTypeUrl(report.report_type_id)}?report_id=${report.id}`, "_blank");
+                                }}  />
                 <Button label="Logs" size="small" onClick={() => setOpenLogs(true)}  />
             </div> 
             <ReportLogs report={report} visible={openLogs} hide={() => {setOpenLogs(false)}} />
