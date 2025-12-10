@@ -395,7 +395,7 @@ const AddHouseholdProfile = () => {
                                     </label>
                                     <Dropdown
                                         showClear
-                                        options={genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS')}
+                                        options={calculateAge(form.birthdate) <= 5 ? genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS' && x.id == 75) : genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS')}
                                         optionLabel="label"
                                         optionValue="id"
                                         onChange={(e) => setForm({ ...form, civil_status_id: e.value })}

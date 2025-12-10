@@ -314,7 +314,7 @@ const UpdateHouseholdProfile = () => {
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status <Required/></label>
                                     <Dropdown 
                                         showClear
-                                        options={genericTypes.filter((x: any) => x.type === "CIVIL_STATUS")} 
+                                        options={calculateAge(form.birthdate) <= 5 ? genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS' && x.id == 75) : genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS')}
                                         optionLabel="label"
                                         optionValue="id"
                                         onChange={(e) => setForm({...form, civil_status_id : e.value})}
