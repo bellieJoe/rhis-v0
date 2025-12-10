@@ -97,6 +97,7 @@ Route::prefix("household-profiles")->group(function () {
         Route::put("update-addtnl-info", [HouseholdProfileController::class, "updateAdditionalInfo"]);
         Route::put("update-main-info", [HouseholdProfileController::class, "updateMainInfo"]);
         Route::delete("{id}", [HouseholdProfileController::class, "destroy"]);
+        Route::get("family-heads/{household_profile_id}", [HouseholdProfileController::class, "getFamilyHeads"]);
     });
 });
 

@@ -30,8 +30,10 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
     const [loading, setLoading] = useState({
         addHousehold : false
     });
+    const authStore = useSelector((state: any) => state.auth);
     const [barangays, setBarangays] = useState([]);
     const onSave = async () => {
+        console.log(form);
         dispatch(setErrors({}));
         setLoading({
             ...loading,
@@ -85,6 +87,13 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
         })();
     }, [form.barangay]);
 
+    useEffect(() => {
+        console.log("User changed", authStore.user);
+        if(authStore.user?.bhw_designations[0]) {    
+            setForm({...form, barangay_name : authStore.user?.bhw_designations[0].barangay?.full_address, barangay : authStore.user?.bhw_designations[0].barangay_id});
+        }
+    }, [authStore.user]);
+
     return (
         <Sidebar 
             title="Add Household" 
@@ -118,7 +127,8 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
 
             <div className="flex flex-column gap-2 mb-3">
                 <label htmlFor="address">Address <Required/></label>
-                <AutoComplete   
+                <InputText id="address" placeholder="eg. Dela Cruz Residence" value={form.barangay_name} readOnly  className="w-full" />
+                {/* <AutoComplete   
                     dropdown
                     id="address" 
                     placeholder="Barangay, Municipality, Province" 
@@ -128,7 +138,8 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     completeMethod={handleBarangayComplete}
                     onChange={handleBarangayChanged} 
                     onSelect={handleBarangaySelect}
-                    className="w-full" />
+                    readOnly
+                    className="w-full" /> */}
                 <ValidationError name="barangay" />
             </div>
 
@@ -139,7 +150,12 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
                     placeholder="Select Sitio" 
                     value={form.sitio} 
                     onChange={(e) => setForm({...form, sitio : e.value})}
-                    options={sitios}
+                    options={
+                        sitios.filter((sitio: any) =>
+                            authStore.user?.bhw_designations?.some(
+                                (d: any) => d.sitio_id === sitio.id
+                            )
+                        )}
                     optionLabel="sitio_name"
                     optionValue="id"
                     className="w-full" />

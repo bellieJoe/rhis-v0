@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ValidationError from './forms/ValidationError';
 import { calculateAge, formatDate } from '@/utils/helpers';
-import { storeHouseholdProfile } from '@/api/householdProfileApi';
+import { getFamilyHeads, storeHouseholdProfile } from '@/api/householdProfileApi';
 import { addMember, hide } from '@/features/forms/addHouseholdProfileSlice';
 import { reloadHouseholds } from '@/features/householdSlice';
 import { setErrors } from '@/features/errorSlice';
@@ -36,6 +36,7 @@ const AddHouseholdProfile = () => {
     const { households } = useSelector((state: any) => state.household);
     const [householdItems, setHouseholdItems] = useState([]);
     const addHouseholdProfileStore = useSelector((state: any) => state.addHouseholdProfile);
+    const [familyHeads, setFamilyHeads] = useState<any[]>([]);
     const initialForm: any = {
         household: null,
         household_no: '',
@@ -75,7 +76,9 @@ const AddHouseholdProfile = () => {
         hc_stroke: false,
         hc_mass: false,
         hc_smoker: false,
-        hc_alchohol_drinker: false
+        hc_alchohol_drinker: false,
+        is_family_head: false,
+        family_head_id: ''
     };
     const [form, setForm] = useState(initialForm);
     const items: MenuItem[] = [
@@ -124,14 +127,27 @@ const AddHouseholdProfile = () => {
         })();
     }, []);
 
+    // get household familyheads
+    useEffect(() => {
+        if(!form.household_id) {
+            return;
+        }
+        console.log(form.household_id);
+        (async () => {
+            const heads = await getFamilyHeads(dispatch, {household_id : form.household_id});
+            console.log("Heads ", heads);
+            setFamilyHeads(heads);
+        })();
+    }, [form.household_id]);
+
     useEffect(() => {
         const newForm = initialForm;
         newForm.household_id = addHouseholdProfileStore.householdId;
         newForm.household_no = addHouseholdProfileStore.householdNo;
         newForm.date_of_visit = addHouseholdProfileStore.date_of_visit;
         newForm.member_relationship_id = addHouseholdProfileStore.addHead ? 1 : '';
+        newForm.is_family_head = addHouseholdProfileStore.addHead;
         setForm(newForm);
-        console.log(form);
     }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
 
     const next = () => {
@@ -149,7 +165,6 @@ const AddHouseholdProfile = () => {
     const handleHouseholdComplete = async (e: any) => {
         await getHouseholds(dispatch, { search: e.query });
         setHouseholdItems(e.query ? households.data?.map((household: any) => ({ label: `${household.household_no}`, value: household.id, household: household })) : []);
-        console.log(householdItems);
     };
 
     const handleHouseholdSelect = (e: any) => {
@@ -261,7 +276,7 @@ const AddHouseholdProfile = () => {
                                         <Dropdown
                                             showClear
                                             options={genericTypes.filter((x: any) => {
-                                                return x.type === 'MEMBERS_OF_HOUSEHOLD';
+                                                return x.type === 'MEMBERS_OF_HOUSEHOLD' && x.id != '1';
                                             })}
                                             optionLabel="label"
                                             optionValue="id"
@@ -272,6 +287,35 @@ const AddHouseholdProfile = () => {
                                             style={{ width: '100%' }}
                                         />
                                         <ValidationError name="member_relationship_id" />
+                                    </div>
+                                )}
+
+                                {!addHouseholdProfileStore.addHead && (
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
+                                            Is Family Head ?<Required />
+                                        </label>
+                                        <Checkbox checked={form.is_family_head} onChange={(e) => setForm({ ...form, is_family_head: e.checked })} />
+                                        <ValidationError name="is_family_head" />
+                                    </div>
+                                )}
+                                
+                                {(!addHouseholdProfileStore.addHead && !form.is_family_head) && (
+                                    <div className="mb-3">
+                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
+                                            Family Head?<Required />
+                                        </label>
+                                        <Dropdown
+                                            showClear
+                                            options={familyHeads}
+                                            optionLabel="fullname"
+                                            optionValue="id"
+                                            value={form.family_head_id}
+                                            placeholder="Select Family Head"
+                                            onChange={(e) => setForm({ ...form, family_head_id: e.value })}
+                                            style={{ width: '100%' }}
+                                        />
+                                        <ValidationError name="family_head_id" />
                                     </div>
                                 )}
 

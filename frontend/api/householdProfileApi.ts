@@ -120,3 +120,17 @@ export const deleteHouseholdProfile = async (dispatch : Dispatch, id : any) => {
     }
 }
 
+export const getFamilyHeads = async (dispatch : Dispatch, params : any = {}) => {
+    try {
+        const response : any = await axios.get(`/api/household-profiles/family-heads/${params.household_id}`);
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+

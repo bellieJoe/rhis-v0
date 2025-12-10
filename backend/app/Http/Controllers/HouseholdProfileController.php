@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class HouseholdProfileController extends Controller
 {
+    private $latestDetailQueryString = "created_at = (select max(created_at) from household_profile_details where household_profile_details.household_profile_id = household_profiles.id)";         
     //
     public function index(Request $request) {
         
@@ -86,6 +87,13 @@ class HouseholdProfileController extends Controller
             "educational_attainment_id" =>  "required|exists:generic_types,id",
             "religion_id" => "required|exists:generic_types,id",
             "other_religion" =>  "nullable|required_if:religion_id,37|max:50",
+            'family_head_id' => [
+                'required_unless:member_relationship_id,1', // required when relationship != 1
+                'required_if:is_family_head,false',         // required when not family head
+                'nullable',
+                'exists:household_profile_details,id',
+            ],
+            'is_family_head' => "required_unless:member_relationship_id,1|boolean",
             // "unit_id" => "",
             // "enthnicity" => "required|in:IP,Non-IP",
             // "fourps_member" => "required|boolean",
@@ -134,6 +142,8 @@ class HouseholdProfileController extends Controller
                 "educational_attainment_id" => $request->input("educational_attainment_id"),
                 "religion_id" => $request->input("religion_id"),
                 "other_religion" => $request->input("religion_id") == 37 ? $request->input("other_religion") : null,
+                "is_family_head" => $request->input("member_relationship_id") == 1 ? true : $request->input("is_family_head"),
+                "family_head_id" => $request->input("member_relationship_id") == 1 ? 0 : $request->input("family_head_id"),
                 // "enthnicity" => $request->input("enthnicity"),
                 // "fourps_member" => $request->input("fourps_member"),
                 // "fourps_household_no" => $request->input("fourps_member") ? $request->input("fourps_household_no") : null,
@@ -378,6 +388,20 @@ class HouseholdProfileController extends Controller
             "message" => "Household profile deleted successfully"
         ]);
     }
+
+    public function getFamilyHeads(Request $request, $household_id) {
+        return HouseholdProfile::where('household_id', $household_id)
+            ->whereHas('householdProfileDetails', function ($q) {
+                $q->where('is_family_head', 1)
+                ->where('created_at', function ($sub) {
+                        $sub->selectRaw('MAX(created_at)')
+                            ->from('household_profile_details')
+                            ->whereColumn('household_profile_details.household_profile_id', 'household_profiles.id');
+                });
+            })
+            ->get();
+    }
+
     
     
 }
