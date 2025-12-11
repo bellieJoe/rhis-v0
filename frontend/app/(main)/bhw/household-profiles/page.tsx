@@ -109,6 +109,7 @@ const HouseholdsTable = () => {
                                         })
                                     )}} 
                                     loading={loading.householdDelete}   />
+                                    <Button label="Members" size="small"  outlined icon="pi pi-eye"   />
                             </div>
                         )
                     } />
