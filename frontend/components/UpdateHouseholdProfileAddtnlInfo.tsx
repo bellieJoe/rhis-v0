@@ -324,7 +324,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <ValidationError name="classification_by_age_hrg_id" />
                                     </div>
                                     {
-                                        form.gender_id == "80" && (
+                                        (form.gender_id == "80" && calculateAge(form.birthdate) >= 15) && (
                                             <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                 <Checkbox  checked={form.is_pregnant} onChange={(e) => setForm({...form, is_pregnant : (e.checked || false)})} ></Checkbox>
                                                 <div className="">
