@@ -148,4 +148,29 @@ export function identifyReportTypeUrl(reportTypeId : any){
 
 }
 
+// export const getClassificationByAge = (age : number) => {
+//     if(age <= 1) return [38, 39]
+//     else if(age > 1 && age <= 4) return [40]
+//     else if(age > 4 && age <= 9) return [41]
+//     else if(age > 9 && age <= 19) return [42]
+//     else if(age > 19 && age <= 59) return [43]
+//     else if(age > 59) return [44]
+//     else return []
+// }
+
+export const getClassificationByAge = (age: number) => {
+    // 0 to 28 days
+    if (age >= 0 && age <= (28 / 365)) return 38;
+
+    // > 28 days to 1 year
+    if (age <= 1) return 39;
+
+    else if (age > 1 && age <= 4) return 40;
+    else if (age > 4 && age <= 9) return 41;
+    else if (age > 9 && age <= 19) return 42;
+    else if (age > 19 && age <= 59) return 43;
+    else if (age > 59) return 44;
+    else return [];
+};
+
 

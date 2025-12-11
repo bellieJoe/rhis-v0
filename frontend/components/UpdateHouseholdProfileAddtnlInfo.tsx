@@ -11,7 +11,7 @@ import { Steps } from "primereact/steps";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./forms/ValidationError";
-import { calculateAge, convertTinyIntToBoolean, formatDate } from "@/utils/helpers";
+import { calculateAge, convertTinyIntToBoolean, formatDate, getClassificationByAge } from "@/utils/helpers";
 import { hideUpdateProfile } from "@/features/forms/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { updateHouseholdProfileAddtnlInfo } from "@/api/householdProfileApi";
@@ -126,7 +126,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             philhealth_category_id: updateHouseholdProfileStore.householdProfile.updated_details?.philhealth_category_id,
             medical_history_id : updateHouseholdProfileStore.householdProfile.updated_details?.medical_history_id,
             other_medical_history: updateHouseholdProfileStore.householdProfile.updated_details?.other_medical_history,
-            classification_by_age_hrg_id : updateHouseholdProfileStore.householdProfile.updated_details?.classification_by_age_hrg_id,
+            classification_by_age_hrg_id : getClassificationByAge(calculateAge(updateHouseholdProfileStore.householdProfile.birthdate)),
             is_pregnant : updateHouseholdProfileStore.householdProfile.updated_details?.is_pregnant,
             last_menstrual_period : updateHouseholdProfileStore.householdProfile.updated_details?.last_menstrual_period,
             is_using_fp_method : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.is_using_fp_method),
@@ -233,14 +233,18 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                     <ValidationError name="enthnicity" />
                                 </div> 
                                 <div className="mb-3">
-                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
-                                        <Checkbox  checked={form.fourps_member} onChange={(e) => setForm({...form, fourps_member : (e.checked || false)})} ></Checkbox>
-                                        <div className="">
-                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member? </p>
-                                        </div>
-                                    </div>
                                     {
-                                        form.fourps_member && (
+                                        calculateAge(updateHouseholdProfileStore.householdProfile.birthdate) > 5 && (
+                                            <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                <Checkbox  checked={form.fourps_member} onChange={(e) => setForm({...form, fourps_member : (e.checked || false)})} ></Checkbox>
+                                                <div className="">
+                                                    <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Is 4P's Member? </p>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        (form.fourps_member && calculateAge(updateHouseholdProfileStore.householdProfile.birthdate) > 5) && (
                                             <div className="mb-3">
                                                 <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">4Ps Household ID No. <Required /></label>
                                                 <InputText 
@@ -310,7 +314,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Classification by Age/Health Risk Group <Required /></label>
                                         <Dropdown 
                                             showClear
-                                            options={genericTypes.filter((x: any) => x.type === "CLASSIFICATION_BY_AHRG")} 
+                                            options={genericTypes.filter((x: any) => x.type === "CLASSIFICATION_BY_AHRG" && x.id == getClassificationByAge(calculateAge(form.birthdate)))} 
                                             optionLabel="label"
                                             optionValue="id"
                                             value={form.classification_by_age_hrg_id}
