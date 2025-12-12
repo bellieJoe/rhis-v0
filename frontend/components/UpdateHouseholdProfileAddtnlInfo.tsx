@@ -127,7 +127,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             medical_history_id : updateHouseholdProfileStore.householdProfile.updated_details?.medical_history_id,
             other_medical_history: updateHouseholdProfileStore.householdProfile.updated_details?.other_medical_history,
             classification_by_age_hrg_id : getClassificationByAge(calculateAge(updateHouseholdProfileStore.householdProfile.birthdate)),
-            is_pregnant : updateHouseholdProfileStore.householdProfile.updated_details?.is_pregnant,
+            is_pregnant : updateHouseholdProfileStore.householdProfile.updated_details?.is_pregnant == 1 ? true : false,
             last_menstrual_period : updateHouseholdProfileStore.householdProfile.updated_details?.last_menstrual_period,
             is_using_fp_method : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.is_using_fp_method),
             family_planning_method_id: updateHouseholdProfileStore.householdProfile.updated_details?.family_planning_method_id,
@@ -339,7 +339,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                             <div className="mb-3">
                                                 <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Last Menstrual Period <Required /></label>
                                                 <Calendar 
-                                                    value={form.last_menstrual_period ? new Date(form.last_menstrual_period) : ''}  
+                                                    value={form.last_menstrual_period  ? new Date(form.last_menstrual_period) : ''}  
                                                     dateFormat="mm-dd-yy" 
                                                     placeholder="mm-dd-yyyy" 
                                                     mask="99/99/9999" 
