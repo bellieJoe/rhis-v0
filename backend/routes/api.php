@@ -86,6 +86,7 @@ Route::prefix("households")->group(function () {
         Route::get("", [HouseholdController::class, "index"]);
         Route::get("{id}", [HouseholdController::class, "getHousehold"]);
         Route::delete("{id}", [HouseholdController::class, "destroy"]);
+        Route::get("get-members/{household_id}", [HouseholdController::class, "getMembers"]);
     });
 });
 

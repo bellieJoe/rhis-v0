@@ -76,3 +76,17 @@ export const deleteHousehold = async (dispatch : Dispatch, id : any) => {
     }
     return false;
 }
+
+export const getHouseholdMembers = async (dispatch : Dispatch, household_id : any) => {
+    try {
+        const response = await axios.get(`/api/households/get-members/${household_id}`);
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}

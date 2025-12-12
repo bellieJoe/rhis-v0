@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Household;
+use App\Models\HouseholdProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,4 +80,16 @@ class HouseholdController extends Controller
     }
 
     // public 
+    public function getMembers(Request $request, $household_id) {
+        $household = Household::find($household_id);
+        if(!$household) {
+            return response()->json([
+                'message' => 'Household not found'
+            ], 404);
+        }
+
+        $members = HouseholdProfile::where('household_id', $household_id)->get();
+
+        return $members;
+    }
 }

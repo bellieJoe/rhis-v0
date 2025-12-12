@@ -7,9 +7,11 @@ import { FilterModal } from "@/components/FilterModal";
 import { AuthMiddleware } from "@/components/middlewares";
 import UpdateHouseholdProfile from "@/components/UpdateHouseholdProfile";
 import UpdateHouseholdProfileAddtnlInfo from "@/components/UpdateHouseholdProfileAddtnlInfo";
+import { ViewMembers } from "@/components/ViewMembers";
 import { addMember, addMemberGeneral, show } from "@/features/forms/addHouseholdProfileSlice";
 import { updateProfileAdditnlInfo } from "@/features/forms/updateHouseholdProfileAddtnlInfoSlice";
 import { updateProfile } from "@/features/forms/updateHouseholdProfileSlice";
+import { setHouseholdId } from "@/features/viewMemberSlice";
 import { calculateAge } from "@/utils/helpers";
 import moment from "moment";
 import { Button } from "primereact/button";
@@ -109,7 +111,7 @@ const HouseholdsTable = () => {
                                         })
                                     )}} 
                                     loading={loading.householdDelete}   />
-                                    <Button label="Members" size="small"  outlined icon="pi pi-eye"   />
+                                    <Button label="Members" size="small"  outlined icon="pi pi-eye" onClick={() => dispatch(setHouseholdId(data.id))}   />
                             </div>
                         )
                     } />
@@ -260,6 +262,7 @@ const HouseholdProfiles = () => {
                 <HouseholdProfilesTable />
                 <UpdateHouseholdProfile />
                 <UpdateHouseholdProfileAddtnlInfo />
+                <ViewMembers />
             </AuthMiddleware>
         </>
     )

@@ -24,6 +24,7 @@ import updateChildcareClientRecordReducer from '@/features/forms/updateChildcare
 import registerChildcareClientReducer from '@/features/forms/registerChildcareClientSlice';
 import updateFamilyPlanningClientRecordReducer from '@/features/forms/updateFamilyPlanningClientRecordSlice';
 import registerFamilyPlanningClientReducer from '@/features/forms/registerFamilyPlanningClientSlice';
+import viewMemberRecucer from '@/features/viewMemberSlice';
 
 export default configureStore({
   reducer: {
@@ -51,6 +52,7 @@ export default configureStore({
     registerFamilyPlanningClient : registerFamilyPlanningClientReducer,
     updateMaternalClientRecord : updateMaternalClientRecordReducer,
     updateChildcareClientRecord : updateChildcareClientRecordReducer,
-    updateFamilyPlanningClientRecord : updateFamilyPlanningClientRecordReducer
+    updateFamilyPlanningClientRecord : updateFamilyPlanningClientRecordReducer,
+    viewMember : viewMemberRecucer
   }
 });
