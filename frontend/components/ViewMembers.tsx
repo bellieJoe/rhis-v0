@@ -5,6 +5,7 @@ import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { DataView } from "primereact/dataview";
 import { Sidebar } from "primereact/sidebar";
+import { Tag } from "primereact/tag";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -59,7 +60,17 @@ export const ViewMembers = () => {
                         <div className="flex flex-wrap p-2 align-items-center gap-3">
                             <Avatar icon="pi pi-user" shape="circle" size="large" className="bg-primary text-0" />
                             <div className="flex-1 flex flex-column gap-2 xl:mr-8">
-                                <span className="font-bold">{data.fullname}</span>
+                                <span className="font-bold">{data.fullname}</span> 
+                                {
+                                    data.updated_details.member_relationship_id == 1 && (
+                                        <Tag severity="info" className="ml-2" value="HH" title="Household Head"></Tag>
+                                    )
+                                }
+                                {
+                                    data.updated_details.is_family_head == 1 && (
+                                        <Tag severity="success" className="ml-2" value="FH" title="Family Head"></Tag>
+                                    )
+                                }
                             </div>
                         </div>
                     )
