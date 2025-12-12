@@ -22,6 +22,7 @@ import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Paginator } from "primereact/paginator";
+import { Tag } from "primereact/tag";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -79,7 +80,7 @@ const HouseholdsTable = () => {
     
     return (
         <div className="card">
-            <h5>Households</h5>
+            <h5><i className="pi pi-home" ></i> Households</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <Button label="Add Household" size="small"  icon="pi pi-plus" onClick={() => setVisible({ ...visible, addHousehold: true })}  />
                 <Button label="Add Household Member" size="small"  icon="pi pi-plus" onClick={() => dispatch(addMemberGeneral({
@@ -221,13 +222,27 @@ const HouseholdProfilesTable = () => {
 
     return (
         <div className="card">
-            <h5>Household Member Additional Information</h5>
+            <h5><i className="pi pi-users mr-2" ></i> Household Member Additional Information</h5>
             <div className="flex justify-content-end gap-2 mb-3">
                 <HouseholdProfilesFilter />
             </div>
             <DataTable value={householdProfiles.data}  loading={loading.householdProfilesTable} rowHover>
                 <Column field="household.household_no" header="Household No." />
-                <Column field="updated_details.full_name" header="Household Member" />
+                <Column header="Household Member" style={{width: "200px"}} body={(data : any) => (
+                    <div>
+                        {data.updated_details.full_name} 
+                        {
+                            data.updated_details.member_relationship_id == 1 && (
+                                <Tag severity="info" className="ml-2" value="HH" title="Household Head"></Tag>
+                            )
+                        }
+                        {
+                            data.updated_details.is_family_head == 1 && (
+                                <Tag severity="info" className="ml-2" value="FH" title="Family Head"></Tag>
+                            )
+                        }
+                    </div>
+                )}></Column>
                 <Column field="household.head.updated_details.full_name" header="Household Head" />
                 <Column field="household.address" header="Address" />
                 <Column  header="Actions" frozen body={(data : any) => (

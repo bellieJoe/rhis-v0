@@ -24,6 +24,7 @@ class GenericType extends Model
     const TYPE_PHILHEALTH_CATEGORY = 'PHILHEALTH_CATEGORY';
     const TYPE_MEDICAL_HISTORY = 'MEDICAL_HISTORY';
     const TYPE_MEDICATION = 'MEDICATION';
+    const TYPE_ANIMAL_BITES = 'ANIMAL_BITES';
 
     const ALL_TYPES = [
         self::TYPE_CIVIL_STATUS,
@@ -39,7 +40,8 @@ class GenericType extends Model
         self::TYPE_PHILHEALTH_MEMBERSHIP,
         self::TYPE_PHILHEALTH_CATEGORY,
         self::TYPE_MEDICAL_HISTORY,
-        self::TYPE_MEDICATION
+        self::TYPE_MEDICATION,
+        self::TYPE_ANIMAL_BITES
     ];
 
     public function getLabelAttribute(){

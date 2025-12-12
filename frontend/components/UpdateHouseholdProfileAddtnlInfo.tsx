@@ -407,37 +407,41 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                         )}
 
                         {((activeIndex === 2 && form.gender_id == "80") || (activeIndex === 1 && form.gender_id == "79")) &&
-                        (
+                        (   
                             <div className="">
-                                <div className="mb-3">
-                                    <h6>Living Condition</h6>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type <Required /></label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "WATER_SOURCE_TYPE")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.water_source_type_id} 
-                                            onChange={(e) => setForm({...form, water_source_type_id : e.value})}
-                                            placeholder="Select Water Source" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="water_source_type_id" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type <Required /></label>
-                                        <Dropdown 
-                                            showClear
-                                            options={genericTypes.filter((x: any) => x.type === "TOILET_FACILITY_TYPE")} 
-                                            optionLabel="label"
-                                            optionValue="id"
-                                            value={form.toilet_facility_type_id} 
-                                            onChange={(e) => setForm({...form, toilet_facility_type_id : e.value})}
-                                            placeholder="Select Toilet Facility" 
-                                            style={{ width: '100%' }} />
-                                        <ValidationError name="toilet_facility_type_id" />
-                                    </div>
-                                </div>
+                                {
+                                    form.member_relationship_id == 1 && (
+                                        <div className="mb-3">
+                                            <h6>Living Condition</h6>
+                                            <div className="mb-3">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Water Source Type <Required /></label>
+                                                <Dropdown 
+                                                    showClear
+                                                    options={genericTypes.filter((x: any) => x.type === "WATER_SOURCE_TYPE")} 
+                                                    optionLabel="label"
+                                                    optionValue="id"
+                                                    value={form.water_source_type_id} 
+                                                    onChange={(e) => setForm({...form, water_source_type_id : e.value})}
+                                                    placeholder="Select Water Source" 
+                                                    style={{ width: '100%' }} />
+                                                <ValidationError name="water_source_type_id" />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Toilet Facility Type <Required /></label>
+                                                <Dropdown 
+                                                    showClear
+                                                    options={genericTypes.filter((x: any) => x.type === "TOILET_FACILITY_TYPE")} 
+                                                    optionLabel="label"
+                                                    optionValue="id"
+                                                    value={form.toilet_facility_type_id} 
+                                                    onChange={(e) => setForm({...form, toilet_facility_type_id : e.value})}
+                                                    placeholder="Select Toilet Facility" 
+                                                    style={{ width: '100%' }} />
+                                                <ValidationError name="toilet_facility_type_id" />
+                                            </div>
+                                        </div>
+                                    )
+                                }
                                 <div className="mb-3">
                                     <h6 className="mb-0">Health Condition </h6>
                                     <span><i>(Put a check on the box)</i></span>

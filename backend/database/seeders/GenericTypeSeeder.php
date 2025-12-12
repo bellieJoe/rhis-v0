@@ -765,6 +765,30 @@ class GenericTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => 94,
+                'type' => GenericType::TYPE_ANIMAL_BITES,
+                'code' => 'CAT',
+                'name' => 'Cat',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 95,
+                'type' => GenericType::TYPE_ANIMAL_BITES,
+                'code' => 'DOG',
+                'name' => 'Dog',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'id' => 96,
+                'type' => GenericType::TYPE_ANIMAL_BITES,
+                'code' => 'OTHERS',
+                'name' => 'Others, Please Specify',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

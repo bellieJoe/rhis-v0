@@ -321,7 +321,8 @@ class HealthcareServiceController extends Controller
         $request->validate([
             "household_profile_id" => "required|exists:household_profiles,id",
             "age" => "required|numeric",
-            "animal_type" => "required"
+            "animal_type" => "required",
+            "other_animal_type" => "nullable|required_if:animal_type,96"
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -329,7 +330,8 @@ class HealthcareServiceController extends Controller
                 "household_profile_id" => $request->household_profile_id,
                 "age" => $request->age,
                 "animal_type" => $request->animal_type,
-                "encoded_by" => auth()->user()->id
+                "encoded_by" => auth()->user()->id,
+                "other_animal_type" => $request->animal_type == 96 ? $request->other_animal_type : null
             ]);
             return response()->json([
                 "message" => "Animal Bite Record created successfully",

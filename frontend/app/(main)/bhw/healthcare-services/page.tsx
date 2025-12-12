@@ -12,6 +12,8 @@ import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Tag } from "primereact/tag";
+import { Tooltip } from 'primereact/tooltip';
 
 
 const HealthcareServices = () => {
@@ -77,7 +79,7 @@ const HealthcareServices = () => {
     return (
         <AuthMiddleware>
             <div className="card">
-                <h5>Patients</h5>
+                <h5><i className="pi pi-users mr-2 fw-bold" /> Patients</h5>
                 <div className="flex gap-2 mb-2">
                     {/* <Dropdown filter value={filter.municipality} onChange={(e) => setFilter({...filter, municipality: e.value})} options={municipalities} optionLabel="municipality_name" optionValue="id" placeholder="Select Municipality" className="w-full md:w-14rem"></Dropdown> */}
                     {/* <Dropdown filter value={filter.barangay} onChange={(e) => setFilter({...filter, barangay: e.value})} options={barangays} optionLabel="barangay_name" optionValue="id" placeholder="Select Barangay" className="w-full md:w-14rem"></Dropdown> */}
@@ -85,7 +87,21 @@ const HealthcareServices = () => {
                 <DataTable value={householdProfiles?.data} loading={loading.patients}>
                     <Column field="household.household_no" header="Household No."></Column>
                     <Column field="household.head.updated_details.full_name" header="Head"></Column>
-                    <Column field="updated_details.full_name" header="Household Member Name"></Column>
+                    <Column header="Household Member Name" body={(data : any) => (
+                        <div>
+                            {data.updated_details.full_name} 
+                            {
+                                data.updated_details.member_relationship_id == 1 && (
+                                    <Tag severity="info" className="ml-2" value="HH" title="Household Head"></Tag>
+                                )
+                            }
+                            {
+                                data.updated_details.is_family_head == 1 && (
+                                    <Tag severity="info" className="ml-2" value="FH" title="Family Head"></Tag>
+                                )
+                            }
+                        </div>
+                    )}></Column>
                     <Column header="Age" body={(data : any) => calculateAge(data.birthdate)}></Column>
                     <Column header="Address" body={(data : any) => data.household.address}></Column>
                     <Column header="Actions" body={(data : any) => (

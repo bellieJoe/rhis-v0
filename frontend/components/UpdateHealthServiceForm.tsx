@@ -712,7 +712,8 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
         animal_type : '',
-        actions : ""
+        actions : "",
+        other_animal_type : ""
     });
     return (
         <div className="card">
@@ -729,9 +730,24 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Uri ng Hayop</label>
-                <InputText type="text" className="w-full" value={form.animal_type} onChange={(e) => setForm({...form, animal_type : e.target.value})} />
+                {/* <InputText type="text" className="w-full" value={form.animal_type} onChange={(e) => setForm({...form, animal_type : e.target.value})} /> */}
+                <Dropdown 
+                    options={genericTypes?.filter((genericType: any) => genericType.type === "ANIMAL_BITES")?.map((animalType: any) => animalType)}
+                    optionLabel="name"
+                    optionValue="id"
+                    value={form.animal_type}
+                    onChange={(e) => setForm({...form, animal_type : e.value})}
+                    className="w-full" />
                 <ValidationError name="animal_type" />
             </div>
+            {
+                form.animal_type == '96' && (
+                    <div className="mb-2">
+                        <label htmlFor="">Specify Animal Type</label>
+                        <InputText type="text" className="w-full" value={form.other_animal_type} onChange={(e) => setForm({...form, other_animal_type : e.target.value})} />
+                    </div>
+                )
+            }
             <div className="flex justify-content-end">
                 <Button label="Save" className="p-button-success" icon="pi pi-check" loading={updateHealthServiceStore.loading} onClick={() => onSubmit(form)} />
             </div>
@@ -806,21 +822,21 @@ export const UpdateHealthServiceForm = () => {
             value : "PREGNANT",
             form : <PregnantForm onSubmit={(data) => submitForm(services.find(s => s.value == "PREGNANT"), data)} />,
             handler : storePregnant,
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
             form : <GaveBirthForm onSubmit={(data) => submitForm(services.find(s => s.value == "GAVE_BIRTH"), data)} />,
             handler : storeGaveBirth,
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
             value: "NEW_BORN_CHILD",
             form : <NewBornChildForm onSubmit={(data) => submitForm(services.find(s => s.value == "NEW_BORN_CHILD"), data)} />,
             handler : storeNewBorn,
-            visible : calculateAge(householdProfile?.birthdate) < 2 && !householdProfile.is_dead
+            visible : calculateAge(householdProfile?.birthdate) < 2 && !householdProfile.is_dead &&  calculateAge(householdProfile?.birthdate) < 2
         },
         {
             label: "4. Vaccinated(Binakunahan)",
@@ -834,7 +850,7 @@ export const UpdateHealthServiceForm = () => {
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm onSubmit={(data) => submitForm(services.find(s => s.value == "FAMILY_PLANNING"), data)} />,
             handler : storeFamilyPlanning, 
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
         },
         {
             label: "6. Death(Namatay)",
@@ -892,13 +908,13 @@ export const UpdateHealthServiceForm = () => {
             handler : storeAnimalBites,
             visible : !householdProfile.is_dead
         },
-        {
-            label: "Drug Maintenance",
-            value: "MEDICATION",
-            form : <MedicationForm onSubmit={(data) => submitForm(services.find(s => s.value == "MEDICATION"), data)}/>,
-            handler : storeMedication,
-            visible : !householdProfile.is_dead
-        }
+        // {
+        //     label: "Drug Maintenance",
+        //     value: "MEDICATION",
+        //     form : <MedicationForm onSubmit={(data) => submitForm(services.find(s => s.value == "MEDICATION"), data)}/>,
+        //     handler : storeMedication,
+        //     visible : !householdProfile.is_dead
+        // }
     ]
     const next = () => {
         setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));

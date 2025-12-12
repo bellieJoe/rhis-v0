@@ -56,7 +56,7 @@ export const ViewMembers = () => {
                 </div>
                 <DataView value={members} layout="list"  itemTemplate={(data:any) => 
                     (
-                        <div className="flex p-2 align-items-center gap-3">
+                        <div className="flex flex-wrap p-2 align-items-center gap-3">
                             <Avatar icon="pi pi-user" shape="circle" size="large" className="bg-primary text-0" />
                             <div className="flex-1 flex flex-column gap-2 xl:mr-8">
                                 <span className="font-bold">{data.fullname}</span>
