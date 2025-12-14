@@ -804,7 +804,6 @@ const MedicationForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
     );
 }
 
-
 export const UpdateHealthServiceForm = () => {
     const dispatch = useDispatch();
     const [activeIndex, setActiveIndex] = useState(0);
