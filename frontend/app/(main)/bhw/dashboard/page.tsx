@@ -21,10 +21,10 @@ import { getGenericTypes } from '@/api/genericTypeApi';
 import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 
-const GenderDistribution = () => {
+const GenderDistribution = ({startDate, endDate} : {startDate: any, endDate: any}) => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [startDate, setStartDate] = useState(getFirstDate());
-    const [endDate, setEndDate] = useState(getLastDate());
+    // const [startDate, setStartDate] = useState(getFirstDate());
+    // const [endDate, setEndDate] = useState(getLastDate());
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
@@ -82,12 +82,10 @@ const GenderDistribution = () => {
         <div className="card mb-0 px-0" >
             <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
             <div className="flex flex-wrap justify-content-end p-3 gap-1">
-                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
-                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+                {/* <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} /> */}
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
                 <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
-                    setStartDate(null);
-                    setEndDate(null);
                     setAgeBracketFilter(null);
                 }} />
             </div>
@@ -115,10 +113,10 @@ const GenderDistribution = () => {
     );
 };
 
-const CivilStatus = () => {
+const CivilStatus = ({startDate, endDate} : {startDate: any, endDate: any}) => {
     const [ageBracketFilter, setAgeBracketFilter] = useState<any>(null);
-    const [startDate, setStartDate] = useState(getFirstDate());
-    const [endDate, setEndDate] = useState(getLastDate());
+    // const [startDate, setStartDate] = useState(getFirstDate());
+    // const [endDate, setEndDate] = useState(getLastDate());
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
@@ -176,12 +174,12 @@ const CivilStatus = () => {
         <div className="card mb-0 h-full">
             <h3 className="text-lg font-semibold mb-2 text-center">Civil Status</h3>
             <div className="flex flex-wrap justify-content-end p-3 gap-1">
-                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
-                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+                {/* <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} /> */}
                 <Dropdown value={ageBracketFilter} options={ageBracketOptions} optionLabel="label" optionValue="value" onChange={(e) => setAgeBracketFilter(e.value)} placeholder="Age Bracket" className="w-full md:w-auto" />
                 <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
-                    setStartDate(null);
-                    setEndDate(null);
+                    // setStartDate(null);
+                    // setEndDate(null);
                     setAgeBracketFilter(null);
                 }} />
             </div>
@@ -221,10 +219,10 @@ const CivilStatus = () => {
     );
 };
 
-const WRA = ({ civilStatus }: { civilStatus: any }) => {
+const WRA = ({ civilStatus, startDate, endDate }: { civilStatus: any, startDate: any, endDate: any }) => {
     const [data, setData] = useState<any>([]);
-    const [startDate, setStartDate] = useState(getFirstDate());
-    const [endDate, setEndDate] = useState(getLastDate());
+    // const [startDate, setStartDate] = useState(getFirstDate());
+    // const [endDate, setEndDate] = useState(getLastDate());
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
     const getData = async () => {
@@ -246,11 +244,11 @@ const WRA = ({ civilStatus }: { civilStatus: any }) => {
         <div className="card mb-0 px-0">
             <h3 className="text-lg font-semibold mb-2 text-center">{civilStatus == 75 ? 'Single Women with Reproductive Age' : 'Married Women with Reproductive Age'}</h3>
             <div className="flex flex-wrap justify-content-end p-3 gap-1">
-                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
-                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+                {/* <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} /> */}
                 <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
-                    setStartDate(null);
-                    setEndDate(null);
+                    // setStartDate(null);
+                    // setEndDate(null);
                 }} />
             </div>
             <div className="" style={{
@@ -389,12 +387,10 @@ const SeniorMaintenanceChart = () => {
     );
 };
 
-const EducationalAttainmentChart = () => {
+const EducationalAttainmentChart = ({ startDate, endDate } : { startDate: any; endDate: any; }) => {
     const [data, setData] = useState<any>([]);
     const { genericTypes } = useSelector((state: any) => state.genericType);
     const [memberFilter, setMemberFilter] = useState<any>(null);
-    const [startDate, setStartDate] = useState(getFirstDate());
-    const [endDate, setEndDate] = useState(getLastDate());
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
     const getData = async () => {
@@ -417,8 +413,8 @@ const EducationalAttainmentChart = () => {
         <div className="card mb-0">
             <h3 className="text-lg font-semibold mb-2 text-center">Highest Educational Attainment</h3>
             <div className="flex flex-wrap justify-content-end p-2 gap-1">
-                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
-                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+                {/* <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} /> */}
                 <Dropdown
                     value={memberFilter}
                     options={genericTypes.filter((gt: any) => gt.type === 'MEMBERS_OF_HOUSEHOLD')}
@@ -428,8 +424,8 @@ const EducationalAttainmentChart = () => {
                     onChange={(e) => setMemberFilter(e.value)}
                 />
                 <Button type="button" icon="pi pi-refresh" className="p-button-text" onClick={() => {
-                    setStartDate(null);
-                    setEndDate(null);
+                    // setStartDate(null);
+                    // setEndDate(null);
                     setMemberFilter(null);
                 }} />
             </div>
@@ -469,6 +465,8 @@ const BhwDashboard = () => {
     const [data, setData] = useState<any>({});
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
+    const [startDate, setStartDate] = useState<any>(getFirstDate());
+    const [endDate, setEndDate] = useState<any>(getLastDate());
     const init = async () => {
         console.log(authStore.user);
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
@@ -485,6 +483,10 @@ const BhwDashboard = () => {
     return (
         <AuthMiddleware>
             <h2>Dashboard</h2>
+            <div className="flex justify-content-center mb-3 gap-2">
+                <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
+                <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
+            </div>
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <div className="card mb-0">
@@ -580,13 +582,13 @@ const BhwDashboard = () => {
                 <div className="col-12 lg:col-6 xl:col-3">
                 </div>
                 <div className="col-12 lg:col-6">
-                    <GenderDistribution />
+                    <GenderDistribution startDate={startDate} endDate={endDate} />
                 </div>
                 <div className="col-12 lg:col-6">
-                    <EducationalAttainmentChart />
+                    <EducationalAttainmentChart  startDate={startDate} endDate={endDate} />
                 </div>
                 <div className="col-12 lg:col-6 ">
-                    <CivilStatus />
+                    <CivilStatus startDate={startDate} endDate={endDate} />
                 </div>
                 <div className="col-12 lg:col-6">
                     <WRA civilStatus={74} />
