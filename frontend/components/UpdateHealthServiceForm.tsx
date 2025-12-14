@@ -45,7 +45,7 @@ const PregnantForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
         household_profile_id : updateHealthServiceStore.householdProfile?.id,
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
-        last_menstrual_period : "",
+        last_menstrual_period : updateHealthServiceStore.householdProfile?.updated_details?.last_menstrual_period,
         date_of_giving_birth : "",
         number_of_pregnancy : 1
     });
@@ -516,6 +516,7 @@ const HasHighbloodForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
         blood_pressure : '',
+        bp_count : '',
         actions : ""
     });
     return (
@@ -535,6 +536,11 @@ const HasHighbloodForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
                 <label htmlFor="" className="form-label mb-2 block">BP</label>
                 <InputText className="w-full" value={form.blood_pressure} onChange={(e) => setForm({...form, blood_pressure : e.target.value})}  />
                 <ValidationError name="blood_pressure" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="" className="form-label mb-2 block">BP Check Count</label>
+                <InputText type="number" className="w-full" value={form.bp_count} onChange={(e) => setForm({...form, bp_count : e.target.value})}  />
+                <ValidationError name="bp_count" />
             </div>
             <div className="mb-2">
                 <label htmlFor="lastMenstrualPeriod" className="form-label mb-2 block">Mga Ginawa bilang BHW</label>
@@ -822,14 +828,14 @@ export const UpdateHealthServiceForm = () => {
             value : "PREGNANT",
             form : <PregnantForm onSubmit={(data) => submitForm(services.find(s => s.value == "PREGNANT"), data)} />,
             handler : storePregnant,
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60 && householdProfile.updated_details?.is_pregnant == 1 && householdProfile.already_gave_birth
         }, 
         {
             label: "2. Gave Birth(Nanganak)",
             value: "GAVE_BIRTH",
             form : <GaveBirthForm onSubmit={(data) => submitForm(services.find(s => s.value == "GAVE_BIRTH"), data)} />,
             handler : storeGaveBirth,
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60 && !householdProfile.already_gave_birth
         },
         {
             label: "3. New Born Child(Bagong Silang na Sanggol)",
@@ -846,11 +852,11 @@ export const UpdateHealthServiceForm = () => {
             visible : !householdProfile.is_dead
         }, 
         {
-            label: "5. Family Plannning(Nagpalano ng Pamilya)",
+            label: "5. Family Planning(Nagpalano ng Pamilya)",
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm onSubmit={(data) => submitForm(services.find(s => s.value == "FAMILY_PLANNING"), data)} />,
             handler : storeFamilyPlanning, 
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60 
         },
         {
             label: "6. Death(Namatay)",
@@ -871,14 +877,14 @@ export const UpdateHealthServiceForm = () => {
             value: "HAS_HIGHBLOOD",
             form : <HasHighbloodForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_HIGHBLOOD"), data)}/>,
             handler : storeHasHighblood,
-            visible : !householdProfile.is_dead
+            visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_hypertensive == 1
         },
         {
             label: "9. Has Diabetes(May sakit na Diabetes)",
             value: "HAS_DIABETES",
             form : <HasDiabetesForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_DIABETES"), data)}/>,
             handler : storeHasDiabetes,
-            visible : !householdProfile.is_dead
+            visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_diabetes == 1
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
@@ -892,7 +898,7 @@ export const UpdateHealthServiceForm = () => {
             value: "HAS_CANCER",
             form : <HasCancerForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_CANCER"), data)}/>,
             handler : storeHasCancer,
-            visible : !householdProfile.is_dead
+            visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_cancer == 1
         },
         {
             label: "12. (May Problema sa Pagiisip/Epilepsy)",
@@ -933,6 +939,7 @@ export const UpdateHealthServiceForm = () => {
         if(success) {
             dispatch(resetHealthServiceForm());
             dispatch(hideUpdateHealthService());
+            setActiveIndex(0);
         }
         dispatch(onHealthServiceFinish());
     }

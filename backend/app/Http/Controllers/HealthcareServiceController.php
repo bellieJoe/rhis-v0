@@ -212,6 +212,7 @@ class HealthcareServiceController extends Controller
             "age" => "required|numeric",
             "blood_pressure" => "required",
             "actions" => "required|max:500",
+            "bp_count" => "required|numeric",
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -220,6 +221,7 @@ class HealthcareServiceController extends Controller
                 "age" => $request->age,
                 "blood_pressure" => $request->blood_pressure,
                 "actions" => $request->actions,
+                "bp_counts" => $request->bp_count,
                 "encoded_by" => auth()->user()->id
             ]);
             return response()->json([

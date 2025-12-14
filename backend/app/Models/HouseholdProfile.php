@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details", "fullname", "is_dead"];
+    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth"];
 
     public function household()
     {
@@ -91,5 +92,23 @@ class HouseholdProfile extends Model
     public function getIsDeadAttribute() {
         return $this->deaths()->count() > 0;
     }
+
+    public function getAlreadyGaveBirthAttribute()
+    {
+        $pregnancy = Pregnancy::where('household_profile_id', $this->id)
+            ->latest()
+            ->first();
+
+        if(!$pregnancy) {
+            return true;
+        }
+
+        if (!$pregnancy->date_of_giving_birth) {
+            return true;
+        }
+
+        return Carbon::parse($pregnancy->date_of_giving_birth)->isPast();
+    }
+
 
 }
