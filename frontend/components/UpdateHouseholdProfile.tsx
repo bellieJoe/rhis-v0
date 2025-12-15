@@ -12,12 +12,14 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ValidationError from "./forms/ValidationError";
 import { calculateAge, formatDate } from "@/utils/helpers";
-import { storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
+import { getFamilyHeads, storeHouseholdProfile, updateHouseholdProfile } from "@/api/householdProfileApi";
 import { hideUpdateProfile } from "@/features/forms/updateHouseholdProfileSlice";
 import { reloadHouseholdProfiles } from "@/features/householdProfileSlice";
 import { setErrors } from "@/features/errorSlice";
 import { Chip } from "primereact/chip";
 import Required from "./forms/RequiredIndicator";
+import { Checkbox } from "primereact/checkbox";
+import { setToast } from "@/features/toastSlice";
 
 interface UpdateHouseholdProfileProps {
     visible: boolean,
@@ -33,8 +35,11 @@ const UpdateHouseholdProfile = () => {
     const { households } = useSelector((state: any) => state.household);
     const [householdItems , setHouseholdItems] = useState([]);
     const updateHouseholdProfileStore = useSelector((state: any) => state.updateHouseholdProfile);
+    const [familyHeads, setFamilyHeads] = useState<any[]>([]);
     const initialForm : any = {
         household_profile_id : "",
+        is_family_head : false,
+        family_head_id : "",
         household_no : "",
         household_id : "",
         date_of_visit : "",
@@ -96,6 +101,18 @@ const UpdateHouseholdProfile = () => {
     }, []);
 
     useEffect(() => {
+        if(!form.household_id) {
+            return;
+        }
+        console.log(form.household_id);
+        (async () => {
+            const heads = await getFamilyHeads(dispatch, {household_id : form.household_id});
+            console.log("Heads ", heads);
+            setFamilyHeads(heads);
+        })();
+    }, [form.household_id]);
+
+    useEffect(() => {
         setForm({
             ...initialForm,
             household_profile_id : updateHouseholdProfileStore.householdProfile.id,
@@ -113,6 +130,8 @@ const UpdateHouseholdProfile = () => {
             educational_attainment_id : updateHouseholdProfileStore.householdProfile.updated_details?.educational_attainment_id,
             religion_id : updateHouseholdProfileStore.householdProfile.updated_details?.religion_id,
             other_religion : updateHouseholdProfileStore.householdProfile.updated_details?.other_religion,
+            is_family_head : updateHouseholdProfileStore.householdProfile.is_family_head == 1 ? true : false,
+            family_head_id : updateHouseholdProfileStore.householdProfile.family_head_id,
         });
     }, [updateHouseholdProfileStore.householdProfile]);
 
@@ -149,6 +168,8 @@ const UpdateHouseholdProfile = () => {
         setLoading({ ...loading, updateHouseholdProfile : false });
         if(success) {
             setForm(initialForm);
+            dispatch(setErrors({}));
+            dispatch(setToast({ severity: 'success', summary: 'Success', detail: 'Household Profile updated successfully!', life: 3000 }));
             dispatch(hideUpdateProfile());
             dispatch(reloadHouseholdProfiles());
             setActiveIndex(0);
@@ -242,6 +263,34 @@ const UpdateHouseholdProfile = () => {
                                                 onChange={(e) => setForm({...form, other_relation : e.target.value})} />
                                             <ValidationError name="other_relation" />
                                         </>
+                                    )
+                                }
+                                <div className="mb-3">
+                                    <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
+                                        Is Family Head ?<Required />
+                                    </label>
+                                    <Checkbox checked={form.is_family_head} onChange={(e) => setForm({ ...form, is_family_head: e.checked })} />
+                                    <ValidationError name="is_family_head" />
+                                </div>
+
+                                {
+                                        !form.is_family_head  && (
+                                        <div className="mb-3">
+                                            <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
+                                                Family Head?<Required />
+                                            </label>
+                                            <Dropdown
+                                                showClear
+                                                options={familyHeads}
+                                                optionLabel="fullname"
+                                                optionValue="id"
+                                                value={form.family_head_id}
+                                                placeholder="Select Family Head"
+                                                onChange={(e) => setForm({ ...form, family_head_id: e.value })}
+                                                style={{ width: '100%' }}
+                                            />
+                                            <ValidationError name="family_head_id" />
+                                        </div>
                                     )
                                 }
                             </div>
@@ -385,6 +434,25 @@ const UpdateHouseholdProfile = () => {
                                             </div>
                                         )
                                     }
+                                    
+                                    <div className="flex gap-2">
+                                        <p className="font-bold">Is the head of the family:</p>
+                                        <p>{ form.is_family_head ? "Yes" : "No" }</p>
+                                        <ValidationError name="is_family_head" />
+                                    </div>
+
+                                    {
+                                        !form.is_family_head  && (
+                                            <div className="flex gap-2">
+                                                <p className="font-bold">Family Head</p>
+                                                <p>{ familyHeads.find((f : any) => f.id === form.family_head_id)?.fullname }</p>
+                                                <ValidationError name="family_head_id" />
+                                            </div>
+                                        )
+                                    }
+
+
+
                                     <div className="flex gap-2">
                                         <p className="font-bold">Fullname:</p>
                                         <p>{ `${form.firstname} ${form.middlename} ${form.lastname}` }</p>
