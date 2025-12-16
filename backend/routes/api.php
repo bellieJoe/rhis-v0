@@ -87,6 +87,8 @@ Route::prefix("households")->group(function () {
         Route::get("{id}", [HouseholdController::class, "getHousehold"]);
         Route::delete("{id}", [HouseholdController::class, "destroy"]);
         Route::get("get-members/{household_id}", [HouseholdController::class, "getMembers"]);
+        Route::get("count-pregnants/{household_id}", [HouseholdController::class, "countPregnants"]);
+        Route::get("count-seniors/{household_id}", [HouseholdController::class, "countSeniors"]);
     });
 });
 
@@ -99,6 +101,7 @@ Route::prefix("household-profiles")->group(function () {
         Route::put("update-main-info", [HouseholdProfileController::class, "updateMainInfo"]);
         Route::delete("{id}", [HouseholdProfileController::class, "destroy"]);
         Route::get("family-heads/{household_id}", [HouseholdProfileController::class, "getFamilyHeads"]);
+        Route::post("set-household-head/{household_profile_id}", [HouseholdProfileController::class, "setHouseholdHead"]);
     });
 });
 

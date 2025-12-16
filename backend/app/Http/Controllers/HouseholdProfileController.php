@@ -413,6 +413,38 @@ class HouseholdProfileController extends Controller
             ->get();
     }
 
+
+    public function setHouseholdHead(Request $request, $household_profile_id) {
+        $household_profile = HouseholdProfile::find($household_profile_id);
+        if(!$household_profile) {
+            return response()->json([
+                "message" => "Household profile not found"
+            ], 404);
+        }
+
+        return DB::transaction(function () use ($request, $household_profile_id, $household_profile) {
+            $updatedDetail = HouseholdProfileDetail::where('household_profile_id', $household_profile_id)->latest()->first();
+            $previouseHeads = HouseholdProfile::where('household_id', $household_profile->household_id)->get();
+            $previouseHeads = $previouseHeads->filter(function ($member) use ($updatedDetail) {
+                return $member->updated_details->member_relationship_id == 1;
+            })->all();
+            
+            HouseholdProfileDetail::create([
+                ...$updatedDetail->except('id', 'created_at', 'updated_at', 'member_relationship_id', 'is_family_head', 'family_head_id'),
+                "member_relationship_id" => 1,
+                "is_family_head" => true,
+                "family_head_id" => 0
+            ]);
+
+            foreach($previouseHeads as $previouseHead) {
+                HouseholdProfileDetail::create([
+                    ...$previouseHead->updated_details->except('id', 'created_at', 'updated_at', 'member_relationship_id', "other_relation"),
+                    "member_relationship_id" => 5,
+                    "other_relation" => "Previous Household Head"
+                ]);
+            }
+        });
+    }
     
     
 }

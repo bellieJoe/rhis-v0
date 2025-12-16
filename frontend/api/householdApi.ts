@@ -90,3 +90,51 @@ export const getHouseholdMembers = async (dispatch : Dispatch, household_id : an
         }));
     }
 }
+
+export const countPregnantByHousehold = async (dispatch : Dispatch, household_id : any) => {
+    try {
+        const res = await axios.get(`/api/households/count-pregnants/${household_id}`);
+        return res.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response?.data?.message, 
+            life : 3000
+        }))
+    }
+}
+
+export const countSeniorsByHousehold = async (dispatch : Dispatch, household_id : any) => {
+    try {
+        const res = await axios.get(`/api/households/count-seniors/${household_id}`);
+        return res.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response?.data?.message, 
+            life : 3000
+        }))
+    }
+}
+
+export const setHouseholdHead = async (dispatch : Dispatch, hosuehold_profile_id : any) => {
+    try {
+        const res = await axios.post(`/api/household-profiles/set-household-head/${hosuehold_profile_id}`);
+        dispatch(setToast({
+            severity : "success",
+            summary : "Success",
+            detail : "Household head set successfully",
+            life : 3000
+        }))
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response?.data?.message, 
+            life : 3000
+        }))
+    }
+}
+

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Household;
 use App\Models\HouseholdProfile;
+use App\Models\HouseholdProfileDetail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,16 +82,88 @@ class HouseholdController extends Controller
     }
 
     // public 
-    public function getMembers(Request $request, $household_id) {
+    public function getMembers(Request $request, $household_id)
+    {
+        $household = Household::find($household_id);
+
+        if (!$household) {
+            return response()->json([
+                'message' => 'Household not found'
+            ], 404);
+        }
+
+        // Load members (load relation if it exists)
+        $members = HouseholdProfile::where('household_id', $household_id)
+            ->get();
+
+        // Identify family heads
+        $heads = $members->filter(function ($member) {
+            return optional($member->updated_details)->is_family_head == 1;
+        });
+
+        // Group members by family_head_id
+        $groupedMembers = $members->groupBy(function ($member) {
+            return optional($member->updated_details)->family_head_id;
+        });
+
+        $sorted = collect();
+        $usedMemberIds = collect();
+
+        foreach ($heads as $head) {
+            // Add head
+            $sorted->push($head);
+            $usedMemberIds->push($head->id);
+
+            // Add members under this head
+            if ($groupedMembers->has($head->id)) {
+                foreach ($groupedMembers[$head->id] as $member) {
+                    // Avoid duplicating the head itself
+                    if ($member->id !== $head->id) {
+                        $sorted->push($member);
+                        $usedMemberIds->push($member->id);
+                    }
+                }
+            }
+        }
+
+        // 🔹 Add remaining / unassigned members
+        $remainingMembers = $members->reject(function ($member) use ($usedMemberIds) {
+            return $usedMemberIds->contains($member->id);
+        });
+
+        $sorted = $sorted->merge($remainingMembers);
+
+        return $sorted->values()->toArray();
+    }
+
+    public function countPregnants(Request $request, $household_id) {
         $household = Household::find($household_id);
         if(!$household) {
             return response()->json([
                 'message' => 'Household not found'
             ], 404);
         }
+        return HouseholdProfile::where('household_id', $household_id)
+        ->whereHas('householdProfileDetails', function ($q) {
+            $q->where('is_pregnant', 1)
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('household_profile_details')
+                    ->groupBy('household_profile_id');
+            });
+        })
+        ->count();
+    }
 
-        $members = HouseholdProfile::where('household_id', $household_id)->get();
-
-        return $members;
+    public function countSeniors(Request $request, $household_id) {
+        $household = Household::find($household_id);
+        if(!$household) {
+            return response()->json([
+                'message' => 'Household not found'
+            ], 404);
+        }
+        return HouseholdProfile::where('household_id', $household_id)
+        ->where('birthdate', '<', Carbon::now()->subYears(60)->toDateString())
+        ->count();
     }
 }
