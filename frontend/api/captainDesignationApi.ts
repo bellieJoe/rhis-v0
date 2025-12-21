@@ -26,3 +26,12 @@ export const getCaptainDesignationByUserId = async (dispatch: Dispatch, params: 
         dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
     }
 }
+
+export const getSitios = async (dispatch : Dispatch, user_id : any) => {
+    try {
+        const response = await axios.get('/api/captain-designations/get-sitios/' + user_id);
+        return response.data;
+    } catch (error : any) {
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response?.data?.message, life : 3000}));
+    }
+}

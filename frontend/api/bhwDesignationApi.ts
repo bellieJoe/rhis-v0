@@ -41,7 +41,7 @@ export const getBhwDesignationsByUserId = async (dispatch : Dispatch, params : a
         const response = await axios.get('/api/bhw-designations/get-by-user-id', { params });
         return response.data;
     } catch (error : any) {
-        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response?.data?.message, life : 3000}));
     }
 }
 
@@ -59,6 +59,6 @@ export const getRhuDesignationsByUserId = async (dispatch : Dispatch, params : a
         const response = await axios.get('/api/rhu-designations/get-by-user-id', { params });
         return response.data;
     } catch (error : any) {
-        dispatch(setToast({severity : "error", summary : "Error", detail : error.response.data.message, life : 3000}));
+        dispatch(setToast({severity : "error", summary : "Error", detail : error.response?.data?.message, life : 3000}));
     }
 }

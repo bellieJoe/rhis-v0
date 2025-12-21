@@ -9,31 +9,34 @@ import { Dropdown } from "primereact/dropdown";
 import { getRoleTypes } from "@/api/roleTypeApi";
 import { getOffices } from "@/api/officeApi";
 import ValidationError from "./forms/ValidationError";
-import { storeUser } from "@/api/userApi";
+import { addBhw, storeUser } from "@/api/userApi";
 import { reloadUsers } from "@/features/userSlice";
+import { hideAddBhwForm } from "@/features/forms/addBhwSlice";
+import { MultipleOfficePicker } from "./forms/CustomPickers";
+import { MultiSelect } from "primereact/multiselect";
+import { getSitios } from "@/api/captainDesignationApi";
 
 
-const AddUserForm = ({
-    addBhw = false
-} : {
-    addBhw ?: boolean
-}) => {
+const AddBhwForm = () => {
 
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
     const [roleTypes, setRoleTypes] = useState([]);
     const [offices, setOffices] = useState([]);
-    const addUserStore = useSelector((state: any) => state.addUser);
+    const addBhwStore = useSelector((state: any) => state.addBhw);
     const [loading, setLoading] = useState(false);
+    const [sitios, setSitios] = useState<any[]>([]);
     const [form, setForm] = useState<any>({
         email : '',
         firstname : '',
         middlename : '',
         lastname : '',
-        role_type_id : ''
+        user_id : '',
+        sitios : [],
     });
+
     const onHide = async () => {
-        dispatch(hideAddUserForm());
+        dispatch(hideAddBhwForm());
     }
 
     // useEffect(() => {
@@ -43,23 +46,27 @@ const AddUserForm = ({
     //     }
     // }, [addBhw]);
 
+
+
     const onInit = async () => {
         const _roleTypes = await getRoleTypes(dispatch);
         //  excempt bhw
-        if(addBhw) {
-            setRoleTypes(_roleTypes);
-            setForm({...form, role_type_id : 1});
-        }
-        else {
-            setRoleTypes(_roleTypes.filter((x : any) => x.id != 1));
-        }
         const _offices = await getOffices(dispatch, { full: true });
         setOffices(_offices);
     }
 
+    useEffect(() => {
+        setForm({...form, user_id : addBhwStore.user_id});
+        (async () => {
+            const _sitios = await getSitios(dispatch, addBhwStore.user_id);
+            setSitios(_sitios);
+            console.log(_sitios);
+        })();
+    }, [addBhwStore.user_id]);
+
     const handleSubmit = async() => {
         setLoading(true);
-        const success = await storeUser(dispatch, form);
+        const success = await addBhw(dispatch, form);
         setLoading(false);
         if(success) {
             dispatch(reloadUsers());
@@ -69,13 +76,13 @@ const AddUserForm = ({
 
     useEffect(() => {
         onInit();
-    }, [addBhw]);
+    }, []);
 
     return (
         <>
             <Sidebar 
             onHide={onHide}
-            visible={addUserStore.visible}
+            visible={addBhwStore.visible}
             position="right"
             showCloseIcon={false}
             header={
@@ -115,10 +122,15 @@ const AddUserForm = ({
                     <InputText type="email" className="w-full" placeholder="Enter Email" onChange={(e) => setForm({...form, email : e.target.value})} value={form.email}  />
                     <ValidationError name="email" />
                 </div>
-                <div className="mb-3">
+                {/* <div className="mb-3">
                     <label htmlFor="" className="form-label mb-2 block">Role <Required /></label>
                     <Dropdown className="w-full" placeholder="Select Role"  filter options={roleTypes} optionLabel="caps_name" optionValue="id" value={form.role_type_id} onChange={(e) => setForm({...form, role_type_id : e.value})} readOnly={addBhw}  />
                     <ValidationError name="role_type_id" />
+                </div> */}
+                <div className="mb-3">
+                    <label htmlFor="" className="form-label mb-2 block">Select Sitio <Required /></label>
+                    <MultiSelect filter className="w-full" options={sitios} optionLabel="sitio_name" optionValue="id" value={form.sitios}  onChange={(e) => setForm({...form, sitios : e.value})} placeholder="Select Sitio" />
+                    <ValidationError name="sitios" />
                 </div>
                 <div className="flex justify-content-end">
                     <Button label="Save" onClick={handleSubmit} loading={loading} />
@@ -128,4 +140,4 @@ const AddUserForm = ({
     );
 }
 
-export default AddUserForm;
+export default AddBhwForm;

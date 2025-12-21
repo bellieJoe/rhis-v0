@@ -40,6 +40,20 @@ const AppMenu = () => {
         return [];
     }
 
+    const setCaptainMenu = () => {
+        if (authUser && authUser.roles.some((role: any) => role.role_type_id === 6)) {
+            return [{
+                label: 'Baranggay Captain Interface',
+                items: [
+                    // { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                    { label: "BHW's", icon: 'pi pi-fw pi-users', to: '/admin/users' },
+                ]
+            }];
+        }
+
+        return [];
+    }
+
     const setBhwMenu  = () => {
         if (authUser && authUser.roles.some((role: any) => role.role_type_id === 1)) {
             return [{
@@ -163,7 +177,7 @@ const AppMenu = () => {
             ...setMidwifeMenu(),
             ...setRhuMenu(),
             ...setPhoMenu(),
-
+            ...setCaptainMenu()
         ]);
     }, [authUser]);
 

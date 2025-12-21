@@ -51,6 +51,9 @@ const LoginPage = () => {
         if(auth.roles.some((role : any) => role.role_type_id == 5)){
             router.push('/');
         }
+        if(auth.roles.some((role : any) => role.role_type_id == 6)){
+            router.push('/captain/bhw');
+        }
         if(auth.roles.some((role : any) => role.role_type_id == 1)){
             console.log("BHW");
             router.push('/bhw/dashboard');

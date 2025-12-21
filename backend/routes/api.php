@@ -52,6 +52,8 @@ Route::prefix("roles")->group(function (){
 Route::prefix("users")->group(function () {
     Route::get("", [UserController::class, "index"]);
     Route::post("", [UserController::class, "store"]);
+    Route::get("get-bhws-by-captain/{user_id}", [UserController::class, "getBhwsByCaptain"]);
+    Route::post("add-bhw", [UserController::class, "addBhw"]);
 });
 
 Route::prefix("offices")->group(function () {
@@ -155,6 +157,7 @@ Route::prefix("captain-designations")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [CaptainDesignationController::class, "store"]);
         Route::get("get-by-user-id/{user_id}", [CaptainDesignationController::class, "getDesignationByUserId"]);
+        Route::get("get-sitios/{user_id}", [CaptainDesignationController::class, "getSitios"]);
     });
 });
 
