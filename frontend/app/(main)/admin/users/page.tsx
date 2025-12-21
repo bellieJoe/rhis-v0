@@ -2,11 +2,13 @@
 import { getUsers } from "@/api/userApi";
 import AddUserForm from "@/components/AddUserForm";
 import AssignBhwForm from "@/components/AssignBhwForm";
+import AssignCaptainForm from "@/components/AssignCaptainForm";
 import AssignMidwifeForm from "@/components/AssignMidwifeForm";
 import AssignRhuForm from "@/components/AssignRhuForm";
 import { AuthMiddleware } from "@/components/middlewares";
 import { showAddUserForm } from "@/features/forms/addUserSlice";
 import { assignBhw } from "@/features/forms/assignBhwFormSlice";
+import { assignCaptain } from "@/features/forms/assignCaptainFormSlice";
 import { assignMidwife } from "@/features/forms/assignMidwifeSlice";
 import { assignRhu } from "@/features/forms/assignRhuSlice";
 import { Button } from "primereact/button";
@@ -53,8 +55,11 @@ const Users = (props : UsersProps) => {
     const userActions = (data : any) => {
         return (
             <div className="flex gap-2">
-                {
+                {/* {
                     data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="BHW Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
+                } */}
+                {
+                    data.roles.some((role : any) => role.role_type_id === 6) && <Button size="small" outlined label="Baranggay Captain Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignCaptain({user : data}))} />
                 }
                 {
                     data.roles.some((role : any) => role.role_type_id === 2) && <Button size="small" outlined label="Midwife Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignMidwife({user : data}))} />
@@ -84,6 +89,7 @@ const Users = (props : UsersProps) => {
                 <AssignBhwForm  />
                 <AssignMidwifeForm />
                 <AssignRhuForm />
+                <AssignCaptainForm />
             </AuthMiddleware>
         </>
     )

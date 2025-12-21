@@ -45,6 +45,12 @@ class RoleTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'id' => 6,
+                'name' => "barangay captain",
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

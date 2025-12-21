@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\BhwDesignationController;
 use App\Http\Controllers\BirthController;
+use App\Http\Controllers\CaptainDesignationController;
 use App\Http\Controllers\ChildcareClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FamilyPlanningClientController;
@@ -147,6 +148,13 @@ Route::prefix("bhw-designations")->group(function(){
     Route::middleware("auth:sanctum")->group(function () {
         Route::post("", [BhwDesignationController::class, "store"]);
         Route::get("get-by-user-id", [BhwDesignationController::class, "getDesignationsByUserId"]);
+    });
+});
+
+Route::prefix("captain-designations")->group(function(){
+    Route::middleware("auth:sanctum")->group(function () {
+        Route::post("", [CaptainDesignationController::class, "store"]);
+        Route::get("get-by-user-id/{user_id}", [CaptainDesignationController::class, "getDesignationByUserId"]);
     });
 });
 

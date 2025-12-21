@@ -13,6 +13,7 @@ import updateHouseholdProfileAddtnlInfoReducer from '@/features/forms/updateHous
 import updateHealthServiceReducer from '@/features/forms/updateHealthServiceSlice';
 import addUserReducer from '@/features/forms/addUserSlice';
 import assignBhwFormReducer from '@/features/forms/assignBhwFormSlice';
+import assignCaptainFormReducer from '@/features/forms/assignCaptainFormSlice';
 import addSitioFormReducer from '@/features/forms/addSitioFormSlice';
 import updateSitioFormReducer from '@/features/forms/updateSitioFormSlice';
 import sitioReducer from '@/features/sitioSlice';
@@ -42,6 +43,7 @@ export default configureStore({
     updateHealthService : updateHealthServiceReducer,
     addUser : addUserReducer,
     assignBhwForm : assignBhwFormReducer,
+    assignCaptainForm : assignCaptainFormReducer,
     assignMidwifeForm : assignMidwifeReducer,
     assignRhuForm : assignRhuReducer,
     addSitioForm : addSitioFormReducer,

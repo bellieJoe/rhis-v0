@@ -34,7 +34,8 @@ const AddUserForm = () => {
 
     const onInit = async () => {
         const _roleTypes = await getRoleTypes(dispatch);
-        setRoleTypes(_roleTypes);
+        //  excempt bhw
+        setRoleTypes(_roleTypes.filter((x : any) => x.id != 1));
         const _offices = await getOffices(dispatch, { full: true });
         setOffices(_offices);
     }
