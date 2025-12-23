@@ -68,7 +68,13 @@ class UserController extends Controller
         if(!$designation) {
             return response()->json(["message" => "User has no designation"], 419);
         }
-        return User::whereHas("bhwDesignations", function ($query) use ($designation) {
+        return User::query()
+        ->with([
+            'roles', 
+            'roles.roleType',
+            'bhwDesignations'
+        ])
+        ->whereHas("bhwDesignations", function ($query) use ($designation) {
             $query->where('barangay_id', $designation->office->barangay_id);
         })
         ->get();
@@ -107,7 +113,7 @@ class UserController extends Controller
                 return [
                     'sitio_id' => $sitio,
                     'barangay_id' => $designation->office->barangay_id,
-                    'user_id' => $request->user_id
+                    'user_id' => $user->id
                 ];
             }, $request->sitios));
         });
