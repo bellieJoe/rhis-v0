@@ -10,7 +10,7 @@ class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth"];
+    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth", "is_senior", "is_pregnant"];
 
     public function household()
     {
@@ -108,6 +108,20 @@ class HouseholdProfile extends Model
         }
 
         return Carbon::parse($pregnancy->date_of_giving_birth)->isPast();
+    }
+
+    public function getIsSeniorAttribute(): bool
+    {
+        return $this->updated_details?->birthdate
+            ? Carbon::parse($this->updated_details->birthdate)
+                ->addYears(60)
+                ->isPast()
+            : false;
+    }
+
+    public function getIsPregnantAttribute()
+    {
+        return $this->updated_details->is_pregnant;
     }
 
 

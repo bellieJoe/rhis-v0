@@ -114,6 +114,16 @@ export const ViewMembers = () => {
                                         <Tag severity="success" className="ml-2" value="FH" title="Family Head"></Tag>
                                     )
                                 }
+                                {
+                                    data.is_pregnant == 1 && (
+                                        <Tag className="ml-2" value="Pregnant" title="Pregnant"></Tag>
+                                    )
+                                }
+                                {
+                                    data.is_senior && (
+                                        <Tag className="ml-2" value="Senior" title="Senior"></Tag>
+                                    )
+                                }
                             </div>
                             {
                                 data.updated_details.member_relationship_id != 1 && (
