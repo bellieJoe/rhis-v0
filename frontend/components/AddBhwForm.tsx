@@ -129,7 +129,7 @@ const AddBhwForm = () => {
                 </div> */}
                 <div className="mb-3">
                     <label htmlFor="" className="form-label mb-2 block">Select Sitio <Required /></label>
-                    <MultiSelect filter className="w-full" options={sitios} optionLabel="sitio_name" optionValue="id" value={form.sitios}  onChange={(e) => setForm({...form, sitios : e.value})} placeholder="Select Sitio" />
+                    <MultiSelect filter className="w-full" options={sitios} optionLabel="label_with_bhw_recommendation_count" optionValue="id" value={form.sitios}  onChange={(e) => setForm({...form, sitios : e.value})} placeholder="Select Sitio" />
                     <ValidationError name="sitios" />
                 </div>
                 <div className="flex justify-content-end">

@@ -46,7 +46,7 @@ const AppMenu = () => {
                 label: 'Baranggay Captain Interface',
                 items: [
                     // { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
-                    { label: "BHW's", icon: 'pi pi-fw pi-users', to: '/admin/users' },
+                    { label: "BHW's", icon: 'pi pi-fw pi-users', to: '/captain/bhw' },
                 ]
             }];
         }

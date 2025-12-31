@@ -72,6 +72,10 @@ class User extends Authenticatable
         return $barangays;
     }
 
+    public function captainDesignations() {
+        return $this->hasMany(CaptainDesignation::class);   
+    }
+
     public function personalInformation()
     {
         return $this->hasOne(PersonalInformation::class);

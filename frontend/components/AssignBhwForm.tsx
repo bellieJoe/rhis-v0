@@ -103,7 +103,7 @@ const AssignBhwForm = (props : AssignBhwFormProps) => {
 
                     <div className="mb-2">
                         <label htmlFor="name" className="block text-900 font-medium mb-2">Sitios</label>
-                        <MultiSelect className="w-full" value={form.sitios} onChange={(e) => setForm({ ...form, sitios : e.value })} multiple options={sitios} optionLabel="sitio_name" optionValue="id" placeholder="Select Sitios" />
+                        <MultiSelect className="w-full" value={form.sitios} onChange={(e) => setForm({ ...form, sitios : e.value })} multiple options={sitios} optionLabel="label_with_bhw_recommendation_count"  optionValue="id" placeholder="Select Sitios" />
                     </div>
 
                     <div className="flex justify-content-end">

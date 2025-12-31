@@ -432,8 +432,6 @@ class HouseholdProfileController extends Controller
             HouseholdProfileDetail::create([
                 ...$updatedDetail->except('id', 'created_at', 'updated_at', 'member_relationship_id', 'is_family_head', 'family_head_id'),
                 "member_relationship_id" => 1,
-                "is_family_head" => true,
-                "family_head_id" => 0
             ]);
 
             foreach($previouseHeads as $previouseHead) {
@@ -445,6 +443,4 @@ class HouseholdProfileController extends Controller
             }
         });
     }
-    
-    
 }

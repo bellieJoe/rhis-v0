@@ -166,4 +166,8 @@ class HouseholdController extends Controller
         ->where('birthdate', '<', Carbon::now()->subYears(60)->toDateString())
         ->count();
     }
+
+    public function countByBarangay(Request $request, $barangay_id) {
+        return Household::where('barangay_id', $barangay_id)->count();
+    }
 }

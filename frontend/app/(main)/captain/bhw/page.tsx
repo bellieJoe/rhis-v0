@@ -1,19 +1,11 @@
 "use client";
-import { getBhwDesignationsByUserId } from "@/api/bhwDesignationApi";
+import { countHouseholdByBarangay } from "@/api/householdApi";
 import { getBhwsByCaptain, getUsers } from "@/api/userApi";
 import AddBhwForm from "@/components/AddBhwForm";
-import AddUserForm from "@/components/AddUserForm";
 import AssignBhwForm from "@/components/AssignBhwForm";
-import AssignCaptainForm from "@/components/AssignCaptainForm";
-import AssignMidwifeForm from "@/components/AssignMidwifeForm";
-import AssignRhuForm from "@/components/AssignRhuForm";
 import { AuthMiddleware } from "@/components/middlewares";
 import { showAddBhwForm } from "@/features/forms/addBhwSlice";
-import { showAddUserForm } from "@/features/forms/addUserSlice";
 import { assignBhw } from "@/features/forms/assignBhwFormSlice";
-import { assignCaptain } from "@/features/forms/assignCaptainFormSlice";
-import { assignMidwife } from "@/features/forms/assignMidwifeSlice";
-import { assignRhu } from "@/features/forms/assignRhuSlice";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
@@ -49,12 +41,17 @@ const Users = (props : UsersProps) => {
     const [loading, setLoading] = useState({
         users : false
     });
+    const [counts, setCounts] = useState({
+        households: 0
+    });
     
     useEffect(() => {
         (async() => {
             setLoading({ ...loading,users : true });
             const _users = await getBhwsByCaptain(dispatch, authStore.user?.id);
             setUsers(_users);
+            const _householdCounts = await countHouseholdByBarangay(dispatch, authStore.user?.captain_designations[0]?.office?.barangay_id);
+            setCounts({...counts, households : _householdCounts});
             setLoading({ ...loading,users : false });
         })();
     }, [reload, authStore.user?.id]);
@@ -81,6 +78,36 @@ const Users = (props : UsersProps) => {
     return (
         <>
             <AuthMiddleware>
+                <div className="flex-wrap">
+                    <div className="grid mb-2">
+                        <div className="col-12 lg:col-6 xl:col-3">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Households</span>
+                                        <div className="text-900 font-medium text-xl">{counts.households}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <i className="pi pi-home text-blue-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6 xl:col-3">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">BHW's</span>
+                                        <div className="text-900 font-medium text-xl">{users?.length}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <i className="pi pi-users text-blue-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="card">
                     <h5>Users</h5>
                     <div className="flex justify-content-end mb-3">
@@ -88,6 +115,7 @@ const Users = (props : UsersProps) => {
                     </div>
                     <DataTable value={users} loading={loading.users}>
                         <Column field="email" header="Email"></Column>
+                        <Column header="Assigned Sitios" body={(data : any) => data.bhw_designations.length} />
                         <Column header="Role" body={(data : any) => <RolesBadges  roles={data.roles} />} />
                         <Column header="Actions" body={userActions} />
                     </DataTable>
