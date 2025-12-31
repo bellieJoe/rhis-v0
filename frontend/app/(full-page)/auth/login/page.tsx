@@ -25,7 +25,14 @@ const LoginPage = () => {
 
     const router = useRouter();
     const dispatch = useDispatch();
-    const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
+    const containerClassName = classNames(' flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 
+        'p-input-filled': layoutConfig.inputStyle === 'filled',
+        
+    });
+
+    const containerStyle = {
+        backgroundColor : "gray"
+    };
 
     const handleLogin = async () => {
         setLoading({
@@ -74,11 +81,9 @@ const LoginPage = () => {
     }
     
     return (
-        <div className={containerClassName}>
+        <div className={containerClassName} >
             <div className="flex flex-column align-items-center justify-content-center">
-                <div className="p-3 m-0">
-                    <Image src={logo} alt="Sakai logo" width={200} className="mb-5 " />
-                </div>
+                
                 <div
                     style={{
                         borderRadius: '56px',
@@ -89,7 +94,9 @@ const LoginPage = () => {
                     <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
                         <div className="text-center mb-5">
                             {/* <img src="/demo/images/login/avatar.png" alt="Image" height="50" className="mb-3" /> */}
-                            <div className="text-900 text-3xl font-bold mb-3">RHIMS</div>
+                            <div className="pb-3 m-0">
+                                <Image src={logo} alt="Sakai logo" width={200} className="mb-5 " />
+                            </div>
                             {/* <div className="text-900 text-xl font-medium mb-3">Rural Health Information System</div> */}
                             <span className="text-600 font-medium">Sign in to continue</span>
                         </div>
