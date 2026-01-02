@@ -701,20 +701,60 @@ class DashboardController extends Controller
     }
 
     public function getSeniorCitizenMaintenance($request, $sitios) {
-        $cutoff = date('Y') . '-12-31';
-        return GenericType::where('type', 'MEDICATION')->get()->map(function($type) use ($sitios, $cutoff) {
+        $cutoff = $request->has('end') ? $request->end : date('Y') . '-12-31';
+        $meds = [
+            ['name' => 'Losartan', 'type' => 'hypertension', 'ignore' => ['amlodipine','losartan']],
+            ['name' => 'Amlodipine', 'type' => 'hypertension', 'ignore' => ['amlodipine','losartan']],
+            ['name' => 'Metformin', 'type' => 'diabetes', 'ignore' => ['metformin']],
+            ['name' => 'Others', 'type' => 'both']
+        ];
+
+        return collect($meds)->map(function($med) use ($sitios, $cutoff) {
+            $query = clone $this->householdProfileQuery;
+            $query->whereHas('household', fn($q) => $q->whereIn('sitio_id', $sitios));
+
+            if($med['type'] === 'hypertension') {
+                $query->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                    created_at = (
+                        select max(hpd.created_at)
+                        from household_profile_details hpd
+                        where hpd.household_profile_id = household_profiles.id
+                        and hpd.created_at <= ?
+                        and LOWER(hpd.hypertension_maintenance) = ?
+                    )
+                ", [$cutoff, strtolower($med['name'])]));
+            } elseif($med['type'] === 'diabetes') {
+                $query->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                    created_at = (
+                        select max(hpd.created_at)
+                        from household_profile_details hpd
+                        where hpd.household_profile_id = household_profiles.id
+                        and hpd.created_at <= ?
+                        and LOWER(hpd.diabetes_maintenance) = ?
+                    )
+                ", [$cutoff, strtolower($med['name'])]));
+            } else { // Others
+                $query->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                    created_at = (
+                        select max(hpd.created_at)
+                        from household_profile_details hpd
+                        where hpd.household_profile_id = household_profiles.id
+                        and hpd.created_at <= ?
+                        and (
+                            (hpd.hypertension_maintenance IS NOT NULL AND LOWER(hpd.hypertension_maintenance) NOT IN ('amlodipine','losartan'))
+                            OR
+                            (hpd.diabetes_maintenance IS NOT NULL AND LOWER(hpd.diabetes_maintenance) NOT IN ('metformin'))
+                        )
+                    )
+                ", [$cutoff]));
+            }
+
             return (object)[
-                "Name" => $type->name,
-                "Value" => (clone $this->householdProfileQuery)->whereHas('household', function ($q) use ($sitios) {
-                        $q->whereIn('sitio_id', $sitios);
-                    })
-                    ->whereRaw("TIMESTAMPDIFF(YEAR, birthdate, '{$cutoff}') >= 60")
-                    ->whereHas('medicineMaintenance', function ($q) use ($type) {
-                        $q->where('medication_id', $type->id);
-                    })
-                    ->count()
+                'Name' => $med['name'],
+                'Value' => $query->count()
             ];
         });
+
     }   
 
     public function getEducationalAttainment($request, $sitios)

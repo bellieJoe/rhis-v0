@@ -29,13 +29,13 @@ class RoleTypeSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => "rhu personnel",
+                'name' => "rhu nurse",
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'id' => 4,
-                'name' => "phu personnel",
+                'name' => "provincial health coordinator",
                 'created_at' => now(),
                 'updated_at' => now()
             ],

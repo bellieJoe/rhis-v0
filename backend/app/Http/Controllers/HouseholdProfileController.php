@@ -213,7 +213,9 @@ class HouseholdProfileController extends Controller
             "hc_pwd" => "required|boolean",
             "hc_stroke" => "required|boolean",
             "hc_hypertensive" => "required|boolean",
+            "hypertension_maintenance" => "nullable|required_if:hc_hypertensive,true",
             "hc_diabetic" => "required|boolean",
+            "diabetes_maintenance" => "nullable|required_if:hc_diabetic,true",
             "hc_mass" => "required|boolean",
             "hc_smoker" => "required|boolean",
             "hc_alchohol_drinker" => "required|boolean",
@@ -265,7 +267,9 @@ class HouseholdProfileController extends Controller
                 "hc_mass" => $request->input("hc_mass"),
                 "hc_smoker" => $request->input("hc_smoker"),
                 "hc_hypertensive" => $request->input("hc_hypertensive"),
+                "hypertension_maintenance" => $request->input("hc_hypertensive") ? $request->input("hypertension_maintenance") : null,
                 "hc_diabetic" => $request->input("hc_diabetic"),
+                "diabetes_maintenance" => $request->input("hc_diabetic") ? $request->input("diabetes_maintenance") : null,
                 "hc_alchohol_drinker" => $request->input("hc_alchohol_drinker"),
             ]);
 
