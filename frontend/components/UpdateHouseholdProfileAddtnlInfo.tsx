@@ -140,6 +140,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             hc_mhgap : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_mhgap),
             hc_asthma: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_asthma),
             hc_hypertensive: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_hypertensive),
+            hc_diabetic: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_diabetic),
             hc_cancer : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_cancer),
             hc_pwd : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_pwd),
             hc_stroke : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_stroke),
@@ -478,6 +479,13 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                         <ValidationError name="hc_hypertensive" />
                                                     </div>
                                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                        <Checkbox  checked={form.hc_diabetic} onChange={(e) => setForm({...form, hc_diabetic : e.checked || false})} ></Checkbox>
+                                                        <div className="">
+                                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Diabetic </p>
+                                                        </div>
+                                                        <ValidationError name="hc_diabetic" />
+                                                    </div>
+                                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                         <Checkbox  checked={form.hc_stroke} onChange={(e) => setForm({...form, hc_stroke : e.checked || false})} ></Checkbox>
                                                         <div className="">
                                                             <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Stroke</p>
@@ -663,6 +671,11 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <p className="font-bold">Hypertensive:</p>
                                         <p>{form.hc_hypertensive ? 'Yes' : 'No'}</p>
                                         <ValidationError name="hc_hypertensive" />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <p className="font-bold">Diabetic:</p>
+                                        <p>{form.hc_diabetic ? 'Yes' : 'No'}</p>
+                                        <ValidationError name="hc_diabetic" />
                                     </div>
                                     <div className="flex gap-2">
                                         <p className="font-bold">Asthma:</p>

@@ -883,7 +883,7 @@ export const UpdateHealthServiceForm = () => {
             value: "HAS_DIABETES",
             form : <HasDiabetesForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_DIABETES"), data)}/>,
             handler : storeHasDiabetes,
-            visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_diabetes == 1
+            visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_diabetic == 1
         },
         {
             label: "10. Urinalysis Result(Resulta ng Pag-Eksamin sa ihi)",
