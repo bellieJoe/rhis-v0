@@ -22,22 +22,15 @@ export const ViewMembers = () => {
 
     const init = () => {
         setMembers([]);
-        setCounts(initialCounts);
         (async () => {
             const _members = await getHouseholdMembers(dispatch, viewMemberStore.household_id);
             setMembers(_members);
         })();
         (async () => {
-            const _prenants = await countPregnantByHousehold(dispatch, viewMemberStore.household_id);
-            setCounts({
-                ...counts,
-                pregnants : _prenants
-            })
-        })();
-        (async () => {
+            const _pregnants = await countPregnantByHousehold(dispatch, viewMemberStore.household_id);
             const _seniors = await countSeniorsByHousehold(dispatch, viewMemberStore.household_id);
             setCounts({
-                ...counts,
+                pregnants: _pregnants,
                 seniors : _seniors
             })
         })();

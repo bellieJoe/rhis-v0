@@ -80,7 +80,7 @@ const GenderDistribution = ({startDate, endDate} : {startDate: any, endDate: any
     }, [authStore.user, ageBracketFilter, startDate, endDate]);
     return (
         <div className="card mb-0 px-0" >
-            <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution</h3>
+            <h3 className="text-lg font-semibold mb-2 text-center">Gender Distribution in this Area</h3>
             <div className="flex flex-wrap justify-content-end p-3 gap-1">
                 {/* <Calendar view="month" dateFormat="mm/yy" value={startDate} placeholder='Start Date' onChange={(e) => setStartDate(e.value)} className='w-auto' />
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} /> */}
@@ -347,7 +347,7 @@ const FamilyPlanningChart = () => {
     );
 };
 
-const SeniorMaintenanceChart = () => {
+const SeniorMaintenanceChart = ({ startDate, endDate } : { startDate: any; endDate: any; }) => {
     const [data, setData] = useState<any>([]);
     const dispatch = useDispatch();
     const authStore = useSelector((state: any) => state.auth);
@@ -355,7 +355,7 @@ const SeniorMaintenanceChart = () => {
         const sitios = authStore.user?.bhw_designations?.map((d: any) => d.sitio_id);
         if (!sitios || sitios.length === 0) return;
         console.log('test');
-        const _data = await getBhwDashboard(dispatch, { name: 'SENIOR_W_MAINTENANCE', sitios: sitios });
+        const _data = await getBhwDashboard(dispatch, { name: 'SENIOR_W_MAINTENANCE', sitios: sitios, start : startDate ? moment(startDate).format('YYYY-MM-DD') : null, end : endDate ? moment(endDate).format('YYYY-MM-DD') : null });
         setData(_data);
     };
     useEffect(() => {
@@ -363,7 +363,7 @@ const SeniorMaintenanceChart = () => {
     }, [authStore.user]);
     return (
         <div className="card mb-0 h-full">
-            <h3 className="text-lg font-semibold mb-2 text-center">Senior with Maintenance</h3>
+            <h3 className="text-lg font-semibold mb-2 text-center">People with Maintenance Medicine</h3>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                     data={data}
@@ -488,130 +488,130 @@ const BhwDashboard = () => {
                 <Calendar view="month" dateFormat="mm/yy" value={endDate} placeholder='End Date' onChange={(e) => setEndDate(e.value)} />
             </div>
             <div className="grid">
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Households</span>
-                                <div className="text-900 font-medium text-xl">{data.households}</div>
+                <div className="col-12 lg:col-6 ">
+                    <div className="grid">
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Households</span>
+                                        <div className="text-900 font-medium text-xl">{data.households}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <i className="pi pi-home text-blue-500 text-xl" />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <i className="pi pi-home text-blue-500 text-xl" />
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Pregnancy</span>
+                                        <div className="text-900 font-medium text-xl">{data.pregnancy}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <FaPersonPregnant className="text-orange-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Vaccinated Babies</span>
+                                        <div className="text-900 font-medium text-xl">{data.vaccinated}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <MdOutlineVaccines className="text-cyan-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Death Toll</span>
+                                        <div className="text-900 font-medium text-xl">{data.deaths}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <TbCoffin className="text-purple-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Population</span>
+                                        <div className="text-900 font-medium text-xl">{data.totalPopulation}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <IoIosPeople  className="text-purple-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Households Visited</span>
+                                        <div className="text-900 font-medium text-xl">{data.households}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <RiSurveyLine  className="text-cyan-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Families</span>
+                                        <div className="text-900 font-medium text-xl">{data.familyCount}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-bluegray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <RiSurveyLine  className="text-bluegray-500 text-xl" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Pregnancy</span>
-                                <div className="text-900 font-medium text-xl">{data.pregnancy}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <FaPersonPregnant className="text-orange-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Vaccinated Babies</span>
-                                <div className="text-900 font-medium text-xl">{data.vaccinated}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <MdOutlineVaccines className="text-cyan-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Death Toll</span>
-                                <div className="text-900 font-medium text-xl">{data.deaths}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <TbCoffin className="text-purple-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Population</span>
-                                <div className="text-900 font-medium text-xl">{data.totalPopulation}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <IoIosPeople  className="text-purple-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Households Visited</span>
-                                <div className="text-900 font-medium text-xl">{data.households}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <RiSurveyLine  className="text-cyan-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
-                    <div className="card mb-0">
-                        <div className="flex justify-content-between mb-3">
-                            <div>
-                                <span className="block text-500 font-medium mb-3">Families</span>
-                                <div className="text-900 font-medium text-xl">{data.familyCount}</div>
-                            </div>
-                            <div className="flex align-items-center justify-content-center bg-bluegray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                <RiSurveyLine  className="text-bluegray-500 text-xl" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 lg:col-6 xl:col-3">
                 </div>
                 <div className="col-12 lg:col-6">
                     <GenderDistribution startDate={startDate} endDate={endDate} />
                 </div>
-                <div className="col-12 lg:col-6">
-                    <EducationalAttainmentChart  startDate={startDate} endDate={endDate} />
+                <div className="col-12 lg:col-12">
+                    <div className="card mb-0">
+                        <h3 className="text-lg font-semibold mb-2 text-center">Age Bracket</h3>
+                        <ResponsiveContainer width="100%" height={400}>
+                            <BarChart data={data.ageCategories}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="Name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="Male" fill="#8884d8" />
+                                <Bar dataKey="Female" fill="#82ca9d" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
-                <div className="col-12 lg:col-6 ">
+                <div className="col-12">
                     <CivilStatus startDate={startDate} endDate={endDate} />
                 </div>
                 <div className="col-12 lg:col-6">
-                    <WRA civilStatus={74} />
+                    <WRA startDate={startDate} endDate={endDate} civilStatus={74} />
                 </div>
                 <div className="col-12 lg:col-6">
-                    <WRA civilStatus={75} />
+                    <WRA startDate={startDate} endDate={endDate} civilStatus={75}  />
                 </div>
-                <div className="col-12 lg:col-6">
-                    <div className="card mb-0 h-full">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Religion</h3>
-                        <DataView
-                            value={data.religionData}
-                            itemTemplate={(data: any) => {
-                                return (
-                                    <div className="col-12 p-1">
-                                        <span>{data.name} : </span>
-                                        <span className="text-900 font-medium">{data.total}</span>
-                                    </div>
-                                );
-                            }}
-                        />
-                    </div>
-                </div>
+                {/* Vaccinated Babies */}
                 <div className="col-12">
                     <div className="card mb-0 h-full">
                         <h3 className="text-lg font-semibold mb-2 text-center">Vaccinated Babies FY {moment(new Date()).format('YYYY')}</h3>
@@ -636,17 +636,11 @@ const BhwDashboard = () => {
                         </div>
                     </div>
                 </div>
+                {/* Family Planning */}
                 <div className="col-12">
                     <FamilyPlanningChart />
                 </div>
-                <div className="col-12">
-                    <div className="card mb-0">
-                        <DataTable value={data.typeOfVaccineData} responsiveLayout="scroll">
-                            <Column field="vaccine" header="Vaccine" sortable></Column>
-                            <Column field="total" header="Total" sortable></Column>
-                        </DataTable>
-                    </div>
-                </div>
+                {/* Death and Illness */}
                 <div className="col-12">
                     <div className="card mb-0 h-full">
                         <h3 className="text-lg font-semibold mb-2 text-center">Death and Illness Rate FY {moment(new Date()).format('YYYY')}</h3>
@@ -663,45 +657,10 @@ const BhwDashboard = () => {
                         </ResponsiveContainer>
                     </div>
                 </div>
-                <div className="col-12 lg:col-12">
-                    <div className="card mb-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Age Bracket</h3>
-                        {/* <ResponsiveContainer width="100%" height={400}>
-                            <BarChart
-                                data={data.ageCategories}
-                                layout="horizontal"
-                                margin={{
-                                top: 5,
-                                right: 30,
-                                left: 20,
-                                bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="Name" type="category" />
-                                <YAxis type="number" dataKey="Male" />
-                                <YAxis type="number" dataKey="Female" />
-                                <Tooltip />
-                                <Bar  dataKey="Total" fill="#8884d8" />
-                                <Legend />
-                            </BarChart>
-                        </ResponsiveContainer> */}
-                        <ResponsiveContainer width="100%" height={400}>
-                            <BarChart data={data.ageCategories}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="Name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="Male" fill="#8884d8" />
-                                <Bar dataKey="Female" fill="#82ca9d" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
+                {/* (Distribution of Recorded Disease */}
                 <div className="col-12 lg:col-6">
                     <div className="card mb-0">
-                        <h3 className="text-lg font-semibold mb-2 text-center">Sickness</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-center">Distribution of Recorded Disease</h3>
                         <ResponsiveContainer width="100%" height={400}>
                             <BarChart
                                 data={data.illnessData}
@@ -723,12 +682,45 @@ const BhwDashboard = () => {
                         </ResponsiveContainer>
                     </div>
                 </div>
+                {/* Senior Maintenance */}
+                <div className="col-12 lg:col-6">
+                    <SeniorMaintenanceChart startDate={startDate} endDate={endDate} />
+                </div>
+                {/* Educational Attainment */}
+                <div className="col-12 lg:col-6">
+                    <EducationalAttainmentChart  startDate={startDate} endDate={endDate} />
+                </div>
+                {/* Religion */}
+                <div className="col-12 lg:col-6">
+                    <div className="card mb-0 h-full">
+                        <h3 className="text-lg font-semibold mb-2 text-center">Religion</h3>
+                        <DataView
+                            value={data.religionData}
+                            itemTemplate={(data: any) => {
+                                return (
+                                    <div className="col-12 p-1">
+                                        <span>{data.name} : </span>
+                                        <span className="text-900 font-medium">{data.total}</span>
+                                    </div>
+                                );
+                            }}
+                        />
+                    </div>
+                </div>
+                
+                <div className="col-12">
+                    <div className="card mb-0">
+                        <DataTable value={data.typeOfVaccineData} responsiveLayout="scroll">
+                            <Column field="vaccine" header="Vaccine" sortable></Column>
+                            <Column field="total" header="Total" sortable></Column>
+                        </DataTable>
+                    </div>
+                </div>
+                
                 <div className="col-12 lg:col-6">
                     <FourPs />
                 </div>
-                <div className="col-12 lg:col-6">
-                    <SeniorMaintenanceChart />
-                </div>
+                
                 <div className="col-12 lg:col-6">
                     <div className="flex flex-wrap gap-2 justify-content-start">
                         <div className="card mb-0">

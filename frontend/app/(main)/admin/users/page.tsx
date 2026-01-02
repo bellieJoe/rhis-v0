@@ -59,7 +59,7 @@ const Users = (props : UsersProps) => {
                     data.roles.some((role : any) => role.role_type_id === 1) && <Button size="small" outlined label="BHW Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignBhw({user : data}))} />
                 } */}
                 {
-                    data.roles.some((role : any) => role.role_type_id === 6) && <Button size="small" outlined label="Baranggay Captain Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignCaptain({user : data}))} />
+                    data.roles.some((role : any) => role.role_type_id === 6) && <Button size="small" outlined label="Barangay Captain Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignCaptain({user : data}))} />
                 }
                 {
                     data.roles.some((role : any) => role.role_type_id === 2) && <Button size="small" outlined label="Midwife Designation" icon="pi pi-user-plus" onClick={() => dispatch(assignMidwife({user : data}))} />

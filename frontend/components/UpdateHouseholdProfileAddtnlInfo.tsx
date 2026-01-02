@@ -73,6 +73,9 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
         hc_mhgap : false,
         hc_asthma: false,
         hc_hypertensive: false,
+        hc_diabetes : false,
+        diabetes_maintenance : null,
+        hypertension_maintenance : null,
         hc_cancer : false,
         hc_pwd : false,
         hc_stroke : false,
@@ -93,6 +96,12 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
     ];
     const [loading, setLoading] = useState({
         updateHouseholdProfile : false
+    });
+    const diabetesMedicince = ["Metformin"];
+    const hypertensionMedicince = ["Losartan", "Amlodipine"];
+    const [filteredMedicine, setFilteredMedicine] = useState<any>({
+        diabetes : [],
+        hypertension : []
     });
 
     useEffect(() => {
@@ -140,7 +149,9 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             hc_mhgap : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_mhgap),
             hc_asthma: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_asthma),
             hc_hypertensive: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_hypertensive),
+            hypertension_maintenance : updateHouseholdProfileStore.householdProfile.updated_details?.hypertension_maintenance,
             hc_diabetic: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_diabetic),
+            diabetes_maintenance : updateHouseholdProfileStore.householdProfile.updated_details?.diabetes_maintenance,
             hc_cancer : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_cancer),
             hc_pwd : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_pwd),
             hc_stroke : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_stroke),
@@ -478,6 +489,28 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                         </div>
                                                         <ValidationError name="hc_hypertensive" />
                                                     </div>
+                                                    {
+                                                        form.hc_hypertensive && (
+                                                            <div className="mb-3">
+                                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Maintenance Taken for Hypertensive <Required /></label>
+                                                                <AutoComplete 
+                                                                    suggestions={filteredMedicine.hypertension}
+                                                                    value={form.hypertension_maintenance}
+                                                                    completeMethod={(e) => {
+                                                                        setFilteredMedicine({
+                                                                            ...filteredMedicine,
+                                                                            hypertension: hypertensionMedicince.filter(item =>
+                                                                                    item.toLowerCase().includes(e.query.toLowerCase())
+                                                                                ) 
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                    onChange={(e) => setForm({...form, hypertension_maintenance : e.value})}
+                                                                    />
+                                                                <ValidationError name="hypertension_maintenance" />
+                                                            </div>
+                                                        )
+                                                    }
                                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                         <Checkbox  checked={form.hc_diabetic} onChange={(e) => setForm({...form, hc_diabetic : e.checked || false})} ></Checkbox>
                                                         <div className="">
@@ -485,6 +518,28 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                         </div>
                                                         <ValidationError name="hc_diabetic" />
                                                     </div>
+                                                    {
+                                                        form.hc_diabetic && (
+                                                            <div className="mb-3">
+                                                                <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Maintenance Taken for Diabetes <Required /></label>
+                                                                <AutoComplete 
+                                                                    suggestions={filteredMedicine.diabetes}
+                                                                    completeMethod={(e) => {
+                                                                        setFilteredMedicine({
+                                                                            ...filteredMedicine,
+                                                                            diabetes: diabetesMedicince.filter(item =>
+                                                                                    item.toLowerCase().includes(e.query.toLowerCase())
+                                                                                ) 
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                    value={form.diabetes_maintenance}
+                                                                    onChange={(e) => setForm({...form, diabetes_maintenance : e.value})}
+                                                                    />
+                                                                <ValidationError name="diabetes_maintenance" />
+                                                            </div>
+                                                        )
+                                                    }
                                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                         <Checkbox  checked={form.hc_stroke} onChange={(e) => setForm({...form, hc_stroke : e.checked || false})} ></Checkbox>
                                                         <div className="">

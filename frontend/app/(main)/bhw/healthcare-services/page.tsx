@@ -97,7 +97,7 @@ const HealthcareServices = () => {
                             }
                             {
                                 data.updated_details.is_family_head == 1 && (
-                                    <Tag severity="info" className="ml-2" value="FH" title="Family Head"></Tag>
+                                    <Tag severity="success" className="ml-2" value="FH" title="Family Head"></Tag>
                                 )
                             }
                         </div>

@@ -243,6 +243,7 @@ const HouseholdProfilesTable = () => {
                         }
                     </div>
                 )}></Column>
+                <Column header="Age" body={(data : any) => <div>{calculateAge(data.birthdate)}</div>} />
                 <Column field="household.head.updated_details.full_name" header="Household Head" />
                 <Column field="household.address" header="Address" />
                 <Column  header="Actions" frozen body={(data : any) => (
