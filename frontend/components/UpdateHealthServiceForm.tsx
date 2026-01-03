@@ -318,6 +318,7 @@ const VaccinatedForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
         household_profile_id : updateHealthServiceStore.householdProfile?.id,
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
         birthdate : updateHealthServiceStore.householdProfile?.birthdate,
+        date_vaccinated : '',
         vaccine : ""
     });
     return (
@@ -342,6 +343,20 @@ const VaccinatedForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
                     maxDate={new Date()}
                     />
                 <ValidationError name="birthdate" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="birthdate" className="form-label mb-2 block">Date Vaccinated</label>
+                <Calendar 
+                    id="date_vaccinated" 
+                    className="w-full"
+                    value={form.date_vaccinated ? new Date(form.date_vaccinated) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    onChange={(e) => setForm({...form, date_vaccinated : (e.value ? e.value.toLocaleString() : form.date_vaccinated) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_vaccinated" />
             </div>
             <div className="mb-2">
                 <label htmlFor="" className="form-label mb-2 block">Vaccine (Bakunang Ibinigay)</label>
@@ -719,7 +734,8 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
         animal_type : '',
         actions : "",
-        other_animal_type : ""
+        other_animal_type : "",
+        date_bitten: ''
     });
     return (
         <div className="card">
@@ -745,6 +761,20 @@ const AnimalBitesForm = ({ onSubmit } : { onSubmit : (form:any) => void }) => {
                     onChange={(e) => setForm({...form, animal_type : e.value})}
                     className="w-full" />
                 <ValidationError name="animal_type" />
+            </div>
+            <div className="mb-2">
+                <label htmlFor="date_bitten" className="form-label mb-2 block">Date Bitten</label>
+                <Calendar 
+                    id="date_bitten" 
+                    className="w-full"
+                    value={form.date_bitten ? new Date(form.date_bitten) : null}
+                    dateFormat="mm-dd-yy" 
+                    placeholder="mm-dd-yyyy" 
+                    mask="99/99/9999" 
+                    onChange={(e) => setForm({...form, date_bitten : (e.value ? e.value.toLocaleString() : form.date_bitten) })}
+                    maxDate={new Date()}
+                    />
+                <ValidationError name="date_bitten" />
             </div>
             {
                 form.animal_type == '96' && (
