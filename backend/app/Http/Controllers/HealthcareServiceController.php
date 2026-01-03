@@ -118,13 +118,15 @@ class HealthcareServiceController extends Controller
         $request->validate([
             "household_profile_id" => "required|exists:household_profiles,id",
             "vaccine" => "required|max:100",
+            "date_vaccinated" => "required|date",
         ]);
 
         return DB::transaction(function () use ($request) {
             Vaccinated::create([
                 "household_profile_id" => $request->household_profile_id,
                 "vaccine" => $request->vaccine,
-                "encoded_by" => auth()->user()->id
+                "encoded_by" => auth()->user()->id,
+                "date_vaccinated" => Carbon::parse($request->date_vaccinated),
             ]);
             return response()->json([
                 "message" => "Vaccine Record created successfully",
@@ -324,7 +326,8 @@ class HealthcareServiceController extends Controller
             "household_profile_id" => "required|exists:household_profiles,id",
             "age" => "required|numeric",
             "animal_type" => "required",
-            "other_animal_type" => "nullable|required_if:animal_type,96"
+            "other_animal_type" => "nullable|required_if:animal_type,96",
+            "date_bitten" => "required|date"
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -333,7 +336,8 @@ class HealthcareServiceController extends Controller
                 "age" => $request->age,
                 "animal_type" => $request->animal_type,
                 "encoded_by" => auth()->user()->id,
-                "other_animal_type" => $request->animal_type == 96 ? $request->other_animal_type : null
+                "other_animal_type" => $request->animal_type == 96 ? $request->other_animal_type : null,
+                "date_bitten" => Carbon::parse($request->date_bitten)
             ]);
             return response()->json([
                 "message" => "Animal Bite Record created successfully",
