@@ -363,7 +363,7 @@ const FamilyPlanningForm = ({ onSubmit } : { onSubmit : (form:any) => void }) =>
         household_profile_id : updateHealthServiceStore.householdProfile?.id,
         name : updateHealthServiceStore.householdProfile?.updated_details?.full_name,
         age : calculateAge(updateHealthServiceStore.householdProfile?.birthdate).toString(),
-        family_planning_method : '',
+        family_planning_method : updateHealthServiceStore.householdProfile?.updated_details?.family_planning_method_id,
         remarks : ""
     });
     useEffect(() => {
@@ -841,7 +841,7 @@ export const UpdateHealthServiceForm = () => {
             value: "NEW_BORN_CHILD",
             form : <NewBornChildForm onSubmit={(data) => submitForm(services.find(s => s.value == "NEW_BORN_CHILD"), data)} />,
             handler : storeNewBorn,
-            visible : calculateAge(householdProfile?.birthdate) < 2 && !householdProfile.is_dead &&  calculateAge(householdProfile?.birthdate) < 2
+            visible : calculateAge(householdProfile?.birthdate) < 1 && !householdProfile.is_dead &&  calculateAge(householdProfile?.birthdate) < 1
         },
         {
             label: "4. Vaccinated(Binakunahan)",
@@ -855,7 +855,7 @@ export const UpdateHealthServiceForm = () => {
             value: "FAMILY_PLANNING",
             form : <FamilyPlanningForm onSubmit={(data) => submitForm(services.find(s => s.value == "FAMILY_PLANNING"), data)} />,
             handler : storeFamilyPlanning, 
-            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60 
+            visible : householdProfile?.updated_details?.gender_id == 80 && !householdProfile.is_dead && calculateAge(householdProfile?.birthdate) >= 9 && calculateAge(householdProfile?.birthdate) <= 60  && householdProfile.updated_details?.is_using_fp_method
         },
         {
             label: "6. Death(Namatay)",

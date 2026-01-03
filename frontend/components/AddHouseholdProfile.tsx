@@ -290,7 +290,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 )}
 
-                                {!addHouseholdProfileStore.addHead && (
+                                {(
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                             Is Family Head ?<Required />
@@ -300,7 +300,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 )}
                                 
-                                {(!addHouseholdProfileStore.addHead && !form.is_family_head) && (
+                                {!form.is_family_head && (
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                             Family Head?<Required />

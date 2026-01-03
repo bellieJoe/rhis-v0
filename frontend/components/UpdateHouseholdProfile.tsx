@@ -130,8 +130,8 @@ const UpdateHouseholdProfile = () => {
             educational_attainment_id : updateHouseholdProfileStore.householdProfile.updated_details?.educational_attainment_id,
             religion_id : updateHouseholdProfileStore.householdProfile.updated_details?.religion_id,
             other_religion : updateHouseholdProfileStore.householdProfile.updated_details?.other_religion,
-            is_family_head : updateHouseholdProfileStore.householdProfile.is_family_head == 1 ? true : false,
-            family_head_id : updateHouseholdProfileStore.householdProfile.family_head_id,
+            is_family_head : updateHouseholdProfileStore.householdProfile.updated_details?.is_family_head == 1 ? true : false,
+            family_head_id : updateHouseholdProfileStore.householdProfile.updated_details?.family_head_id,
         });
     }, [updateHouseholdProfileStore.householdProfile]);
 
@@ -363,7 +363,7 @@ const UpdateHouseholdProfile = () => {
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Civil Status <Required/></label>
                                     <Dropdown 
                                         showClear
-                                        options={calculateAge(form.birthdate) <= 5 ? genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS' && x.id == 75) : genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS')}
+                                        options={calculateAge(form.birthdate) <= 14 ? genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS' && x.id == 75) : (calculateAge(form.birthdate) >= 15 && calculateAge(form.birthdate) <= 17 ? genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS' && [75, 78].includes(x.id)) : genericTypes.filter((x: any) => x.type === 'CIVIL_STATUS'))}
                                         optionLabel="label"
                                         optionValue="id"
                                         onChange={(e) => setForm({...form, civil_status_id : e.value})}

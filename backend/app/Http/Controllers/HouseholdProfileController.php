@@ -207,7 +207,7 @@ class HouseholdProfileController extends Controller
             "family_planning_status_id" =>  "nullable|required_if:is_using_fp_method,true|exists:generic_types,id",
             "water_source_type_id" => "nullable|required_if:member_relationship_id,1|exists:generic_types,id",
             "toilet_facility_type_id" =>  "nullable|required_if:member_relationship_id,1|exists:generic_types,id",
-            "hc_mhgap" =>  "required|boolean",
+            // "hc_mhgap" =>  "required|boolean",
             "hc_asthma" => "required|boolean",
             "hc_cancer" => "required|boolean",
             "hc_pwd" => "required|boolean",
@@ -219,6 +219,7 @@ class HouseholdProfileController extends Controller
             "hc_mass" => "required|boolean",
             "hc_smoker" => "required|boolean",
             "hc_alchohol_drinker" => "required|boolean",
+            "hc_tuberculosis" => "required|boolean",
         ], 
         [],
         [
@@ -259,7 +260,7 @@ class HouseholdProfileController extends Controller
                 "family_planning_status_id" => $request->input("is_using_fp_method") ? $request->input("family_planning_status_id") : null,
                 "water_source_type_id" => $request->input("member_relationship_id") == 1 ? $request->input("water_source_type_id") : null, // water_source_type_id$request->input("water_source_type_id"),
                 "toilet_facility_type_id" => $request->input("member_relationship_id") == 1 ? $request->input("toilet_facility_type_id") : null,
-                "hc_mhgap" => $request->input("hc_mhgap"),
+                "hc_mhgap" => false,
                 "hc_asthma" => $request->input("hc_asthma"),
                 "hc_cancer" => $request->input("hc_cancer"),
                 "hc_pwd" => $request->input("hc_pwd"),
@@ -271,6 +272,7 @@ class HouseholdProfileController extends Controller
                 "hc_diabetic" => $request->input("hc_diabetic"),
                 "diabetes_maintenance" => $request->input("hc_diabetic") ? $request->input("diabetes_maintenance") : null,
                 "hc_alchohol_drinker" => $request->input("hc_alchohol_drinker"),
+                "hc_tuberculosis" => $request->input("hc_tuberculosis"),
             ]);
 
             return response()->json([

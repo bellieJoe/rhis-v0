@@ -5,6 +5,7 @@ import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { confirmPopup } from "primereact/confirmpopup";
 import { DataView } from "primereact/dataview";
+import { Divider } from "primereact/divider";
 import { Sidebar } from "primereact/sidebar";
 import { Tag } from "primereact/tag";
 import { useEffect, useState } from "react";
@@ -57,6 +58,21 @@ export const ViewMembers = () => {
         dispatch(setHouseholdId(0));
     }
 
+    const getFamilyGroupKey = (member: any) => {
+        if (member.updated_details.is_family_head === 1) {
+            // Family head starts a new group using THEIR OWN ID
+            return member.id;
+        }
+
+        if (member.updated_details.family_head_id !== 0) {
+            // Member belongs to a family
+            return member.updated_details.family_head_id;
+        }
+
+        // Standalone person (no family)
+        return `solo-${member.id}`;
+    };
+
     
 
     return (
@@ -91,7 +107,7 @@ export const ViewMembers = () => {
                         <p className="text-center" >Seniors</p>
                     </div>
                 </div>
-                <DataView className="w-full" value={members} layout="list"  itemTemplate={(data:any) => 
+                {/* <DataView className="w-full" value={members} layout="list"  itemTemplate={(data:any) => 
                     (
                         <div className="flex flex-wrap p-2 align-items-center gap-3 w-full">
                             <Avatar icon="pi pi-user" shape="circle" size="large" className="bg-primary text-0" />
@@ -125,7 +141,76 @@ export const ViewMembers = () => {
                             }
                         </div>
                     )
-                }></DataView>
+                }></DataView> */}
+                <DataView
+                    className="w-full"
+                    value={members}
+                    layout="list"
+                    itemTemplate={(data: any, options: any) => {
+                        const index = members.findIndex((s: any) => s.id === data.id);
+                        const prev = index > 0 ? members[index - 1] : null;
+
+                        const currentKey = getFamilyGroupKey(data);
+                        const prevKey = prev ? getFamilyGroupKey(prev) : null;
+
+                        const showDivider = prev && currentKey !== prevKey;
+
+                        return (
+                            <>
+                                {/* Divider when family_head_id changes */}
+                                {showDivider && (
+                                    <Divider align="left" className="mb-2" >
+                                        <span className="text-sm font-semibold text-500">
+                                            New Family
+                                        </span>
+                                    </Divider>
+                                )}
+
+                                <div  className={`flex flex-wrap p-2 align-items-center gap-3 w-full ${
+                                        showDivider ? 'border-top-0 mt-2 pt-2' : ''
+                                    }`}>
+                                    <Avatar
+                                        icon="pi pi-user"
+                                        shape="circle"
+                                        size="large"
+                                        className="bg-primary text-0"
+                                    />
+
+                                    <div className="flex-1 flex flex-auto gap-2 xl:mr-8">
+                                        <span className="font-bold">{data.fullname}</span>
+
+                                        {data.updated_details.member_relationship_id === 1 && (
+                                            <Tag severity="info" className="ml-2" value="HH" />
+                                        )}
+
+                                        {data.updated_details.is_family_head === 1 && (
+                                            <Tag severity="success" className="ml-2" value="FH" />
+                                        )}
+
+                                        {data.is_pregnant === 1 && (
+                                            <Tag className="ml-2" value="Pregnant" />
+                                        )}
+
+                                        {data.is_senior && (
+                                            <Tag className="ml-2" value="Senior" />
+                                        )}
+                                    </div>
+
+                                    {data.updated_details.member_relationship_id !== 1 && (
+                                        <Button
+                                            label="Set as HH"
+                                            outlined
+                                            size="small"
+                                            severity="success"
+                                            onClick={() => setHead(event, data)}
+                                        />
+                                    )}
+                                </div>
+                            </>
+                        );
+                    }}
+                />
+
             </Sidebar>
         </>
     )

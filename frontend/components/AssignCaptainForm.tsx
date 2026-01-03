@@ -67,7 +67,7 @@ const AssignCaptainForm = (props : AssignCaptainFormProps) => {
                 style={{ maxWidth: '30rem', width: '100vw' }}
                 header={
                     <div className="flex justify-content-center">
-                        <h4 className="">Assign Midwife</h4>
+                        <h4 className="">Assign Captain Designation</h4>
                     </div>
                 }
                 showCloseIcon={false}

@@ -71,6 +71,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
         water_source_type_id : "",
         toilet_facility_type_id : "",
         hc_mhgap : false,
+        hc_tuberculosis : false,
         hc_asthma: false,
         hc_hypertensive: false,
         hc_diabetes : false,
@@ -147,6 +148,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             water_source_type_id : updateHouseholdProfileStore.householdProfile.updated_details?.water_source_type_id,
             toilet_facility_type_id : updateHouseholdProfileStore.householdProfile.updated_details?.toilet_facility_type_id,
             hc_mhgap : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_mhgap),
+            hc_tuberculosis : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_tuberculosis),
             hc_asthma: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_asthma),
             hc_hypertensive: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_hypertensive),
             hypertension_maintenance : updateHouseholdProfileStore.householdProfile.updated_details?.hypertension_maintenance,
@@ -554,12 +556,19 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                         </div>
                                                         <ValidationError name="hc_mass" />
                                                     </div>
-                                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                    {/* <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                         <Checkbox checked={form.hc_mhgap} onChange={(e) => setForm({...form, hc_mhgap : e.checked || false})} ></Checkbox>
                                                         <div className="">
                                                             <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">MHGAP</p>
                                                         </div>
                                                         <ValidationError name="hc_mhgap" />
+                                                    </div> */}
+                                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                        <Checkbox checked={form.hc_tuberculosis} onChange={(e) => setForm({...form, hc_tuberculosis : e.checked || false})} ></Checkbox>
+                                                        <div className="">
+                                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Tuberculosis</p>
+                                                        </div>
+                                                        <ValidationError name="hc_tuberculosis" />
                                                     </div>
                                                     <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
                                                         <Checkbox  checked={form.hc_smoker} onChange={(e) => setForm({...form, hc_smoker : e.checked || false})} ></Checkbox>
@@ -757,10 +766,15 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                         <p>{form.hc_mass ? 'Yes' : 'No'}</p>
                                         <ValidationError name="hc_mass" />
                                     </div>
-                                    <div className="flex gap-2">
+                                    {/* <div className="flex gap-2">
                                         <p className="font-bold">MHGAP:</p>
                                         <p>{form.hc_mhgap ? 'Yes' : 'No'}</p>
                                         <ValidationError name="hc_mhgap" />
+                                    </div> */}
+                                    <div className="flex gap-2">
+                                        <p className="font-bold">Tuberculosis:</p>
+                                        <p>{form.hc_tuberculosis ? 'Yes' : 'No'}</p>
+                                        <ValidationError name="hc_tuberculosis" />
                                     </div>
                                     <div className="flex gap-2">
                                         <p className="font-bold">Smoker:</p>
