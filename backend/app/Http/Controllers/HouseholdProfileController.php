@@ -89,11 +89,11 @@ class HouseholdProfileController extends Controller
             "other_religion" =>  "nullable|required_if:religion_id,37|max:50",
             'family_head_id' => [
                 // 'required_unless:member_relationship_id,1', 
-                'required_if:is_family_head,false',         // required when not family head
+                // 'required_if:is_family_head,false',         // required when not family head
                 'nullable',
                 'exists:household_profile_details,id',
             ],
-            'is_family_head' => "required_unless:member_relationship_id,1|boolean",
+            'is_family_head' => "nullable|boolean",
             // "unit_id" => "",
             // "enthnicity" => "required|in:IP,Non-IP",
             // "fourps_member" => "required|boolean",
@@ -142,8 +142,8 @@ class HouseholdProfileController extends Controller
                 "educational_attainment_id" => $request->input("educational_attainment_id"),
                 "religion_id" => $request->input("religion_id"),
                 "other_religion" => $request->input("religion_id") == 37 ? $request->input("other_religion") : null,
-                "is_family_head" => $request->input("member_relationship_id") == 1 ? true : $request->input("is_family_head"),
-                "family_head_id" => $request->input("member_relationship_id") == 1 ? 0 : ($request->input("is_family_head") ? 0 : $request->input("family_head_id")),
+                "is_family_head" => $request->input("is_family_head"),
+                "family_head_id" => $request->input("is_family_head") ? 0 : ($request->input("family_head_id") ? $request->input("family_head_id") : 0),
                 // "enthnicity" => $request->input("enthnicity"),
                 // "fourps_member" => $request->input("fourps_member"),
                 // "fourps_household_no" => $request->input("fourps_member") ? $request->input("fourps_household_no") : null,
@@ -296,11 +296,12 @@ class HouseholdProfileController extends Controller
             "other_religion" =>  "nullable|required_if:religion_id,37|max:50",
             "unit_id" => "",
             'family_head_id' => [
-                'required_if:is_family_head,false',         // required when not family head
+                // 'required_unless:member_relationship_id,1', 
+                // 'required_if:is_family_head,false',         // required when not family head
                 'nullable',
                 'exists:household_profile_details,id',
             ],
-            'is_family_head' => "required_unless:member_relationship_id,1|boolean",
+            'is_family_head' => "nullable|boolean",
 
             // "enthnicity" => "required|in:IP,Non-IP",
             // "fourps_member" => "required|boolean",
@@ -351,8 +352,8 @@ class HouseholdProfileController extends Controller
                 "educational_attainment_id" => $request->input("educational_attainment_id"),
                 "religion_id" => $request->input("religion_id"),
                 "other_religion" => $request->input("religion_id") == 37 ? $request->input("other_religion") : null,
-                "is_family_head" => $request->input("member_relationship_id") == 1 ? true : $request->input("is_family_head"),
-                "family_head_id" => $request->input("member_relationship_id") == 1 ? 0 : ($request->input("is_family_head") ? 0 : $request->input("family_head_id")),
+                "is_family_head" => $request->input("is_family_head"),
+                "family_head_id" => $request->input("is_family_head") ? 0 : ($request->input("family_head_id") ? $request->input("family_head_id") : 0),
                 //
 
                 "enthnicity" => $updatedDetails->enthnicity,
