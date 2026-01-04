@@ -320,7 +320,43 @@ class DashboardController extends Controller
                 [
                     "name" => "Epilepsy",
                     "Total" => (clone $this->householdProfileQuery)->whereHas('epilepsyRecords')->count()
-                ]
+                ],
+                [
+                    "name" => "Asthma",
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                        created_at = (
+                            select max(hpd.created_at)
+                            from household_profile_details hpd
+                            where hpd.household_profile_id = household_profiles.id
+                            and hpd.created_at <= ?
+                            and hc_asthma = TRUE
+                        )
+                    ", [Carbon::parse($request->end)]))->count()
+                ],
+                [
+                    "name" => "Stroke",
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                        created_at = (
+                            select max(hpd.created_at)
+                            from household_profile_details hpd
+                            where hpd.household_profile_id = household_profiles.id
+                            and hpd.created_at <= ?
+                            and hc_stroke = TRUE
+                        )
+                    ", [Carbon::parse($request->end)]))->count()
+                ],
+                [
+                    "name" => "Mass",
+                    "Total" => (clone $this->householdProfileQuery)->whereHas('householdProfileDetails', fn($q) => $q->whereRaw("
+                        created_at = (
+                            select max(hpd.created_at)
+                            from household_profile_details hpd
+                            where hpd.household_profile_id = household_profiles.id
+                            and hpd.created_at <= ?
+                            and hc_mass = TRUE
+                        )
+                    ", [Carbon::parse($request->end)]))->count()
+                ],
             ],
             "toiletData" => (object)[
                 "sanitary_toilet" => Household::whereHas('householdProfiles', function($q) use ($latesDetailQueryString) {

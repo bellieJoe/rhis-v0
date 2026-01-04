@@ -658,7 +658,7 @@ const BhwDashboard = () => {
                     </div>
                 </div>
                 {/* (Distribution of Recorded Disease */}
-                <div className="col-12 lg:col-6">
+                <div className="col-12">
                     <div className="card mb-0">
                         <h3 className="text-lg font-semibold mb-2 text-center">Distribution of Recorded Disease</h3>
                         <ResponsiveContainer width="100%" height={400}>
@@ -691,7 +691,7 @@ const BhwDashboard = () => {
                     <EducationalAttainmentChart  startDate={startDate} endDate={endDate} />
                 </div>
                 {/* Religion */}
-                <div className="col-12 lg:col-6">
+                <div className="col-12 lg:col-6 ">
                     <div className="card mb-0 h-full">
                         <h3 className="text-lg font-semibold mb-2 text-center">Religion</h3>
                         <DataView
@@ -708,7 +708,7 @@ const BhwDashboard = () => {
                     </div>
                 </div>
                 
-                <div className="col-12">
+                <div className="col-12 lg:col-6 ">
                     <div className="card mb-0">
                         <DataTable value={data.typeOfVaccineData} responsiveLayout="scroll">
                             <Column field="vaccine" header="Vaccine" sortable></Column>
@@ -731,32 +731,8 @@ const BhwDashboard = () => {
                         </div>
                         <div className="card mb-0">
                             <div className="">
-                                <span className="block text-500 font-medium mb-3">Has Asthma</span>
-                                <div className="text-900 font-medium text-xl">{data.asthmaCount}</div>
-                            </div>
-                        </div>
-                        <div className="card mb-0">
-                            <div className="">
-                                <span className="block text-500 font-medium mb-3">Has Cancer</span>
-                                <div className="text-900 font-medium text-xl">{data.cancerCount}</div>
-                            </div>
-                        </div>
-                        <div className="card mb-0">
-                            <div className="">
                                 <span className="block text-500 font-medium mb-3">PWD</span>
                                 <div className="text-900 font-medium text-xl">{data.pwdCount}</div>
-                            </div>
-                        </div>
-                        <div className="card mb-0">
-                            <div className="">
-                                <span className="block text-500 font-medium mb-3">Stroke</span>
-                                <div className="text-900 font-medium text-xl">{data.strokeCount}</div>
-                            </div>
-                        </div>
-                        <div className="card mb-0">
-                            <div className="">
-                                <span className="block text-500 font-medium mb-3">Has Mass</span>
-                                <div className="text-900 font-medium text-xl">{data.massCount}</div>
                             </div>
                         </div>
                         <div className="card mb-0">
