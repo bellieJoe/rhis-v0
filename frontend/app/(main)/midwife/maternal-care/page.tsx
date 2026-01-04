@@ -48,6 +48,10 @@ const Unregistered = () => {
                         header="Address" 
                         body={(data) => `${data.household.barangay.barangay_name} ${data.household.barangay.municipality.municipality_name} ${data.household.barangay.municipality.province.province_name}`}
                     />
+                    {/* <Column 
+                        header="Assigned BHW" 
+                        field="assigned_bhw_names"
+                    /> */}
                     <Column header="Actions" body={(data) => {
                         return (
                             <div className="flex gap-2">

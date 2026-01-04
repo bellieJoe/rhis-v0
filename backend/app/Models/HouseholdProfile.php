@@ -10,7 +10,7 @@ class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth", "is_senior", "is_pregnant"];
+    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth", "is_senior", "is_pregnant", "assigned_bhw_names"];
 
     public function household()
     {
@@ -122,6 +122,20 @@ class HouseholdProfile extends Model
     public function getIsPregnantAttribute()
     {
         return $this->updated_details->is_pregnant;
+    }
+
+   public function getAssignedBhwNamesAttribute()
+    {
+        if (!$this->household) {
+            return null; // or ''
+        }
+
+        return User::query()
+        ->join('personal_informations as pi', 'pi.user_id', '=', 'users.id')
+        ->join('bhw_designations as bd', 'bd.user_id', '=', 'users.id')
+        ->where('bd.sitio_id', $this->household->sitio_id)
+        ->selectRaw("GROUP_CONCAT(CONCAT(pi.first_name, ' ', pi.last_name) SEPARATOR ', ') as full_names")
+        ->value('full_names');
     }
 
 
