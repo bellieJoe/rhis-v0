@@ -27,7 +27,7 @@ class MaternalClientController extends Controller
             ->where('gender_id', 80);
         })
         // ->doesntHave('maternalClient', function($q){
-        //     $q->where
+        //     $q->whereNot('lmp', latesthousehold)
         // })
         ->with(['household.barangay.municipality.province']); 
 

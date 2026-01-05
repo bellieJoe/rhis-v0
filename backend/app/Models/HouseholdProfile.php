@@ -10,7 +10,7 @@ class HouseholdProfile extends Model
 {
     //
     protected $guarded = [];
-    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth", "is_senior", "is_pregnant", "assigned_bhw_names"];
+    protected $appends = ["updated_details", "fullname", "is_dead", "already_gave_birth", "is_senior", "is_pregnant"];
 
     public function household()
     {
@@ -138,5 +138,9 @@ class HouseholdProfile extends Model
         ->value('full_names');
     }
 
-
-}
+    public function latestHouseholdProfileDetails()
+    {
+        return $this->hasOne(HouseholdProfileDetail::class)
+                    ->latestOfMany();
+    }
+    }
