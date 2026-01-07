@@ -154,7 +154,7 @@ const Registered = () => {
 const MaternalCare = () => {
     return (
         <AuthMiddleware>    
-            <Unregistered />
+            {/* <Unregistered /> */}
             <Registered />
         </AuthMiddleware>
     );

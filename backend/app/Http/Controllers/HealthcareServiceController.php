@@ -12,6 +12,9 @@ use App\Models\EpilepsyRecord;
 use App\Models\FpRecord;
 use App\Models\HighbloodRecord;
 use App\Models\HouseholdProfile;
+use App\Models\MaternalClient;
+use App\Models\MaternalInfectiousDisease;
+use App\Models\MaternalSupplement;
 use App\Models\MedicationMaintenance;
 use App\Models\NewBorn;
 use App\Models\Pregnancy;
@@ -43,6 +46,7 @@ class HealthcareServiceController extends Controller
             $new_details->last_menstrual_period = Carbon::parse($request->last_menstrual_period);
             $new_details->is_pregnant = true;
             $new_details->save();
+            
             $pregnancy = Pregnancy::create([
                 "household_profile_id" => $request->household_profile_id,
                 "last_menstrual_period" => Carbon::parse($request->last_menstrual_period),
@@ -51,6 +55,71 @@ class HealthcareServiceController extends Controller
                 "age" => $request->age,
                 "encoded_by" => auth()->user()->id
             ]);
+
+            $client = MaternalClient::create([
+                'household_profile_id' => $updated_profile_detail->id,
+                'encoded_by' => auth()->user()->id,
+                'firstname' => $updated_profile_detail->firstname,
+                'lastname' => $updated_profile_detail->lastname,
+                'middlename' => $updated_profile_detail->middlename,
+                "gravida" => $request->number_of_pregnancy,
+                "lmp" => Carbon::parse($request->last_menstrual_period),
+                'date_of_registration' => now(),
+                'address_barangay_id' => $updated_profile_detail->household->barangay_id
+            ]);
+            MaternalSupplement::insert([
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 1,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 2,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 3,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 4,
+                    'supplement_type' => 'IRON SULFATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 2,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 3,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'visit_number' => 4,
+                    'supplement_type' => 'CALCIUM CARBONATE'
+                ],
+            ]);
+            MaternalInfectiousDisease::insert([
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'HIV',
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'SYPHILIS',
+                ],
+                [
+                    'maternal_client_id' => $client->id,
+                    'disease' => 'HEPATITIS B',
+                ],
+            ]);
+
+
             return response()->json([
                 "message" => "Pregnancy created successfully",
             ], 201);

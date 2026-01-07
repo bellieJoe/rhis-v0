@@ -330,14 +330,14 @@ const UpdateMaternalClientForm = () => {
                                         onChange={(e) => setForm({...form, is_hypertensive : e.value})} />
                                     <ValidationError name="is_hypertensive" />  
                                 </div>
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Estimated Date of Confinement <Required/></label>
                                     <Calendar
                                         className="w-full"
                                         value={form.edc}
                                         onChange={(e) => setForm({...form, edc : e.value})} />
                                     <ValidationError name="edc" />  
-                                </div>
+                                </div> */}
                                 <h6>Dates of Pre-natal Check-ups</h6>
                                 <div className="grid">
                                     <div className="col-12 md:col-6 mb-3">
@@ -436,7 +436,7 @@ const UpdateMaternalClientForm = () => {
                                                 />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(1, 'IRON SULFATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(1, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
@@ -455,7 +455,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(2, 'IRON SULFATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(2, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
@@ -474,7 +474,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(3, 'IRON SULFATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(3, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
@@ -493,7 +493,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(4, 'IRON SULFATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(4, 'IRON SULFATE', 'amount', e.target.value) }
                                                     />
@@ -526,7 +526,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(2, 'CALCIUM CARBONATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(2, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
@@ -545,7 +545,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(3, 'CALCIUM CARBONATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(3, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
@@ -564,7 +564,7 @@ const UpdateMaternalClientForm = () => {
                                                     />
                                                 <InputText
                                                     type="number"
-                                                    placeholder="Amount Given"
+                                                    placeholder="Tablet Given"
                                                     value={getSupplementField(4, 'CALCIUM CARBONATE', 'amount')}
                                                     onChange={(e) => updateSupplementField(4, 'CALCIUM CARBONATE', 'amount', e.target.value) }
                                                     />
@@ -612,7 +612,7 @@ const UpdateMaternalClientForm = () => {
                                             <ValidationError name="first_tri_bmi" />
                                         </div>
                                     </div>
-                                    <hr />
+                                    {/* <hr />
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">Deworming Tablet Date Given</label>
                                         <Calendar
@@ -622,7 +622,7 @@ const UpdateMaternalClientForm = () => {
                                             onChange={(e) => {setForm({...form, deworming_tablet_date_given: e.value})}}
                                             />
                                         <ValidationError name="deworming_tablet_date_given" />
-                                    </div>
+                                    </div> */}
                                     <hr />
                                     <div className="">
                                         <h6>Infectious Disease Surveillance</h6>
