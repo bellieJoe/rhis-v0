@@ -84,8 +84,24 @@ const AddHousehold = ({ visible, onHide }: AddHouseholdProfileProps) => {
         (async () => {
             const _sitios = await getSitios(dispatch, { barangay : form.barangay, paginate : false });
             setSitios(_sitios);
+            if(sitios.filter((sitio: any) =>
+                            authStore.user?.bhw_designations?.some(
+                                (d: any) => d.sitio_id === sitio.id
+                            )
+                        ).length === 1) {
+                            setForm({...form, sitio : sitios.filter((sitio: any) =>
+                            authStore.user?.bhw_designations?.some(
+                                (d: any) => d.sitio_id === sitio.id
+                            )
+                        )[0].id});
+                            
+                        }
         })();
     }, [form.barangay]);
+
+    useEffect(() => {
+        if(sitios.length == 1) setForm({...form, sitio : sitios[0].id});
+    }, [sitios]);
 
     useEffect(() => {
         console.log("User changed", authStore.user);
