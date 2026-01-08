@@ -290,7 +290,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 )}
 
-                                {(
+                                {/* {(
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                             Is Family Head ?<Required />
@@ -317,7 +317,7 @@ const AddHouseholdProfile = () => {
                                         />
                                         <ValidationError name="family_head_id" />
                                     </div>
-                                )}
+                                )} */}
 
                                 {form.member_relationship_id == '5' && (
                                     <>

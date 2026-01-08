@@ -265,7 +265,7 @@ const UpdateHouseholdProfile = () => {
                                         </>
                                     )
                                 }
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                     <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                         Is Family Head ?<Required />
                                     </label>
@@ -292,7 +292,7 @@ const UpdateHouseholdProfile = () => {
                                             <ValidationError name="family_head_id" />
                                         </div>
                                     )
-                                }
+                                } */}
                             </div>
                         )}
                         {activeIndex === 1 && (

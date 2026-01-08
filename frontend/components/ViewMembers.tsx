@@ -196,7 +196,7 @@ export const ViewMembers = () => {
                                         )}
                                     </div>
 
-                                    {data.updated_details.member_relationship_id !== 1 && (
+                                    {/* {data.updated_details.member_relationship_id !== 1 && (
                                         <Button
                                             label="Set as HH"
                                             outlined
@@ -204,7 +204,7 @@ export const ViewMembers = () => {
                                             severity="success"
                                             onClick={() => setHead(event, data)}
                                         />
-                                    )}
+                                    )} */}
                                 </div>
                             </>
                         );
