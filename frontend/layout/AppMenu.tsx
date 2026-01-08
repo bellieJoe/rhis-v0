@@ -43,7 +43,7 @@ const AppMenu = () => {
     const setCaptainMenu = () => {
         if (authUser && authUser.roles.some((role: any) => role.role_type_id === 6)) {
             return [{
-                label: 'Baranggay Captain Interface',
+                label: 'Barangay Captain Interface',
                 items: [
                     // { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
                     { label: "BHW's", icon: 'pi pi-fw pi-users', to: '/captain/bhw' },

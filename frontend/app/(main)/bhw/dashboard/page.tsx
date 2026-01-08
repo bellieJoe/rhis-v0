@@ -687,11 +687,11 @@ const BhwDashboard = () => {
                     <SeniorMaintenanceChart startDate={startDate} endDate={endDate} />
                 </div>
                 {/* Educational Attainment */}
-                <div className="col-12 lg:col-6">
+                {/* <div className="col-12 lg:col-6">
                     <EducationalAttainmentChart  startDate={startDate} endDate={endDate} />
-                </div>
+                </div> */}
                 {/* Religion */}
-                <div className="col-12 lg:col-6 ">
+                {/* <div className="col-12 lg:col-6 ">
                     <div className="card mb-0 h-full">
                         <h3 className="text-lg font-semibold mb-2 text-center">Religion</h3>
                         <DataView
@@ -706,7 +706,7 @@ const BhwDashboard = () => {
                             }}
                         />
                     </div>
-                </div>
+                </div> */}
                 
                 <div className="col-12 lg:col-6 ">
                     <div className="card mb-0">
