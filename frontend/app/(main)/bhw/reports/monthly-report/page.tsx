@@ -993,7 +993,7 @@ const AnimalBiteTable = ({records} : {records: any}) => {
                                         <td className="border-bottom-1">{index + 1}.</td>
                                         <td className="border-bottom-1 border-right-1">{record.household_profile?.updated_details?.full_name}</td>
                                         <td className="border-bottom-1 border-right-1">{record.age}</td>
-                                        <td className="border-bottom-1">{record.animal_type}</td>
+                                        <td className="border-bottom-1">{record.animal_typee?.name}</td>
                                     </tr>
                                 ))
                             }
