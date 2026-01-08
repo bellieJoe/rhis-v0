@@ -152,3 +152,17 @@ export const countHouseholdByBarangay = async (dispatch : Dispatch, barangay_id 
     }
 }
 
+export const countHouseholdMembers = async (dispatch : Dispatch, id : any) => {
+    try {
+        const res = await axios.get(`/api/households/count-members/${id}`);
+        return res.data;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response?.data?.message, 
+            life : 3000
+        }));
+    }
+}
+

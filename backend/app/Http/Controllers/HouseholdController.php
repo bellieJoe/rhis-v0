@@ -190,4 +190,8 @@ class HouseholdController extends Controller
     public function countByBarangay(Request $request, $barangay_id) {
         return Household::where('barangay_id', $barangay_id)->count();
     }
+
+    public function countMembers($id){
+        return HouseholdProfile::where('household_id', $id)->count();
+    }
 }

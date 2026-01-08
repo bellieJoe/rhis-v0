@@ -93,6 +93,7 @@ Route::prefix("households")->group(function () {
         Route::get("count-pregnants/{household_id}", [HouseholdController::class, "countPregnants"]);
         Route::get("count-seniors/{household_id}", [HouseholdController::class, "countSeniors"]);
         Route::get("count-by-barangay/{barangay_id}", [HouseholdController::class, "countByBarangay"]);
+        Route::get("count-members/{id}", [HouseholdController::class, "countMembers"]);
     });
 });
 

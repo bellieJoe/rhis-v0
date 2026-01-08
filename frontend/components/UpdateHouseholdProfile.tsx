@@ -273,7 +273,7 @@ const UpdateHouseholdProfile = () => {
                                     <ValidationError name="is_family_head" />
                                 </div> */}
 
-                                {
+                                {/* {
                                     (!form.is_family_head && form.member_relationship_id != 1)  && (
                                         <div className="mb-3">
                                             <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
@@ -292,7 +292,7 @@ const UpdateHouseholdProfile = () => {
                                             <ValidationError name="family_head_id" />
                                         </div>
                                     )
-                                }
+                                } */}
                             </div>
                         )}
                         {activeIndex === 1 && (

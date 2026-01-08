@@ -1,5 +1,5 @@
 "use client";
-import { countPregnantByHousehold, countSeniorsByHousehold, getHouseholdMembers, setHouseholdHead } from "@/api/householdApi";
+import { countHouseholdMembers, countPregnantByHousehold, countSeniorsByHousehold, getHouseholdMembers, setHouseholdHead } from "@/api/householdApi";
 import { setFamilyHead } from "@/api/householdProfileApi";
 import { setHouseholdId } from "@/features/viewMemberSlice";
 import { calculateAge } from "@/utils/helpers";
@@ -19,7 +19,8 @@ export const ViewMembers = () => {
     const dispatch = useDispatch();
     const initialCounts = {
         pregnants : 0,
-        seniors : 0
+        seniors : 0,
+        members: 0
     }
     const [counts, setCounts] = useState<any>(initialCounts);
 
@@ -32,11 +33,14 @@ export const ViewMembers = () => {
         (async () => {
             const _pregnants = await countPregnantByHousehold(dispatch, viewMemberStore.household_id);
             const _seniors = await countSeniorsByHousehold(dispatch, viewMemberStore.household_id);
+            const _memberCounts = await countHouseholdMembers(dispatch, viewMemberStore.household_id);
             setCounts({
                 pregnants: _pregnants,
-                seniors : _seniors
+                seniors : _seniors,
+                members : _memberCounts
             })
         })();
+
     }
 
     useEffect(() => {
@@ -108,7 +112,7 @@ export const ViewMembers = () => {
                 position="right">
                 <div className="flex gap-3 justify-content-center">
                     <div className="card h-fit">
-                        <h1 className="text-center">{members.length}</h1>
+                        <h1 className="text-center">{counts.members}</h1>
                         <p className="text-center" >Members</p>
                     </div>
                     <div className="card h-fit">
@@ -241,7 +245,7 @@ export const ViewMembers = () => {
                                                         )}
                                                     </div>
     
-                                                    {
+                                                    {/* {
                                                         (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
                                                             <Button
                                                                 label="Set as FH"
@@ -251,7 +255,7 @@ export const ViewMembers = () => {
                                                                 onClick={() => setAsFamilyHead(event, data)}
                                                             />
                                                         )
-                                                    }
+                                                    } */}
                                                     {/* {
                                                         (!data.updated_details.is_family_head && data.updated_details.member_relationship_id != 1) && (
                                                             <Button
