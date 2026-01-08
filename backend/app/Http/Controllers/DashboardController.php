@@ -63,6 +63,11 @@ class DashboardController extends Controller
                 ->whereRaw($latesDetailQueryString);
             })
             ->count(),
+            "seniors" => HouseholdProfile::query()->whereHas('household', function($q) use ($sitios) {
+                    $q->whereIn('sitio_id', $sitios);
+                })
+                ->whereDate('birthdate', '<=', Carbon::now()->subYears(60))
+                ->count(),
             'vaccinated' => (clone $this->householdProfileQuery)->whereHas('vaccinateds')->count(),
             'deaths' => (clone $this->householdProfileQuery)->whereHas('deaths')->count(),
             'genderData' => $this->getGenderDistribution($request),

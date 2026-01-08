@@ -581,6 +581,19 @@ const BhwDashboard = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="col-12 lg:col-6">
+                            <div className="card mb-0">
+                                <div className="flex justify-content-between mb-3">
+                                    <div>
+                                        <span className="block text-500 font-medium mb-3">Senior Citizens</span>
+                                        <div className="text-900 font-medium text-xl">{data.seniors}</div>
+                                    </div>
+                                    <div className="flex align-items-center justify-content-center bg-bluegray-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                                        <RiSurveyLine  className="text-bluegray-500 text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="col-12 lg:col-6">
