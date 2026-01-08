@@ -8,7 +8,7 @@ import { AuthMiddleware } from "@/components/middlewares";
 import UpdateHouseholdProfile from "@/components/UpdateHouseholdProfile";
 import UpdateHouseholdProfileAddtnlInfo from "@/components/UpdateHouseholdProfileAddtnlInfo";
 import { ViewMembers } from "@/components/ViewMembers";
-import { addMember, addMemberGeneral, show } from "@/features/forms/addHouseholdProfileSlice";
+import { addFamilyMember, addMember, addMemberGeneral, show } from "@/features/forms/addHouseholdProfileSlice";
 import { updateProfileAdditnlInfo } from "@/features/forms/updateHouseholdProfileAddtnlInfoSlice";
 import { updateProfile } from "@/features/forms/updateHouseholdProfileSlice";
 import { setHouseholdId } from "@/features/viewMemberSlice";
@@ -112,7 +112,7 @@ const HouseholdsTable = () => {
                                         })
                                     )}} 
                                     loading={loading.householdDelete}   />
-                                    <Button label="Members" size="small"  outlined icon="pi pi-eye" onClick={() => dispatch(setHouseholdId(data.id))}   />
+                                <Button label="Members" size="small"  outlined icon="pi pi-eye" onClick={() => dispatch(setHouseholdId(data.id))}   />
                             </div>
                         )
                     } />
@@ -249,6 +249,23 @@ const HouseholdProfilesTable = () => {
                 <Column  header="Actions" frozen body={(data : any) => (
                     <>
                         <div className="flex gap-2">
+                            {
+                                data.updated_details.is_family_head == 1 && (
+                                    <Button 
+                                        label="Add Family Member"
+                                        size="small"  
+                                        outlined icon="pi pi-plus" 
+                                        onClick={(event) => {
+                                            dispatch(addFamilyMember({
+                                                householdId : data.household.id,
+                                                householdNo : data.household.household_no,
+                                                date_of_visit : "",
+                                                family_head_id: data.id,
+                                                household : data
+                                            })
+                                        )}} />
+                                )
+                            }
                             <Button label="Delete" loading={loading.householdProfileDelete} severity="danger" size="small" outlined icon="pi pi-trash" onClick={(event) => deleteProfile(event, data.id)} />
                             <Button label="Update" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfile({householdProfile : data}))} />
                             <Button label="Update Additional Info" size="small" outlined icon="pi pi-pencil" onClick={() => dispatch(updateProfileAdditnlInfo({householdProfile : data}))} />

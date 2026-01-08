@@ -169,7 +169,7 @@ export const ViewMembers = () => {
                                                         )}
                                                     </div>
     
-                                                    {
+                                                    {/* {
                                                         (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
                                                             <Button
                                                                 label="Set as FH"
@@ -179,7 +179,7 @@ export const ViewMembers = () => {
                                                                 onClick={() => setAsFamilyHead(event, data)}
                                                             />
                                                         )
-                                                    }
+                                                    } */}
                                                     {/* {data.updated_details.member_relationship_id !== 1 && (
                                                         <Button
                                                             label="Set as HH"

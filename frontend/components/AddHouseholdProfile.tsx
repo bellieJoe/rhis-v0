@@ -147,6 +147,7 @@ const AddHouseholdProfile = () => {
         newForm.date_of_visit = addHouseholdProfileStore.date_of_visit;
         newForm.member_relationship_id = addHouseholdProfileStore.addHead ? 1 : '';
         newForm.is_family_head = addHouseholdProfileStore.addHead;
+        newForm.family_head_id = addHouseholdProfileStore.addFamilyMember ? addHouseholdProfileStore.family_head_id : '';
         setForm(newForm);
     }, [addHouseholdProfileStore.addHead, addHouseholdProfileStore.addMember, addHouseholdProfileStore.householdId, addHouseholdProfileStore.householdNo, addHouseholdProfileStore.date_of_visit]);
 
@@ -290,7 +291,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 )}
 
-                                {/* {(
+                                {!addHouseholdProfileStore.addFamilyMember && (
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                             Is Family Head ?<Required />
@@ -300,7 +301,7 @@ const AddHouseholdProfile = () => {
                                     </div>
                                 )}
                                 
-                                {!form.is_family_head && (
+                                {addHouseholdProfileStore.addFamilyMember && (
                                     <div className="mb-3">
                                         <label htmlFor="" className="block text-sm font-medium text-gray-900 mb-1">
                                             Family Head?<Required />
@@ -317,7 +318,7 @@ const AddHouseholdProfile = () => {
                                         />
                                         <ValidationError name="family_head_id" />
                                     </div>
-                                )} */}
+                                )}
 
                                 {form.member_relationship_id == '5' && (
                                     <>
