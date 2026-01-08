@@ -1062,6 +1062,7 @@ const BHWMonthlyReportPage = () => {
             setSitios(_designations.map((designation : any) => {
                 return designation.sitio;
             }));
+            if(sitios.length == 1) setFilter({...filter, sitio : sitios[0].id});
         })();
     }, [authStore.user?.id]);
 
