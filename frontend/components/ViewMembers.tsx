@@ -132,6 +132,7 @@ export const ViewMembers = () => {
                                     className="w-full"
                                     value={[m.head]}
                                     layout="list"
+                                    emptyMessage=" "
                                     itemTemplate={(data: any, options: any) => {
                                         const index = members.findIndex((s: any) => s.id === data.id);
                                         const prev = index > 0 ? members[index - 1] : null;
@@ -173,8 +174,8 @@ export const ViewMembers = () => {
                                                         )}
                                                     </div>
     
-                                                    {/* {
-                                                        (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
+                                                    {
+                                                        (!data.updated_details.is_family_head && data.updated_details.member_relationship_id != 1 && calculateAge(data.birthdate) > 17) && (
                                                             <Button
                                                                 label="Set as FH"
                                                                 outlined
@@ -183,7 +184,7 @@ export const ViewMembers = () => {
                                                                 onClick={() => setAsFamilyHead(event, data)}
                                                             />
                                                         )
-                                                    } */}
+                                                    }
                                                     {/* {data.updated_details.member_relationship_id !== 1 && (
                                                         <Button
                                                             label="Set as HH"
@@ -202,7 +203,7 @@ export const ViewMembers = () => {
                                     className="w-full"
                                     value={m.members}
                                     layout="list"
-                                    emptyMessage="No Members found"
+                                    emptyMessage=" "
                                     itemTemplate={(data: any, options: any) => {
                                         const index = members.findIndex((s: any) => s.id === data.id);
                                         const prev = index > 0 ? members[index - 1] : null;
@@ -245,8 +246,8 @@ export const ViewMembers = () => {
                                                         )}
                                                     </div>
     
-                                                    {/* {
-                                                        (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
+                                                    {
+                                                        (!data.updated_details.is_family_head && data.updated_details.member_relationship_id != 1 && calculateAge(data.birthdate) > 17) && (
                                                             <Button
                                                                 label="Set as FH"
                                                                 outlined
@@ -255,7 +256,7 @@ export const ViewMembers = () => {
                                                                 onClick={() => setAsFamilyHead(event, data)}
                                                             />
                                                         )
-                                                    } */}
+                                                    }
                                                     {/* {
                                                         (!data.updated_details.is_family_head && data.updated_details.member_relationship_id != 1) && (
                                                             <Button
