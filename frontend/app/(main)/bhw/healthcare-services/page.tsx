@@ -10,10 +10,11 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Tag } from "primereact/tag";
 import { Tooltip } from 'primereact/tooltip';
+import { Paginator } from "primereact/paginator";
 
 
 const HealthcareServices = () => {
@@ -76,6 +77,17 @@ const HealthcareServices = () => {
         })();
     }, []);
 
+    const [paginator, setPaginator] = useState({
+            householdProfiles: useRef<any>(null)
+        });
+
+    const onPageChange = async (e: any) => {
+        setLoading({ ...loading, patients: true });
+        const _profiles = await getHouseholdProfiles(dispatch, { page: e.page + 1 });
+        setHouseholdProfiles(_profiles);
+        setLoading({ ...loading, patients: false });
+    }
+
     return (
         <AuthMiddleware>
             <div className="card">
@@ -110,6 +122,13 @@ const HealthcareServices = () => {
                         </>
                     )}></Column>
                 </DataTable>
+                <Paginator 
+                        ref={paginator.householdProfiles}
+                        first={(householdProfiles.current_page - 1) * householdProfiles.per_page}
+                        rows={householdProfiles.per_page}
+                        totalRecords={householdProfiles.total}
+                        onPageChange={onPageChange}
+                    />
             </div>
 
             <UpdateHealthServiceForm />
