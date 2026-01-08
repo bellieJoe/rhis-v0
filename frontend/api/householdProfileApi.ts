@@ -134,3 +134,23 @@ export const getFamilyHeads = async (dispatch : Dispatch, params : any = {}) => 
     }
 }
 
+export const setFamilyHead = async (dispatch : Dispatch, household_profile_id : any) => {
+    try {
+        const response : any = await axios.post(`/api/household-profiles/set-family-head/${household_profile_id}`);
+        dispatch(setToast({
+            severity : "success",
+            summary : "Success",
+            detail : "Family head set successfully",
+            life : 3000
+        }));
+        return true;
+    } catch (error : any) {
+        dispatch(setToast({
+            severity :"error", 
+            summary : "Error", 
+            detail : error.response.data.message, 
+            life : 3000
+        }));
+    }
+}
+

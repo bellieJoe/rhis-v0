@@ -106,6 +106,7 @@ Route::prefix("household-profiles")->group(function () {
         Route::delete("{id}", [HouseholdProfileController::class, "destroy"]);
         Route::get("family-heads/{household_id}", [HouseholdProfileController::class, "getFamilyHeads"]);
         Route::post("set-household-head/{household_profile_id}", [HouseholdProfileController::class, "setHouseholdHead"]);
+        Route::post("set-family-head/{household_profile_id}", [HouseholdProfileController::class, "setFamilyHead"]);
     });
 });
 

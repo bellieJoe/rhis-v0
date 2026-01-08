@@ -357,7 +357,7 @@ class HouseholdProfileController extends Controller
                 "religion_id" => $request->input("religion_id"),
                 "other_religion" => $request->input("religion_id") == 37 ? $request->input("other_religion") : null,
                 "is_family_head" => $updatedDetails->is_family_head,
-                "family_head_id" => $updatedDetails->family_head_id,
+                "family_head_id" => $request->input("family_head_id") ?? $updatedDetails->family_head_id,
                 //
 
                 "enthnicity" => $updatedDetails->enthnicity,
@@ -452,5 +452,25 @@ class HouseholdProfileController extends Controller
                 ]);
             }
         });
+    }
+
+    public function setFamilyHead($household_profile_id) {
+        $household_profile = HouseholdProfile::find($household_profile_id);
+        if(!$household_profile) {
+            return response()->json([
+                "message" => "Household profile not found"
+            ], 404);
+        }
+
+        return DB::transaction(function () use ($household_profile_id, $household_profile) {
+            $updatedDetail = HouseholdProfileDetail::where('household_profile_id', $household_profile_id)->latest()->first();
+            
+            HouseholdProfileDetail::create([
+                ...$updatedDetail->except('id', 'created_at', 'updated_at'),
+                "is_family_head" => true,
+                "family_head_id" => 0,
+            ]);
+        });
+
     }
 }

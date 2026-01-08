@@ -1,6 +1,8 @@
 "use client";
 import { countPregnantByHousehold, countSeniorsByHousehold, getHouseholdMembers, setHouseholdHead } from "@/api/householdApi";
+import { setFamilyHead } from "@/api/householdProfileApi";
 import { setHouseholdId } from "@/features/viewMemberSlice";
+import { calculateAge } from "@/utils/helpers";
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { confirmPopup } from "primereact/confirmpopup";
@@ -49,6 +51,17 @@ export const ViewMembers = () => {
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
                 await setHouseholdHead(dispatch, member.id);
+                init();
+            }
+        })
+    }
+    const setAsFamilyHead = (e, member : any) => {
+        confirmPopup({
+            target: e.target,
+            message: 'Are you sure you want to set this member as head of the household?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: async () => {
+                await setFamilyHead(dispatch, member.id);
                 init();
             }
         })
@@ -107,109 +120,168 @@ export const ViewMembers = () => {
                         <p className="text-center" >Seniors</p>
                     </div>
                 </div>
-                {/* <DataView className="w-full" value={members} layout="list"  itemTemplate={(data:any) => 
-                    (
-                        <div className="flex flex-wrap p-2 align-items-center gap-3 w-full">
-                            <Avatar icon="pi pi-user" shape="circle" size="large" className="bg-primary text-0" />
-                            <div className="flex-1 flex flex-auto gap-2 xl:mr-8">
-                                <span className="font-bold">{data.fullname}</span>
-                                {
-                                    data.updated_details.member_relationship_id == 1 && (
-                                        <Tag severity="info" className="ml-2 " value="HH" title="Household Head"></Tag>
-                                    )
-                                }
-                                {
-                                    data.updated_details.is_family_head == 1 && (
-                                        <Tag severity="success" className="ml-2" value="FH" title="Family Head"></Tag>
-                                    )
-                                }
-                                {
-                                    data.is_pregnant == 1 && (
-                                        <Tag className="ml-2" value="Pregnant" title="Pregnant"></Tag>
-                                    )
-                                }
-                                {
-                                    data.is_senior && (
-                                        <Tag className="ml-2" value="Senior" title="Senior"></Tag>
-                                    )
-                                }
-                            </div>
-                            {
-                                data.updated_details.member_relationship_id != 1 && (
-                                    <Button label="Set as HH" className="ml-2" outlined size="small" severity="success" onClick={() => setHead(event, data)}></Button>
-                                )
-                            }
-                        </div>
-                    )
-                }></DataView> */}
-                <DataView
-                    className="w-full"
-                    value={members}
-                    layout="list"
-                    itemTemplate={(data: any, options: any) => {
-                        const index = members.findIndex((s: any) => s.id === data.id);
-                        const prev = index > 0 ? members[index - 1] : null;
-
-                        const currentKey = getFamilyGroupKey(data);
-                        const prevKey = prev ? getFamilyGroupKey(prev) : null;
-
-                        const showDivider = prev && currentKey !== prevKey;
-
+                {
+                    members.map((m: any) => {
                         return (
-                            <>
-                                {/* Divider when family_head_id changes */}
-                                {showDivider && (
-                                    <Divider align="left" className="mb-2" >
-                                        <span className="text-sm font-semibold text-500">
-                                            New Family
-                                        </span>
-                                    </Divider>
-                                )}
-
-                                <div  className={`flex flex-wrap p-2 align-items-center gap-3 w-full ${
-                                        showDivider ? 'border-top-0 mt-2 pt-2' : ''
-                                    }`}>
-                                    <Avatar
-                                        icon="pi pi-user"
-                                        shape="circle"
-                                        size="large"
-                                        className="bg-primary text-0"
-                                    />
-
-                                    <div className="flex-1 flex flex-auto gap-2 xl:mr-8">
-                                        <span className="font-bold">{data.fullname}</span>
-
-                                        {data.updated_details.member_relationship_id === 1 && (
-                                            <Tag severity="info" className="ml-2" value="HH" />
-                                        )}
-
-                                        {data.updated_details.is_family_head === 1 && (
-                                            <Tag severity="success" className="ml-2" value="FH" />
-                                        )}
-
-                                        {data.is_pregnant === 1 && (
-                                            <Tag className="ml-2" value="Pregnant" />
-                                        )}
-
-                                        {data.is_senior && (
-                                            <Tag className="ml-2" value="Senior" />
-                                        )}
-                                    </div>
-
-                                    {/* {data.updated_details.member_relationship_id !== 1 && (
-                                        <Button
-                                            label="Set as HH"
-                                            outlined
-                                            size="small"
-                                            severity="success"
-                                            onClick={() => setHead(event, data)}
-                                        />
-                                    )} */}
-                                </div>
-                            </>
-                        );
-                    }}
-                />
+                            <div className="card mb-3" key={m.head.id}>
+                                <DataView
+                                    className="w-full"
+                                    value={[m.head]}
+                                    layout="list"
+                                    itemTemplate={(data: any, options: any) => {
+                                        const index = members.findIndex((s: any) => s.id === data.id);
+                                        const prev = index > 0 ? members[index - 1] : null;
+    
+                                        const currentKey = getFamilyGroupKey(data);
+                                        const prevKey = prev ? getFamilyGroupKey(prev) : null;
+    
+                                        const showDivider = prev && currentKey !== prevKey;
+    
+                                        return (
+                                            <>
+                                                <div  className={`flex flex-wrap p-2 align-items-center gap-3 w-full ${
+                                                        showDivider ? 'border-top-0 mt-2 pt-2' : ''
+                                                    }`}>
+                                                    <Avatar
+                                                        icon="pi pi-user"
+                                                        shape="circle"
+                                                        size="large"
+                                                        className="bg-primary text-0"
+                                                    />
+    
+                                                    <div className="flex-1 flex flex-auto gap-2 xl:mr-8">
+                                                        <span className="font-bold">{data.fullname}</span>
+    
+                                                        {data.updated_details.member_relationship_id === 1 && (
+                                                            <Tag severity="info" className="ml-2" value="HH" />
+                                                        )}
+    
+                                                        {data.updated_details.is_family_head === 1 && (
+                                                            <Tag severity="success" className="ml-2" value="FH" />
+                                                        )}
+    
+                                                        {data.is_pregnant === 1 && (
+                                                            <Tag className="ml-2" value="Pregnant" />
+                                                        )}
+    
+                                                        {data.is_senior && (
+                                                            <Tag className="ml-2" value="Senior" />
+                                                        )}
+                                                    </div>
+    
+                                                    {
+                                                        (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
+                                                            <Button
+                                                                label="Set as FH"
+                                                                outlined
+                                                                size="small"
+                                                                severity="success"
+                                                                onClick={() => setAsFamilyHead(event, data)}
+                                                            />
+                                                        )
+                                                    }
+                                                    {/* {data.updated_details.member_relationship_id !== 1 && (
+                                                        <Button
+                                                            label="Set as HH"
+                                                            outlined
+                                                            size="small"
+                                                            severity="success"
+                                                            onClick={() => setHead(event, data)}
+                                                        />
+                                                    )} */}
+                                                </div>
+                                            </>
+                                        );
+                                    }}
+                                />  
+                                <DataView
+                                    className="w-full"
+                                    value={m.members}
+                                    layout="list"
+                                    emptyMessage="No Members found"
+                                    itemTemplate={(data: any, options: any) => {
+                                        const index = members.findIndex((s: any) => s.id === data.id);
+                                        const prev = index > 0 ? members[index - 1] : null;
+    
+                                        const currentKey = getFamilyGroupKey(data);
+                                        const prevKey = prev ? getFamilyGroupKey(prev) : null;
+    
+                                        const showDivider = prev && currentKey !== prevKey;
+    
+                                        return (
+                                            <>
+    
+                                                <div  className={`flex flex-wrap p-2 align-items-center gap-3 w-full ${
+                                                        showDivider ? 'border-top-0 mt-2 pt-2' : ''
+                                                    }`}>
+                                                    <Avatar
+                                                        icon="pi pi-user"
+                                                        shape="circle"
+                                                        size="large"
+                                                        className="bg-primary text-0"
+                                                    />
+    
+                                                    <div className="flex-1 flex flex-auto gap-2 xl:mr-8">
+                                                        <span className="font-bold">{data.fullname}</span>
+    
+                                                        {data.updated_details.member_relationship_id === 1 && (
+                                                            <Tag severity="info" className="ml-2" value="HH" />
+                                                        )}
+    
+                                                        {data.updated_details.is_family_head === 1 && (
+                                                            <Tag severity="success" className="ml-2" value="FH" />
+                                                        )}
+    
+                                                        {data.is_pregnant === 1 && (
+                                                            <Tag className="ml-2" value="Pregnant" />
+                                                        )}
+    
+                                                        {data.is_senior && (
+                                                            <Tag className="ml-2" value="Senior" />
+                                                        )}
+                                                    </div>
+    
+                                                    {
+                                                        (!data.updated_details.is_family_head && calculateAge(data.birthdate) > 17) && (
+                                                            <Button
+                                                                label="Set as FH"
+                                                                outlined
+                                                                size="small"
+                                                                severity="success"
+                                                                onClick={() => setAsFamilyHead(event, data)}
+                                                            />
+                                                        )
+                                                    }
+                                                    {/* {
+                                                        (!data.updated_details.is_family_head && data.updated_details.member_relationship_id != 1) && (
+                                                            <Button
+                                                                label="Assign to Family"
+                                                                outlined
+                                                                size="small"
+                                                                severity="success"
+                                                                onClick={() => setAsFamilyHead(event, data)}
+                                                            />
+                                                        )
+                                                    } */}
+                                                    {/* {data.updated_details.member_relationship_id !== 1 && (
+                                                        <Button
+                                                            label="Set as HH"
+                                                            outlined
+                                                            size="small"
+                                                            severity="success"
+                                                            onClick={() => setHead(event, data)}
+                                                        />
+                                                    )} */}
+                                                </div>
+                                            </>
+                                        );
+                                    }}
+                                />
+                            </div>
+                        )
+                    })
+                }
+                
 
             </Sidebar>
         </>

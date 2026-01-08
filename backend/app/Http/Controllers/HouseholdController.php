@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HouseholdController extends Controller
 {
@@ -98,42 +99,61 @@ class HouseholdController extends Controller
 
         // Identify family heads
         $heads = $members->filter(function ($member) {
-            return optional($member->updated_details)->is_family_head == 1;
+            return optional($member->updated_details)->is_family_head == 1 || $member->updated_details->member_relationship_id == 1;
         });
+        Log::info($heads);
+        $underlings = $members->filter(function ($member) {
+            return optional($member->updated_details)->is_family_head != 1 && $member->updated_details->member_relationship_id != 1;
+        });
+
+        $families = collect($heads)->sortBy("member_relationship_id")->map(function ($head) use ($underlings) {
+            return (object)[
+                "head" => $head,
+                "members" => $head->updated_details->member_relationship_id == 1 ? 
+                $underlings->filter(function($member) use ($head) { 
+                    return $member->updated_details->family_head_id == $head->id || $member->updated_details->family_head_id == 0; 
+                })->sortBy("member_relationship_id")->values()->toArray() 
+                : $underlings->filter(function ($member) use ($head) {
+                    return optional($member->updated_details)->family_head_id == $head->id;
+                })->sortBy("member_relationship_id")->values()->toArray()
+            ];
+        });
+        
+        return $families->values()->toArray();
 
         // Group members by family_head_id
-        $groupedMembers = $members->groupBy(function ($member) {
-            return optional($member->updated_details)->family_head_id;
-        });
+        // $groupedMembers = $members->groupBy(function ($member) {
+        //     return optional($member->updated_details)->family_head_id;
+        // });
 
-        $sorted = collect();
-        $usedMemberIds = collect();
+        // $sorted = collect();
+        // $usedMemberIds = collect();
 
-        foreach ($heads as $head) {
-            // Add head
-            $sorted->push($head);
-            $usedMemberIds->push($head->id);
+        // foreach ($heads as $head) {
+        //     // Add head
+        //     $sorted->push($head);
+        //     $usedMemberIds->push($head->id);
 
-            // Add members under this head
-            if ($groupedMembers->has($head->id)) {
-                foreach ($groupedMembers[$head->id] as $member) {
-                    // Avoid duplicating the head itself
-                    if ($member->id !== $head->id) {
-                        $sorted->push($member);
-                        $usedMemberIds->push($member->id);
-                    }
-                }
-            }
-        }
+        //     // Add members under this head
+        //     if ($groupedMembers->has($head->id)) {
+        //         foreach ($groupedMembers[$head->id] as $member) {
+        //             // Avoid duplicating the head itself
+        //             if ($member->id !== $head->id) {
+        //                 $sorted->push($member);
+        //                 $usedMemberIds->push($member->id);
+        //             }
+        //         }
+        //     }
+        // }
 
-        // 🔹 Add remaining / unassigned members
-        $remainingMembers = $members->reject(function ($member) use ($usedMemberIds) {
-            return $usedMemberIds->contains($member->id);
-        });
+        // // 🔹 Add remaining / unassigned members
+        // $remainingMembers = $members->reject(function ($member) use ($usedMemberIds) {
+        //     return $usedMemberIds->contains($member->id);
+        // });
 
-        $sorted = $sorted->merge($remainingMembers);
+        // $sorted = $sorted->merge($remainingMembers);
 
-        return $sorted->values()->toArray();
+        // return $sorted->values()->toArray();
     }
 
     public function countPregnants(Request $request, $household_id) {
