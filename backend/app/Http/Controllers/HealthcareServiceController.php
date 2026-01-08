@@ -65,7 +65,7 @@ class HealthcareServiceController extends Controller
                 "gravida" => $request->number_of_pregnancy,
                 "lmp" => Carbon::parse($request->last_menstrual_period),
                 'date_of_registration' => now(),
-                'address_barangay_id' => $updated_profile_detail->household->barangay_id
+                'address_barangay_id' => $updated_profile_detail->householdProfile->household->barangay_id
             ]);
             MaternalSupplement::insert([
                 [
