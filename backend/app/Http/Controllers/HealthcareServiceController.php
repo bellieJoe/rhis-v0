@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AnimalBiteRecord;
 use App\Models\Birth;
 use App\Models\CancerRecord;
+use App\Models\ChildcareClient;
 use App\Models\Death;
 use App\Models\DiabetesRecord;
 use App\Models\EpilepsyRecord;
@@ -119,7 +120,6 @@ class HealthcareServiceController extends Controller
                 ],
             ]);
 
-
             return response()->json([
                 "message" => "Pregnancy created successfully",
             ], 201);
@@ -176,6 +176,18 @@ class HealthcareServiceController extends Controller
                 "gender_id" => $request->gender,
                 "encoded_by" => auth()->user()->id,
                 "remarks" => $request->remarks
+            ]);
+            ChildcareClient::create([
+                'household_profile_id' => $household_profile->id,
+                'encoded_by' => auth()->user()->id,
+                'date_of_registration' => now(),
+                'date_of_birth' => $household_profile->birthdate,
+                'name_of_child' => $household_profile->updated_details->firstname . ' ' . $household_profile->updated_details->lastname,
+                'sex' => $household_profile->updated_details->gender_id,
+                'complete_name_of_mother' => '',
+                'complete_address' => $household_profile->household->address,
+                'length' => 0,
+                'weight' => $request->weight
             ]);
             return response()->json([
                 "message" => "New Born Record created successfully",
