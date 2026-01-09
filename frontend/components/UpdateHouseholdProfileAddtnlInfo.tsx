@@ -160,6 +160,7 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
             hc_mass : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_mass),
             hc_smoker: convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_smoker),
             hc_alchohol_drinker : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_alchohol_drinker),
+            hc_epilepsy : convertTinyIntToBoolean(updateHouseholdProfileStore.householdProfile.updated_details?.hc_epilepsy),
         });
     }, [updateHouseholdProfileStore.householdProfile]);
 
@@ -583,6 +584,13 @@ const UpdateHouseholdProfileAddtnlInfo = () => {
                                                             <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Alchohol Drinker</p>
                                                         </div>
                                                         <ValidationError name="hc_alchohol_drinker" />
+                                                    </div>
+                                                    <div className="flex vertical-align-middle align-items-center gap-2 mb-3">
+                                                        <Checkbox  checked={form.hc_epilepsy} onChange={(e) => setForm({...form, hc_epilepsy : e.checked || false})} ></Checkbox>
+                                                        <div className="">
+                                                            <p className="block text-sm font-medium text-gray-900 mb-0 flex vertical-align-text-bottom align-items-center ">Epilepsy</p>
+                                                        </div>
+                                                        <ValidationError name="hc_epilepsy" />
                                                     </div>
                                                 </div>
                                             )

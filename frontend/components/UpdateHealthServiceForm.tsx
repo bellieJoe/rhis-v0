@@ -929,13 +929,13 @@ export const UpdateHealthServiceForm = () => {
             handler : storeHasCancer,
             visible : !householdProfile.is_dead && householdProfile?.updated_details?.hc_cancer == 1
         },
-        {
-            label: "12. (May Problema sa Pagiisip/Epilepsy)",
-            value: "HAS_EPILEPSY",
-            form : <HasEpilepsyForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_EPILEPSY"), data)}/>,
-            handler : storeHasEpilepsy,
-            visible : !householdProfile.is_dead
-        },
+        // {
+        //     label: "12. (May Problema sa Pagiisip/Epilepsy)",
+        //     value: "HAS_EPILEPSY",
+        //     form : <HasEpilepsyForm onSubmit={(data) => submitForm(services.find(s => s.value == "HAS_EPILEPSY"), data)}/>,
+        //     handler : storeHasEpilepsy,
+        //     visible : !householdProfile.is_dead
+        // },
         {
             label: "13. Animal Bite(Kinagat ng Hayop/Aso)",
             value: "ANIMAL_BITE",

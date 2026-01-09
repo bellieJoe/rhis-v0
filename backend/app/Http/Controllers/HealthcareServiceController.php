@@ -470,7 +470,7 @@ class HealthcareServiceController extends Controller
             "diabetesRecords" => $this->queryRecord(DiabetesRecord::class, $request),
             "urinalysisResultRecords" => $this->queryRecord(UrinalysisResult::class, $request),
             "cancerRecords" => $this->queryRecord(CancerRecord::class, $request),
-            "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, $request),
+            "epilepsyRecords" => $this->queryRecord(EpilepsyRecord::class, $request), // change
             "animalBiteRecords" => $this->queryRecord(AnimalBiteRecord::class, $request),
         ];
         return response()->json($records);
