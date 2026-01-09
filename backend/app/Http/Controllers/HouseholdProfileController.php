@@ -220,6 +220,7 @@ class HouseholdProfileController extends Controller
             "hc_smoker" => "required|boolean",
             "hc_alchohol_drinker" => "required|boolean",
             "hc_tuberculosis" => "required|boolean",
+            "hc_epilepsy" => "required|boolean",
         ], 
         [],
         [
@@ -275,6 +276,7 @@ class HouseholdProfileController extends Controller
                 "diabetes_maintenance" => $request->input("hc_diabetic") ? $request->input("diabetes_maintenance") : null,
                 "hc_alchohol_drinker" => $request->input("hc_alchohol_drinker"),
                 "hc_tuberculosis" => $request->input("hc_tuberculosis"),
+                "hc_epilepsy" => $request->input("hc_epilepsy"),
             ]);
 
             return response()->json([
