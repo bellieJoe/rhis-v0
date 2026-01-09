@@ -11,6 +11,7 @@ import { getOffices } from "@/api/officeApi";
 import ValidationError from "./forms/ValidationError";
 import { storeUser } from "@/api/userApi";
 import { reloadUsers } from "@/features/userSlice";
+import { OfficePicker } from "./forms/CustomPickers";
 
 
 const AddUserForm = ({
@@ -30,7 +31,8 @@ const AddUserForm = ({
         firstname : '',
         middlename : '',
         lastname : '',
-        role_type_id : ''
+        role_type_id : '',
+        office_id : '',
     });
     const onHide = async () => {
         dispatch(hideAddUserForm());
@@ -120,6 +122,13 @@ const AddUserForm = ({
                     <Dropdown className="w-full" placeholder="Select Role"  filter options={roleTypes} optionLabel="caps_name" optionValue="id" value={form.role_type_id} onChange={(e) => setForm({...form, role_type_id : e.value})} readOnly={addBhw}  />
                     <ValidationError name="role_type_id" />
                 </div>
+                {
+                    form.role_type_id == 6 &&
+                    <div className="mb-3">
+                        <OfficePicker className="w-full" office={form.office_id} onChange={(e) => setForm({...form, office_id : e})} office_type="barangay" />
+                        <ValidationError name="office_id" />
+                    </div>
+                }
                 <div className="flex justify-content-end">
                     <Button label="Save" onClick={handleSubmit} loading={loading} />
                 </div>

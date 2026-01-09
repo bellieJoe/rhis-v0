@@ -33,7 +33,8 @@ class UserController extends Controller
             'middlename' => 'required',
             'lastname' => 'required',
             'email' => 'required',
-            'role_type_id' => 'required'
+            'role_type_id' => 'required',
+            'office_id' => 'nullable|required_if:role_type_id,6|exists:offices,id',
         ], [], [
             'role_type_id' => 'Role'
         ]);
@@ -54,6 +55,13 @@ class UserController extends Controller
                 'middle_name' => $request->middlename,
                 'last_name' => $request->lastname,
             ]);
+
+            if($request->input('role_type_id') == 6) {
+                CaptainDesignation::create([
+                    'office_id' => $request->input('office_id'),
+                    'user_id' => $user->id
+                ]);
+            }
             
             Role::create([
                 'user_id' => $user->id,
