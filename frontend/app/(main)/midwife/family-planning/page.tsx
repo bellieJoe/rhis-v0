@@ -156,7 +156,7 @@ const Registered = () => {
 const ChildCare = () => {
     return (
             <AuthMiddleware >    
-                <Unregistered />
+                {/* <Unregistered /> */}
                 <Registered />
             </AuthMiddleware>
         );

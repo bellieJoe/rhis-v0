@@ -10,6 +10,7 @@ use App\Models\ChildcareClient;
 use App\Models\Death;
 use App\Models\DiabetesRecord;
 use App\Models\EpilepsyRecord;
+use App\Models\FamilyPlanningClient;
 use App\Models\FpRecord;
 use App\Models\HighbloodRecord;
 use App\Models\HouseholdProfile;
@@ -236,6 +237,16 @@ class HealthcareServiceController extends Controller
                 "fp_method_id" => $request->family_planning_method,
                 "remarks" => $request->remarks,
                 "encoded_by" => auth()->user()->id
+            ]);
+            FamilyPlanningClient::create([
+                'household_profile_id' => $household_profile->id,
+                'encoded_by' => auth()->user()->id,
+                'date_of_registration' => now(),
+                'date_of_birth' => $household_profile->birthdate,
+                'family_serial_no' => $household_profile->family_serial_no,
+                'complete_name' => $household_profile->updated_details->firstname . ' ' . $household_profile->updated_details->lastname,
+                'complete_address' => $household_profile->household->barangay->name . ', ' . $household_profile->household->barangay->municipality->name . ', ' . $household_profile->household->barangay->municipality->province->name,
+                'age' => now()->diffInYears($household_profile->birthdate)
             ]);
             return response()->json([
                 "message" => "Vaccine Record created successfully",
